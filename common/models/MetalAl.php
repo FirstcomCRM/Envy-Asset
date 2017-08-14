@@ -31,10 +31,10 @@ class MetalAl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['import_metal_id', 'date_uploaded', 'date', 'al_cash', 'al_three_month', 'al_stocl'], 'required'],
+        //    [['import_metal_id', 'date_uploaded', 'date', 'al_cash', 'al_three_month', 'al_stocl'], 'required'],
             [['import_metal_id'], 'integer'],
             [['date_uploaded'], 'safe'],
-            [['al_cash', 'al_three_month', 'al_stocl'], 'number'],
+            [['al_cash', 'al_three_month', 'al_stocl'], 'string'],
             [['date'], 'string', 'max' => 25],
         ];
     }

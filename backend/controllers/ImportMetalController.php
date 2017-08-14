@@ -70,12 +70,10 @@ class ImportMetalController extends Controller
             if (!empty($model->file)) {
               $model->validate();
               $filename= $model->upload();
-          
               $model->save(false);
-
               $model->importExcel($filename);
             }
-
+            Yii::$app->session->setFlash('success',"File sucessfully uploaded");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -109,6 +107,13 @@ class ImportMetalController extends Controller
      * @param integer $id
      * @return mixed
      */
+     public function actionImport(){
+       $filename = '1502272349May 2017.xlsx';
+       $model = new ImportMetal();
+       $model->importExcel($filename);
+     }
+
+
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
