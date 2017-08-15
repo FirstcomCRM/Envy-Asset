@@ -12,11 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'import_metal_id')->textInput() ?>
-
-    <?= $form->field($model, 'date_uploaded')->textInput() ?>
-
-    <?= $form->field($model, 'date')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'date')->textInput(['maxlength' => true, 'readonly'=>true]) ?>
 
     <?= $form->field($model, 'zn_cash')->textInput(['maxlength' => true]) ?>
 
@@ -25,7 +21,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'zn_stock')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Create' : '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update',
+        ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

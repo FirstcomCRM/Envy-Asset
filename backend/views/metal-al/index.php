@@ -10,7 +10,7 @@ use yii\helpers\Url;
 /* @var $searchModel common\models\MetalAlSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Metal Als';
+$this->title = 'Aluminum';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="metal-al-index">
@@ -19,48 +19,65 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-md-2">
       <?php echo SideNav::widget([
              'type' => 'info',
-             'heading'=>'<i class="fa fa-cog" aria-hidden="true"></i> Operations',
+             'heading'=>'<i class="fa fa-cog" aria-hidden="true"></i> Aluminum',
              'items'=>[
-                 ['label' => 'Main', 'url'=>Url::to(['/import-metal/index'])],
+                 ['label' => 'Import', 'url'=>Url::to(['/import-metal/index'])],
                  ['label'=>'Metals', 'items'=>[
-                   ['label'=>'Aluminum', 'url'=>Url::to(['/metal-al/index'])],
-                   ['label'=>'Copper', 'url'=>Url::to(['/metal-cu/index'])],
-                    ['label'=>'Nickel', 'url'=>Url::to(['/metal-ni/index'])],
-                    ['label'=>'Zinc', 'url'=>Url::to(['/metal-zn/index'])],
+                     ['label'=>'Aluminum', 'url'=>Url::to(['/metal-al/index'])],
+                     ['label'=>'Copper', 'url'=>Url::to(['/metal-cu/index'])],
+                     ['label'=>'Nickel', 'url'=>Url::to(['/metal-ni/index'])],
+                     ['label'=>'Zinc', 'url'=>Url::to(['/metal-zn/index'])],
+                     ['label'=>'Gold', 'url'=>Url::to(['/metal-au/index'])],
+                     ['label'=>'Oil', 'url'=>Url::to(['/metal-oil/index'])],
                    ],
                  ]
                    //insert new menu here
+
                ],
              ]);
            ?>
     </div>
     <div class="col-md-10">
-      <h1><?= Html::encode($this->title) ?></h1>
-      <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-      <p>
-          <?= Html::a('Create Metal Al', ['create'], ['class' => 'btn btn-success']) ?>
-      </p>
-      <?php Pjax::begin(); ?>
-        <?= GridView::widget([
-                'dataProvider' => $dataProvider,
-                'filterModel' => $searchModel,
-                'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Search</h3>
+        </div>
+        <div class="panel-body">
+          <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+        </div>
+      </div>
 
-                    'id',
-                    'import_metal_id',
-                    'date_uploaded',
-                    'date',
-                    'al_cash',
-                    // 'al_three_month',
-                    // 'al_stocl',
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">List</h3>
+        </div>
+        <div class="panel-body">
 
-                    ['class' => 'yii\grid\ActionColumn'],
-                ],
-            ]); ?>
-        <?php Pjax::end(); ?>
-    </div>
+          <?php Pjax::begin(); ?>
+            <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    //'filterModel' => $searchModel,
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+
+                    //    'id',
+                      //  'import_metal_id',
+                        'date_uploaded',
+                        'date',
+                        'al_cash',
+                        'al_three_month',
+                        'al_stocl',
+
+                        ['class' => 'yii\grid\ActionColumn'],
+                    ],
+                ]); ?>
+            <?php Pjax::end(); ?>
+        </div>
+        </div>
+      </div>
+
+
   </div>
 
 

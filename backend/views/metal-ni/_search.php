@@ -15,23 +15,11 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'import_metal_id') ?>
-
     <?= $form->field($model, 'date_uploaded') ?>
 
-    <?= $form->field($model, 'date') ?>
-
-    <?= $form->field($model, 'ni_cash') ?>
-
-    <?php // echo $form->field($model, 'ni_three_month') ?>
-
-    <?php // echo $form->field($model, 'ni_stock') ?>
-
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton('<i class="fa fa-search" aria-hidden="true"></i> Search', ['class' => 'btn btn-default']) ?>
+       <?php echo Html::a('<i class="fa fa-undo" aria-hidden="true"></i> Reset',['index'],['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -5,14 +5,12 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\MetalNi */
 
-$this->title = 'Update Metal Ni: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Metal Nis', 'url' => ['index']];
+$this->title = 'Update Nickel: ' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Nickel', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="metal-ni-update">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

@@ -12,11 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'import_metal_id')->textInput() ?>
-
-    <?= $form->field($model, 'date_uploaded')->textInput() ?>
-
-    <?= $form->field($model, 'date')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'date')->textInput(['maxlength' => true, 'readonly'=>true]) ?>
 
     <?= $form->field($model, 'al_cash')->textInput(['maxlength' => true]) ?>
 

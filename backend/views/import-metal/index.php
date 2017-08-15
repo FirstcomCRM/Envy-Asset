@@ -17,46 +17,54 @@ $this->params['breadcrumbs'][] = $this->title;
   <div class="row">
     <div class="col-md-2">
       <?php echo SideNav::widget([
-              'type' => 'info',
-              'heading'=>'<i class="fa fa-cog" aria-hidden="true"></i> Operations',
-              'items'=>[
-                  ['label' => 'Main', 'url'=>Url::to(['/import-metal/index'])],
-                  ['label'=>'Metals', 'items'=>[
-                    ['label'=>'Aluminum', 'url'=>Url::to(['/metal-al/index'])],
-                    ['label'=>'Copper', 'url'=>Url::to(['/metal-cu/index'])],
+             'type' => 'info',
+             'heading'=>'<i class="fa fa-cog" aria-hidden="true"></i> Metal Investment',
+             'items'=>[
+                 ['label' => 'Import', 'url'=>Url::to(['/import-metal/index'])],
+                 ['label'=>'Metals', 'items'=>[
+                     ['label'=>'Aluminum', 'url'=>Url::to(['/metal-al/index'])],
+                     ['label'=>'Copper', 'url'=>Url::to(['/metal-cu/index'])],
                      ['label'=>'Nickel', 'url'=>Url::to(['/metal-ni/index'])],
                      ['label'=>'Zinc', 'url'=>Url::to(['/metal-zn/index'])],
-                    ],
-                  ]
-                    //insert new menu here
-                ],
-              ]);
-            ?>
+                     ['label'=>'Gold', 'url'=>Url::to(['/metal-au/index'])],
+                     ['label'=>'Oil', 'url'=>Url::to(['/metal-oil/index'])],
+                   ],
+                 ]
+                   //insert new menu here
+               ],
+             ]);
+           ?>
     </div>
     <div class="col-md-10">
-      <h1><?= Html::encode($this->title) ?></h1>
+
       <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-      <p>
-        <?= Html::a('Test Import', ['import'], ['class' => 'btn btn-default']) ?>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">List of Metal Import Files</h3>
+        </div>
+        <div class="panel-body">
+          <p class="text-right">
+            <?php echo Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import', ['create'], ['class' => 'btn btn-default']) ?>
+          </p>
+          <?php Pjax::begin(); ?>
+            <?= GridView::widget([
+                  'dataProvider' => $dataProvider,
+                //  'filterModel' => $searchModel,
+                  'columns' => [
+                      ['class' => 'yii\grid\SerialColumn'],
 
-          <?= Html::a('Create Import Metal', ['create'], ['class' => 'btn btn-success']) ?>
-      </p>
-      <?php Pjax::begin(); ?>
-        <?= GridView::widget([
-              'dataProvider' => $dataProvider,
-            //  'filterModel' => $searchModel,
-              'columns' => [
-                  ['class' => 'yii\grid\SerialColumn'],
+                    //  'id',
+                      'date_file',
+                      'file_name',
 
-                  'id',
-                  'date_file',
-                  'file_name',
+                      ['class' => 'yii\grid\ActionColumn'],
+                  ],
+              ]); ?>
+          <?php Pjax::end(); ?>
+        </div>
+      </div>
 
-                  ['class' => 'yii\grid\ActionColumn'],
-              ],
-          ]); ?>
-      <?php Pjax::end(); ?>
     </div>
   </div>
 
