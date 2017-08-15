@@ -48,9 +48,9 @@ class MetalNi extends \yii\db\ActiveRecord
             'import_metal_id' => 'Import Metal ID',
             'date_uploaded' => 'Date Uploaded',
             'date' => 'Date',
-            'ni_cash' => 'Ni Cash',
-            'ni_three_month' => 'Ni Three Month',
-            'ni_stock' => 'Ni Stock',
+            'ni_cash' => 'LME Nickel Cash-Settlement',
+            'ni_three_month' => 'LME Nickel 3-month',
+            'ni_stock' => 'LME Nickel Stock',
         ];
     }
 }

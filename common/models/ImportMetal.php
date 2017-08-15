@@ -7,6 +7,8 @@ use common\models\MetalAl;
 use common\models\MetalCu;
 use common\models\MetalNi;
 use common\models\MetalZn;
+use common\models\MetalAu;
+use common\models\MetalOil;
 /**
  * This is the model class for table "import_metal".
  *
@@ -19,11 +21,19 @@ class ImportMetal extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-     public $file;
+    public $file;
+
     public static function tableName()
     {
         return 'import_metal';
     }
+
+    public function behaviors()
+     {
+      return [
+        'sammaye\audittrail\LoggableBehavior'
+      ];
+     }
 
     /**
      * @inheritdoc
@@ -62,7 +72,7 @@ class ImportMetal extends \yii\db\ActiveRecord
 
     public function importExcel($filename){
         $inputFile = Yii::getAlias('@metal').'/'.$filename;
-      //  $inputFile = Yii::getAlias('@metal').'/'.'1502272349May 2017.xlsx';
+    //    $inputFile = Yii::getAlias('@metal').'/'.'1502272349May 2017.xlsx';
       try {
         $inputFileType = \PHPExcel_IOFactory::identify($inputFile);
         $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
@@ -72,7 +82,6 @@ class ImportMetal extends \yii\db\ActiveRecord
       }
       $sheet = $objPHPExcel->getSheet(3);
       $highestRow = $sheet->getHighestRow();
-
       $highestColumn = $sheet->getHighestColumn();
 
       for ($row=3; $row < $highestRow; $row++) {
@@ -152,6 +161,47 @@ class ImportMetal extends \yii\db\ActiveRecord
         }
         $zn->save(false);
 
+      }
+
+      for ($row=3; $row < $highestRow; $row++) {
+        $rowData = $sheet->rangeToArray('K'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
+        if ($rowData[0][0]=="Date" or $rowData[0][0]=="Gold") {
+          continue;
+        }
+
+        $au = new MetalAu();
+        $au->import_metal_id = $this->id;
+        $au->date_uploaded = $this->date_file;
+        $au->date = (string)$rowData[0][0];
+        $au->au_fixing = (string)$rowData[0][1];
+        if (empty($rowData[0][0])) {
+          break;
+        }
+        $au->save(false);
+      }
+
+      for ($row=26; $row<=$highestRow; $row++) {
+        $rowData = $sheet->rangeToArray('K'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
+        if ($rowData[0][0]=="Date" or $rowData[0][0]=="WTI Crude Oil") {
+         continue;
+        }
+
+        $oil = new MetalOil();
+        $oil->import_metal_id = $this->id;
+        $oil->date_uploaded = $this->date_file;
+        $oil->date = (string)$rowData[0][0];
+        $oil->oil_price = (string)$rowData[0][1];
+        $oil->oil_open = (string)$rowData[0][2];
+        $oil->oil_high = (string)$rowData[0][3];
+        $oil->oil_low = (string)$rowData[0][4];
+
+        $oil->oil_volume = (string)$rowData[0][5];
+        //$oil->oil_change = (string)$rowData[0][6];
+        $oil->oil_change = $rowData[0][6];
+        if (empty($rowData[0][0])) {
+          break;
+        }
+        $oil->save(false);
       }
 
     }
