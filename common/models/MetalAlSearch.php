@@ -15,11 +15,14 @@ class MetalAlSearch extends MetalAl
     /**
      * @inheritdoc
      */
+    public $start;
+    public $end;
+
     public function rules()
     {
         return [
             [['id', 'import_metal_id'], 'integer'],
-            [['date_uploaded', 'date'], 'safe'],
+            [['date_uploaded', 'date','date_filter','start','end'], 'safe'],
             [['al_cash', 'al_three_month', 'al_stocl'], 'number'],
         ];
     }
@@ -69,6 +72,7 @@ class MetalAlSearch extends MetalAl
         ]);
 
         $query->andFilterWhere(['like', 'date', $this->date]);
+              ->andFilterWhere(['like', 'date', $this->date_filter]);
 
         return $dataProvider;
     }

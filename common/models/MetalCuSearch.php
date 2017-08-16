@@ -15,11 +15,14 @@ class MetalCuSearch extends MetalCu
     /**
      * @inheritdoc
      */
+     public $start;
+    public $end;
+
     public function rules()
     {
         return [
             [['id', 'import_metal_id'], 'integer'],
-            [['date_uploaded', 'date', 'cu_cash', 'cu_three_month', 'cu_stock'], 'safe'],
+            [['date_uploaded', 'date', 'cu_cash', 'cu_three_month', 'cu_stock','date_filter','end','start'], 'safe'],
         ];
     }
 
@@ -68,6 +71,7 @@ class MetalCuSearch extends MetalCu
             ->andFilterWhere(['like', 'cu_cash', $this->cu_cash])
             ->andFilterWhere(['like', 'cu_three_month', $this->cu_three_month])
             ->andFilterWhere(['like', 'cu_stock', $this->cu_stock]);
+            ->andFilterWhere(['like', 'cu_stock', $this->date_filter]);
 
         return $dataProvider;
     }

@@ -15,11 +15,14 @@ class MetalOilSearch extends MetalOil
     /**
      * @inheritdoc
      */
+    public $start;
+    public $end;
+
     public function rules()
     {
         return [
             [['id', 'import_metal_id', 'date'], 'integer'],
-            [['date_uploaded', 'oil_price', 'oil_open', 'oil_high', 'oil_low', 'oil_change'], 'safe'],
+            [['date_uploaded', 'oil_price', 'oil_open', 'oil_high', 'oil_low', 'oil_change','date_filter','end','start'], 'safe'],
         ];
     }
 
@@ -70,6 +73,7 @@ class MetalOilSearch extends MetalOil
             ->andFilterWhere(['like', 'oil_high', $this->oil_high])
             ->andFilterWhere(['like', 'oil_low', $this->oil_low])
             ->andFilterWhere(['like', 'oil_change', $this->oil_change]);
+            ->andFilterWhere(['like', 'oil_change', $this->date_filter]);
 
         return $dataProvider;
     }

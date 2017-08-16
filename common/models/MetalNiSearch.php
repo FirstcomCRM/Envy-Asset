@@ -15,11 +15,14 @@ class MetalNiSearch extends MetalNi
     /**
      * @inheritdoc
      */
+    public $start;
+    public $end;
+
     public function rules()
     {
         return [
             [['id', 'import_metal_id'], 'integer'],
-            [['date_uploaded', 'date', 'ni_cash', 'ni_three_month', 'ni_stock'], 'safe'],
+            [['date_uploaded', 'date', 'ni_cash', 'ni_three_month', 'ni_stock','date_filter','end','start'], 'safe'],
         ];
     }
 
@@ -68,6 +71,7 @@ class MetalNiSearch extends MetalNi
             ->andFilterWhere(['like', 'ni_cash', $this->ni_cash])
             ->andFilterWhere(['like', 'ni_three_month', $this->ni_three_month])
             ->andFilterWhere(['like', 'ni_stock', $this->ni_stock]);
+            ->andFilterWhere(['like', 'ni_stock', $this->date_filter]);
 
         return $dataProvider;
     }

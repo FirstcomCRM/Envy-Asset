@@ -15,11 +15,14 @@ class MetalZnSearch extends MetalZn
     /**
      * @inheritdoc
      */
+    public $start;
+    public $end;
+
     public function rules()
     {
         return [
             [['id', 'import_metal_id'], 'integer'],
-            [['date_uploaded', 'date', 'zn_cash', 'zn_three_month', 'zn_stock'], 'safe'],
+            [['date_uploaded', 'date', 'zn_cash', 'zn_three_month', 'zn_stock','end','date_filter','start'], 'safe'],
         ];
     }
 
@@ -68,6 +71,7 @@ class MetalZnSearch extends MetalZn
             ->andFilterWhere(['like', 'zn_cash', $this->zn_cash])
             ->andFilterWhere(['like', 'zn_three_month', $this->zn_three_month])
             ->andFilterWhere(['like', 'zn_stock', $this->zn_stock]);
+            ->andFilterWhere(['like', 'zn_stock', $this->date_filter]);
 
         return $dataProvider;
     }

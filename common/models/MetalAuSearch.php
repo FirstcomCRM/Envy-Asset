@@ -15,11 +15,13 @@ class MetalAuSearch extends MetalAu
     /**
      * @inheritdoc
      */
+    public $start;
+    public $end;
     public function rules()
     {
         return [
             [['id', 'import_metal_id'], 'integer'],
-            [['date_uploaded', 'date', 'au_fixing'], 'safe'],
+            [['date_uploaded', 'date', 'au_fixing', 'date_filter', 'end','start'], 'safe'],
         ];
     }
 
@@ -65,7 +67,8 @@ class MetalAuSearch extends MetalAu
         ]);
 
         $query->andFilterWhere(['like', 'date', $this->date])
-            ->andFilterWhere(['like', 'au_fixing', $this->au_fixing]);
+              ->andFilterWhere(['like', 'au_fixing', $this->au_fixing]);
+              ->andFilterWhere(['like', 'au_fixing', $this->date_filter]);
 
         return $dataProvider;
     }
