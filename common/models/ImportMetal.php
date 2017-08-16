@@ -72,7 +72,7 @@ class ImportMetal extends \yii\db\ActiveRecord
 
     public function importExcel($filename){
         $inputFile = Yii::getAlias('@metal').'/'.$filename;
-    //    $inputFile = Yii::getAlias('@metal').'/'.'1502272349May 2017.xlsx';
+  //      $inputFile = Yii::getAlias('@metal').'/'.'1502272349May 2017.xlsx';
       try {
         $inputFileType = \PHPExcel_IOFactory::identify($inputFile);
         $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
@@ -93,18 +93,21 @@ class ImportMetal extends \yii\db\ActiveRecord
          $al = new MetalAl();
          $al->import_metal_id = $this->id;
          $al->date_uploaded = $this->date_file;
-         $al->date = (string)$rowData[0][0];
-         $al->al_cash =(string)$rowData[0][1];
-         $al->al_three_month = (string)$rowData[0][2];
-         $al->al_stocl = (string)$rowData[0][3];
+         $al->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
+         $al->date = str_replace(".", "", $rowData[0][0]);
+         $al->al_cash = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
+         $al->al_three_month = (float)str_replace(',','.',str_replace('.','',$rowData[0][2]));
+         $al->al_stocl = (float)str_replace(',','.',str_replace('.','',$rowData[0][3]));
+
          if (empty($rowData[0][0])) {
            break;
          }
+
          $al->save(false);
 
       }
 
-      for ($row=26; $row < $highestRow; $row++) {
+    /*  for ($row=26; $row < $highestRow; $row++) {
         $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
         if ($rowData[0][0]=="Date" or $rowData[0][0]=="Copper") {
           continue;
@@ -202,7 +205,7 @@ class ImportMetal extends \yii\db\ActiveRecord
           break;
         }
         $oil->save(false);
-      }
+      }*/
 
     }
 }
