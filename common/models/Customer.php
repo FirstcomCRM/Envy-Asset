@@ -28,7 +28,7 @@ class Customer extends \yii\db\ActiveRecord
          'sammaye\audittrail\LoggableBehavior'
        ];
       }
-      
+
     public static function tableName()
     {
         return 'customer';
@@ -43,7 +43,7 @@ class Customer extends \yii\db\ActiveRecord
             [['company_name', 'customer_group', 'contact_person', 'email', 'mobile', 'address'], 'required'],
             [['company_name'],'unique'],
             [['mobile'], 'integer'],
-            [['address', 'remark'], 'string'],
+            [['address', 'remark', 'salesperson'], 'string'],
             [['company_name', 'customer_group', 'contact_person'], 'string', 'max' => 75],
             [['email'], 'string', 'max' => 50],
             [['email'],'email'],
@@ -57,9 +57,10 @@ class Customer extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'company_name' => 'Company Name',
-            'customer_group' => 'Customer Group',
+            'company_name' => 'Investor Name',
+            'customer_group' => 'Group',
             'contact_person' => 'Contact Person',
+            'salesperson'=>'Sales Person',
             'email' => 'Email',
             'mobile' => 'Mobile',
             'address' => 'Address',

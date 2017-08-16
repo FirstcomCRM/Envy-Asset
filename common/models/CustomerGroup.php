@@ -22,7 +22,7 @@ class CustomerGroup extends \yii\db\ActiveRecord
    			'sammaye\audittrail\LoggableBehavior'
    		];
  	   }
-     
+
     public static function tableName()
     {
         return 'customer_group';
@@ -47,7 +47,7 @@ class CustomerGroup extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'customer_group' => 'Customer Group',
+            'customer_group' => 'Group',
             'description' => 'Description',
         ];
     }
