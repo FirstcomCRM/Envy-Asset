@@ -30,8 +30,9 @@ class MetalAu extends \yii\db\ActiveRecord
     {
         return [
             [['import_metal_id'], 'integer'],
-            [['date_uploaded'], 'safe'],
-            [['date', 'au_fixing'], 'string', 'max' => 25],
+            [['date_uploaded','date_filter'], 'safe'],
+            [['date'], 'string', 'max' => 25],
+            [['au_fixing'],'number'],
         ];
     }
 
@@ -45,6 +46,7 @@ class MetalAu extends \yii\db\ActiveRecord
             'import_metal_id' => 'Import Metal ID',
             'date_uploaded' => 'Date Uploaded',
             'date' => 'Date',
+            'date_filter'=>'Date Filter',
             'au_fixing' => 'Gold London Fixing',
         ];
     }

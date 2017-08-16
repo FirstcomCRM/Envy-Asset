@@ -32,9 +32,9 @@ class MetalCu extends \yii\db\ActiveRecord
     {
         return [
             [['import_metal_id'], 'integer'],
-            [['date_uploaded'], 'safe'],
+            [['date_uploaded', 'date_filter'], 'safe'],
             [['date'], 'string', 'max' => 25],
-            [['cu_cash', 'cu_three_month', 'cu_stock'], 'string', 'max' => 20],
+            [['cu_cash', 'cu_three_month', 'cu_stock'], 'number'],
         ];
     }
 
@@ -48,6 +48,7 @@ class MetalCu extends \yii\db\ActiveRecord
             'import_metal_id' => 'Import Metal ID',
             'date_uploaded' => 'Date Uploaded',
             'date' => 'Date',
+            'date_filter'=>'Date Filter',
             'cu_cash' => 'LME Copper Cash-Settlement',
             'cu_three_month' => 'LME Copper 3-Month',
             'cu_stock' => 'LME Copper Stock',

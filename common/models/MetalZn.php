@@ -31,11 +31,11 @@ class MetalZn extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['import_metal_id', 'date_uploaded', 'date', 'zn_cash', 'zn_three_month', 'zn_stock'], 'required'],
+          //  [['import_metal_id', 'date_uploaded', 'date', 'zn_cash', 'zn_three_month', 'zn_stock'], 'required'],
             [['import_metal_id'], 'integer'],
-            [['date_uploaded'], 'safe'],
+            [['date_uploaded','date_filter'], 'safe'],
             [['date'], 'string', 'max' => 25],
-            [['zn_cash', 'zn_three_month', 'zn_stock'], 'string', 'max' => 20],
+            [['zn_cash', 'zn_three_month', 'zn_stock'], 'number'],
         ];
     }
 
@@ -49,6 +49,7 @@ class MetalZn extends \yii\db\ActiveRecord
             'import_metal_id' => 'Import Metal ID',
             'date_uploaded' => 'Date Uploaded',
             'date' => 'Date',
+            'date_filter'=>'Date Filter',
             'zn_cash' => 'Zn Cash',
             'zn_three_month' => 'Zn Three Month',
             'zn_stock' => 'Zn Stock',

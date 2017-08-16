@@ -32,9 +32,10 @@ class MetalNi extends \yii\db\ActiveRecord
     {
         return [
             [['import_metal_id'], 'integer'],
-            [['date_uploaded'], 'safe'],
+            [['date_uploaded', 'date_filter'], 'safe'],
             [['ni_cash', 'ni_three_month', 'ni_stock'], 'required'],
-            [['date', 'ni_cash', 'ni_three_month', 'ni_stock'], 'string', 'max' => 25],
+            [['date'], 'string', 'max' => 25],
+            [['ni_cash', 'ni_three_month', 'ni_stock'], 'number'],
         ];
     }
 
@@ -48,6 +49,7 @@ class MetalNi extends \yii\db\ActiveRecord
             'import_metal_id' => 'Import Metal ID',
             'date_uploaded' => 'Date Uploaded',
             'date' => 'Date',
+            'date_filter'=>'Date Filter',
             'ni_cash' => 'LME Nickel Cash-Settlement',
             'ni_three_month' => 'LME Nickel 3-month',
             'ni_stock' => 'LME Nickel Stock',

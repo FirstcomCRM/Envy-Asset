@@ -34,8 +34,9 @@ class MetalOil extends \yii\db\ActiveRecord
     {
         return [
             [['import_metal_id'], 'integer'],
-            [['date_uploaded'], 'safe'],
-            [['oil_price', 'oil_open', 'oil_high', 'oil_low', 'oil_change','oil_volume','date'], 'string', 'max' => 25],
+            [['date_uploaded', 'date_filter'], 'safe'],
+            [['oil_volume','date'], 'string', 'max' => 25],
+            [['oil_price', 'oil_open', 'oil_high', 'oil_low', 'oil_change',],'number'],
         ];
     }
 
@@ -49,6 +50,7 @@ class MetalOil extends \yii\db\ActiveRecord
             'import_metal_id' => 'Import Metal ID',
             'date_uploaded' => 'Date Uploaded',
             'date' => 'Date',
+            'date_filter'=>'Date Filter',
             'oil_price' => 'Price',
             'oil_open' => 'Open',
             'oil_high' => 'High',
