@@ -51,7 +51,7 @@ AppAsset::register($this);
       $menuItems = [
             ['label' => 'Management', 'items'=>[
             ['label'=>'Product Management', 'url'=>['/product-management/index']],
-            ['label'=>'Customer Management', 'url'=>['/customer/index']],
+            ['label'=>'Investor Management', 'url'=>['/customer/index']],
             ['label'=>'User Management', 'url'=>['/user-management/index']],
 
         //    '<li class="divider"></li>',
@@ -66,7 +66,7 @@ AppAsset::register($this);
         ],
       ],
           ['label'=>'Reports', 'class'=>'navbars', 'items'=>[
-            ['label'=>'User Log Files', 'url'=>['/user-log/index']],
+          //  ['label'=>'User Log Files', 'url'=>['/user-log/index']],
             ['label'=>'Investment Overview', 'url'=>['toollist/index']],
             ['label'=>'Commision Report', 'url'=>['toollist/index']],
             ['label'=>'Customer Report', 'url'=>['toollist/index']],
@@ -74,7 +74,7 @@ AppAsset::register($this);
       ],
         ['label'=>'Setup', 'class'=>'navbars', 'items'=>[
           ['label'=>'User Rights', 'url'=>['user-permission/permission-setting']],
-          ['label'=>'Customer Group', 'url'=>['customer-group/index']],
+          ['label'=>'Investor Group', 'url'=>['customer-group/index']],
           ['label'=>'Tier Management', 'url'=>['delivery-order/index']],
           '<li class="divider"></li>',
           ['label'=>'Gii', 'url'=>['gii/default']],
