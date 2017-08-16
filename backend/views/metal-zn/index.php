@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use kartik\widgets\SideNav;
 use yii\helpers\Url;
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\MetalZnSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -26,6 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ['label'=>'Copper', 'url'=>Url::to(['/metal-cu/index'])],
                 ['label'=>'Nickel', 'url'=>Url::to(['/metal-ni/index'])],
                 ['label'=>'Zinc', 'url'=>Url::to(['/metal-zn/index'])],
+                ['label'=>'Gold', 'url'=>Url::to(['/metal-au/index'])],
                 ['label'=>'Oil', 'url'=>Url::to(['/metal-oil/index'])],
                   ],
                 ]
@@ -57,13 +59,25 @@ $this->params['breadcrumbs'][] = $this->title;
                       'columns' => [
                           ['class' => 'yii\grid\SerialColumn'],
 
-                        //  'id',
-                      //    'import_metal_id',
-                          'date_uploaded',
                           'date',
-                          'zn_cash',
-                           'zn_three_month',
-                           'zn_stock',
+                           [
+                              'attribute'=>'zn_cash',
+                              'value'=>function($model){
+                                return Retrieve::get_numberFormat($model->zn_cash);
+                              }
+                          ],
+                          [
+                              'attribute'=>'zn_three_month',
+                              'value'=>function($model){
+                                return Retrieve::get_numberFormat($model->zn_three_month);
+                              }
+                          ],
+                          [
+                              'attribute'=>'zn_stock',
+                              'value'=>function($model){
+                                return Retrieve::get_numberFormat($model->zn_stock);
+                              }
+                          ],
 
                           ['class' => 'yii\grid\ActionColumn'],
                       ],

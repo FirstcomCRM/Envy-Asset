@@ -45,6 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="panel-body">
           <p class="text-right">
+            <?php  Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import-test', ['import'], ['class' => 'btn btn-default']) ?>
             <?php echo Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import', ['create'], ['class' => 'btn btn-default']) ?>
           </p>
           <?php Pjax::begin(); ?>

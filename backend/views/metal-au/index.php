@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use kartik\widgets\SideNav;
 use yii\helpers\Url;
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\MetalAuSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -13,7 +14,7 @@ $this->title = 'Gold';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="metal-au-index">
-  
+
     <div class="row">
       <div class="col-md-2">
         <?php echo SideNav::widget([
@@ -58,9 +59,13 @@ $this->params['breadcrumbs'][] = $this->title;
                   'columns' => [
                       ['class' => 'yii\grid\SerialColumn'],
 
-                      'date_uploaded',
                       'date',
-                      'au_fixing',
+                      [
+                        'attribute'=>'au_fixing',
+                        'value'=> function($model){
+                           return Retrieve::get_numberFormat($model->au_fixing);
+                        }
+                      ],
 
                       ['class' => 'yii\grid\ActionColumn'],
                   ],

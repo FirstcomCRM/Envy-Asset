@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $model common\models\MetalCu */
 
@@ -26,13 +26,28 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-          //  'id',
-          //  'import_metal_id',
-            'date_uploaded',
+
             'date',
-            'cu_cash',
-            'cu_three_month',
-            'cu_stock',
+            [
+              'attribute'=>'cu_cash',
+              'value'=>function($model){
+                return Retrieve::get_numberFormat($model->cu_cash);
+              }
+            ],
+
+            [
+              'attribute'=>'cu_three_month',
+              'value'=>function($model){
+                return Retrieve::get_numberFormat($model->cu_three_month);
+              }
+            ],
+
+            [
+              'attribute'=>'cu_stock',
+              'value'=>function($model){
+                return Retrieve::get_numberFormat($model->cu_stock);
+              }
+            ],
         ],
     ]) ?>
 

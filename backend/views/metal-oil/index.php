@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 //  'id',
                 //  'import_metal_id',
-                  'date_uploaded',
+                //  'date_uploaded',
                   'date',
                   'oil_price',
                    'oil_open',

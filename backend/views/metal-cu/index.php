@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use kartik\widgets\SideNav;
 use yii\helpers\Url;
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\MetalCuSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -57,22 +58,33 @@ $this->params['breadcrumbs'][] = $this->title;
               // /  'filterModel' => $searchModel,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
-
-                  //  'id',
-              //    'import_metal_id',
-                    'date_uploaded',
                     'date',
-                    'cu_cash',
-                     'cu_three_month',
-                     'cu_stock',
+                    [
+                      'attribute'=>'cu_cash',
+                      'value'=>function($model){
+                        return Retrieve::get_numberFormat($model->cu_cash);
+                      }
+                    ],
 
+                    [
+                      'attribute'=>'cu_three_month',
+                      'value'=>function($model){
+                        return Retrieve::get_numberFormat($model->cu_three_month);
+                      }
+                    ],
+
+                    [
+                      'attribute'=>'cu_stock',
+                      'value'=>function($model){
+                        return Retrieve::get_numberFormat($model->cu_stock);
+                      }
+                    ],
                     ['class' => 'yii\grid\ActionColumn'],
                 ],
             ]); ?>
         <?php Pjax::end(); ?>
       </div>
     </div>
-
 
   </div>
 </div>

@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $model common\models\MetalAu */
 
@@ -28,9 +28,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
           //  'id',
           //  'import_metal_id',
-            'date_uploaded',
+          //  'date_uploaded',
             'date',
-            'au_fixing',
+            [
+              'attribute'=>'au_fixing',
+              'value'=> function($model){
+                 return Retrieve::get_numberFormat($model->au_fixing);
+              }
+            ],
         ],
     ]) ?>
 

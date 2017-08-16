@@ -26,13 +26,27 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-          //  'id',
-          //  'import_metal_id',
-            'date_uploaded',
+
+        
             'date',
-            'zn_cash',
-            'zn_three_month',
-            'zn_stock',
+            [
+               'attribute'=>'zn_cash',
+               'value'=>function($model){
+                 return Retrieve::get_numberFormat($model->zn_cash);
+               }
+           ],
+           [
+               'attribute'=>'zn_three_month',
+               'value'=>function($model){
+                 return Retrieve::get_numberFormat($model->zn_three_month);
+               }
+           ],
+           [
+               'attribute'=>'zn_stock',
+               'value'=>function($model){
+                 return Retrieve::get_numberFormat($model->zn_stock);
+               }
+           ],
         ],
     ]) ?>
 

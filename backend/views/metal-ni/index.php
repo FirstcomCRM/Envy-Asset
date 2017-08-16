@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use kartik\widgets\SideNav;
 use yii\helpers\Url;
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\MetalNiSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -58,13 +59,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 
-                  //  'id',
-                //    'import_metal_id',
-                    'date_uploaded',
                     'date',
-                    'ni_cash',
-                    'ni_three_month',
-                    'ni_stock',
+                    [
+                      'attribute'=>'ni_cash',
+                      'value'=>function($model){
+                        return Retrieve::get_numberFormat($model->ni_cash);
+                      }
+                    ],
+                    [
+                      'attribute'=>'ni_three_month',
+                      'value'=>function($model){
+                        return Retrieve::get_numberFormat($model->ni_three_month);
+                      }
+                    ],
+                    [
+                      'attribute'=>'ni_stock',
+                      'value'=>function($model){
+                        return Retrieve::get_numberFormat($model->ni_stock);
+                      }
+                    ],
 
                     ['class' => 'yii\grid\ActionColumn'],
                 ],
