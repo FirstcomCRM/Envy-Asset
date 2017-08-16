@@ -107,7 +107,7 @@ class ImportMetal extends \yii\db\ActiveRecord
 
       }
 
-    /*  for ($row=26; $row < $highestRow; $row++) {
+      for ($row=26; $row < $highestRow; $row++) {
         $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
         if ($rowData[0][0]=="Date" or $rowData[0][0]=="Copper") {
           continue;
@@ -116,10 +116,12 @@ class ImportMetal extends \yii\db\ActiveRecord
         $cu = new MetalCu();
         $cu->import_metal_id = $this->id;
         $cu->date_uploaded = $this->date_file;
-        $cu->date = (string)$rowData[0][0];
-        $cu->cu_cash =(string)$rowData[0][1];
-        $cu->cu_three_month = (string)$rowData[0][2];
-        $cu->cu_stock = (string)$rowData[0][3];
+        $cu->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
+        $cu->date = str_replace(".", "", $rowData[0][0]);
+        $cu->cu_cash = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
+        $cu->cu_three_month = (float)str_replace(',','.',str_replace('.','',$rowData[0][2]));
+        $cu->cu_stock = (float)str_replace(',','.',str_replace('.','',$rowData[0][3]));
+
         if (empty($rowData[0][0])) {
           break;
         }
@@ -135,10 +137,12 @@ class ImportMetal extends \yii\db\ActiveRecord
         $ni = new MetalNi();
         $ni->import_metal_id = $this->id;
         $ni->date_uploaded = $this->date_file;
-        $ni->date = (string)$rowData[0][0];
-        $ni->ni_cash =(string)$rowData[0][1];
-        $ni->ni_three_month = (string)$rowData[0][2];
-        $ni->ni_stock = (string)$rowData[0][3];
+        $ni->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
+        $ni->date = str_replace(".", "", $rowData[0][0]);
+        $ni->ni_cash = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
+        $ni->ni_three_month = (float)str_replace(',','.',str_replace('.','',$rowData[0][2]));
+        $ni->ni_stock = (float)str_replace(',','.',str_replace('.','',$rowData[0][3]));
+
         if (empty($rowData[0][0])) {
           break;
         }
@@ -155,10 +159,12 @@ class ImportMetal extends \yii\db\ActiveRecord
         $zn = new MetalZn();
         $zn->import_metal_id = $this->id;
         $zn->date_uploaded = $this->date_file;
-        $zn->date = (string)$rowData[0][0];
-        $zn->zn_cash =(string)$rowData[0][1];
-        $zn->zn_three_month = (string)$rowData[0][2];
-        $zn->zn_stock = (string)$rowData[0][3];
+        $zn->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
+        $zn->date = str_replace(".", "", $rowData[0][0]);
+        $zn->zn_cash = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
+        $zn->zn_three_month = (float)str_replace(',','.',str_replace('.','',$rowData[0][2]));
+        $zn->zn_stock = (float)str_replace(',','.',str_replace('.','',$rowData[0][3]));
+
         if (empty($rowData[0][0])) {
           break;
         }
@@ -175,8 +181,10 @@ class ImportMetal extends \yii\db\ActiveRecord
         $au = new MetalAu();
         $au->import_metal_id = $this->id;
         $au->date_uploaded = $this->date_file;
-        $au->date = (string)$rowData[0][0];
-        $au->au_fixing = (string)$rowData[0][1];
+        $au->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
+        $au->date = str_replace(".", "", $rowData[0][0]);
+        $au->au_fixing = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
+
         if (empty($rowData[0][0])) {
           break;
         }
@@ -192,20 +200,26 @@ class ImportMetal extends \yii\db\ActiveRecord
         $oil = new MetalOil();
         $oil->import_metal_id = $this->id;
         $oil->date_uploaded = $this->date_file;
-        $oil->date = (string)$rowData[0][0];
-        $oil->oil_price = (string)$rowData[0][1];
-        $oil->oil_open = (string)$rowData[0][2];
-        $oil->oil_high = (string)$rowData[0][3];
-        $oil->oil_low = (string)$rowData[0][4];
+        $au->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
+        $oil->date = str_replace(",", "", $rowData[0][0]);
+        $oil->oil_price = $rowData[0][1];
+        $oil->oil_open = $rowData[0][2];
+        $oil->oil_high = $rowData[0][3];
+        $oil->oil_low = $rowData[0][4];
+        $oil->oil_change = $rowData[0][6];
+      //  $oil->oil_price = (string)$rowData[0][1];
+      //  $oil->oil_open = (string)$rowData[0][2];
+      //  $oil->oil_high = (string)$rowData[0][3];
+      //  $oil->oil_low = (string)$rowData[0][4];
 
         $oil->oil_volume = (string)$rowData[0][5];
         //$oil->oil_change = (string)$rowData[0][6];
-        $oil->oil_change = $rowData[0][6];
+
         if (empty($rowData[0][0])) {
           break;
         }
         $oil->save(false);
-      }*/
+      }
 
     }
 }
