@@ -23,7 +23,7 @@ $group = ArrayHelper::map($data,'customer_group','customer_group');
       <div class="col-md-6">
         <?php echo $form->field($model,'customer_group')->label(false)->widget(Select2::className(),[
                  'data'=>$group,
-                 'options'=>['placeholder'=>'Customer Group '],
+                 'options'=>['placeholder'=>'Investor Group '],
                  'theme'=> Select2::THEME_BOOTSTRAP,
                  'size'=> Select2::MEDIUM,
                  'pluginOptions' => [

@@ -30,7 +30,7 @@ $data = null;
       <div class="col-md-3">
         <?php echo $form->field($model,'company_name')->label(false)->widget(Select2::className(),[
            'data'=>$company,
-           'options'=>['placeholder'=>'Customer '],
+           'options'=>['placeholder'=>'Investor '],
            'theme'=> Select2::THEME_BOOTSTRAP,
            'size'=> Select2::MEDIUM,
            'pluginOptions' => [
@@ -41,7 +41,7 @@ $data = null;
       <div class="col-md-3">
         <?php echo $form->field($model,'customer_group')->label(false)->widget(Select2::className(),[
            'data'=>$cgroup,
-           'options'=>['placeholder'=>'Customer Group '],
+           'options'=>['placeholder'=>'Investor Group '],
            'theme'=> Select2::THEME_BOOTSTRAP,
            'size'=> Select2::MEDIUM,
            'pluginOptions' => [

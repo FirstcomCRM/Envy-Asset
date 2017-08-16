@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel common\models\CustomerGroupSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Customer Group';
+$this->title = 'Investor Group';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="customer-group-index">
@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Customer Group</h3>
+        <h3 class="panel-title">Investor Group</h3>
       </div>
       <div class="panel-body">
         <p class="text-right">

@@ -8,7 +8,7 @@ use yii\widgets\Pjax;
 /* @var $model common\models\Customer */
 
 $this->title = $model->company_name;
-$this->params['breadcrumbs'][] = ['label' => 'Customer', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Investor', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="customer-view">
@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'company_name',
               'customer_group',
               'contact_person',
+              'salesperson',
               'email:email',
               'mobile',
               'address:ntext',
