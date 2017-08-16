@@ -41,5 +41,9 @@ Class Retrieve{
     }
   }
 
+  public static function get_numberFormat($number){
+    return number_format($number,2,',','.');
+  }
+
 }
 ?>
