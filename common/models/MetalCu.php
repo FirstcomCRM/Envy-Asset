@@ -48,7 +48,7 @@ class MetalCu extends \yii\db\ActiveRecord
             'import_metal_id' => 'Import Metal ID',
             'date_uploaded' => 'Date Uploaded',
             'date' => 'Date',
-            'date_filter'=>'Date Filter',
+            'date_filter'=>'Date',
             'cu_cash' => 'LME Copper Cash-Settlement',
             'cu_three_month' => 'LME Copper 3-Month',
             'cu_stock' => 'LME Copper Stock',

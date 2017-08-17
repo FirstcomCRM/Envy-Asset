@@ -49,10 +49,10 @@ class MetalZn extends \yii\db\ActiveRecord
             'import_metal_id' => 'Import Metal ID',
             'date_uploaded' => 'Date Uploaded',
             'date' => 'Date',
-            'date_filter'=>'Date Filter',
-            'zn_cash' => 'Zn Cash',
-            'zn_three_month' => 'Zn Three Month',
-            'zn_stock' => 'Zn Stock',
+            'date_filter'=>'Date',
+            'zn_cash' => 'LME Zinc Cash-Settlement',
+            'zn_three_month' => 'LME Zinc 3-Month',
+            'zn_stock' => 'LME Zinc Stock',
         ];
     }
 }

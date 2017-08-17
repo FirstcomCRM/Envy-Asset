@@ -51,7 +51,7 @@ class MetalAl extends \yii\db\ActiveRecord
             'import_metal_id' => 'Import Metal ID',
             'date_uploaded' => 'Date Uploaded',
             'date' => 'Date',
-            'date_filter'=>'Date Filter',
+            'date_filter'=>'Date',
             'al_cash' => 'LME Aluminum Cash Settlement',
             'al_three_month' => 'LME Aluminum Three Month',
             'al_stocl' => 'LME Aluminum Stock',
