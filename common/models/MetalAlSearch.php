@@ -51,9 +51,16 @@ class MetalAlSearch extends MetalAl
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>[
+              'pageSize'=>10,
+            ]
         ]);
 
         $this->load($params);
+
+        if (!empty($this->date_filter)) {
+          list($this->start,$this->end)= explode(' - ',$this->date_filter);
+        }
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -71,8 +78,8 @@ class MetalAlSearch extends MetalAl
             'al_stocl' => $this->al_stocl,
         ]);
 
-        $query->andFilterWhere(['like', 'date', $this->date]);
-              ->andFilterWhere(['like', 'date', $this->date_filter]);
+        $query->andFilterWhere(['like', 'date', $this->date])
+              ->andFilterWhere(['between', 'date_filter', $this->start, $this->end]);
 
         return $dataProvider;
     }

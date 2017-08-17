@@ -50,9 +50,16 @@ class MetalOilSearch extends MetalOil
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>[
+              'pageSize'=>10,
+            ]
         ]);
 
         $this->load($params);
+
+        if (!empty($this->date_filter)) {
+          list($this->start,$this->end)= explode(' - ',$this->date_filter);
+        }
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -72,8 +79,8 @@ class MetalOilSearch extends MetalOil
             ->andFilterWhere(['like', 'oil_open', $this->oil_open])
             ->andFilterWhere(['like', 'oil_high', $this->oil_high])
             ->andFilterWhere(['like', 'oil_low', $this->oil_low])
-            ->andFilterWhere(['like', 'oil_change', $this->oil_change]);
-            ->andFilterWhere(['like', 'oil_change', $this->date_filter]);
+            ->andFilterWhere(['like', 'oil_change', $this->oil_change])
+            ->andFilterWhere(['between', 'date_filter', $this->start,$this->end]);
 
         return $dataProvider;
     }

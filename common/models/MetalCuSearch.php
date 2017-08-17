@@ -50,9 +50,16 @@ class MetalCuSearch extends MetalCu
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>[
+              'pageSize'=>10,
+            ]
         ]);
 
         $this->load($params);
+
+        if (!empty($this->date_filter)) {
+          list($this->start,$this->end)= explode(' - ',$this->date_filter);
+        }
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -70,8 +77,8 @@ class MetalCuSearch extends MetalCu
         $query->andFilterWhere(['like', 'date', $this->date])
             ->andFilterWhere(['like', 'cu_cash', $this->cu_cash])
             ->andFilterWhere(['like', 'cu_three_month', $this->cu_three_month])
-            ->andFilterWhere(['like', 'cu_stock', $this->cu_stock]);
-            ->andFilterWhere(['like', 'cu_stock', $this->date_filter]);
+            ->andFilterWhere(['like', 'cu_stock', $this->cu_stock])
+            ->andFilterWhere(['between', 'date_filter', $this->start,$this->end]);
 
         return $dataProvider;
     }
