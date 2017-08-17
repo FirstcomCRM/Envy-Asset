@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
+use kartik\daterange\DateRangePicker;
 /* @var $this yii\web\View */
 /* @var $model common\models\MetalAlSearch */
 /* @var $form yii\widgets\ActiveForm */
@@ -15,11 +15,33 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'date_uploaded') ?>
+    <div class="row">
+      <div class="col-md-4">
+        <?php echo $form->field($model,'date_filter')->label(false)->widget(DateRangePicker::classname(), [
+          'useWithAddon'=>false,
+          'convertFormat'=>true,
+          'pluginOptions'=>[
+            'locale'=>[
+              //'format'=> 'M j Y',
+              //'format'=> 'm-d-Y',
+              'format'=> 'Y-m-d',
+            ],
+          ],
+          'options'=>[
+            'placeholder'=>'Date',
+            'class'=>'form-control'
+          ],
+        ]); ?>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+            <?= Html::submitButton('<i class="fa fa-search" aria-hidden="true"></i> Search', ['class' => 'btn btn-default']) ?>
+           <?php echo Html::a('<i class="fa fa-undo" aria-hidden="true"></i> Reset',['index'],['class' => 'btn btn-default']) ?>
+        </div>
+      </div>
+      <div class="col-md-4">
 
-    <div class="form-group">
-        <?= Html::submitButton('<i class="fa fa-search" aria-hidden="true"></i> Search', ['class' => 'btn btn-default']) ?>
-       <?php echo Html::a('<i class="fa fa-undo" aria-hidden="true"></i> Reset',['index'],['class' => 'btn btn-default']) ?>
+      </div>
     </div>
 
     <?php ActiveForm::end(); ?>

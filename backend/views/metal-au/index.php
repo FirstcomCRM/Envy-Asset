@@ -52,25 +52,25 @@ $this->params['breadcrumbs'][] = $this->title;
           <h3 class="panel-title">List</h3>
         </div>
         <div class="panel-body">
-          <?php Pjax::begin(); ?>
-            <?= GridView::widget([
-                  'dataProvider' => $dataProvider,
-                //  'filterModel' => $searchModel,
-                  'columns' => [
-                      ['class' => 'yii\grid\SerialColumn'],
+          <div class="table-responsive">
+            <?php Pjax::begin(); ?>
+              <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+                        'date',
+                        [
+                          'attribute'=>'au_fixing',
+                          'value'=> function($model){
+                             return Retrieve::get_numberFormat($model->au_fixing);
+                          }
+                        ],
+                        ['class' => 'yii\grid\ActionColumn'],
+                    ],
+                ]); ?>
+            <?php Pjax::end(); ?>
+          </div>
 
-                      'date',
-                      [
-                        'attribute'=>'au_fixing',
-                        'value'=> function($model){
-                           return Retrieve::get_numberFormat($model->au_fixing);
-                        }
-                      ],
-
-                      ['class' => 'yii\grid\ActionColumn'],
-                  ],
-              ]); ?>
-          <?php Pjax::end(); ?>
         </div>
       </div>
 

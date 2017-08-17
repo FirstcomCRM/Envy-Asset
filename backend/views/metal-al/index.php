@@ -53,43 +53,43 @@ $this->params['breadcrumbs'][] = $this->title;
           <h3 class="panel-title">List</h3>
         </div>
         <div class="panel-body">
+          <div class="table-responsive">
+            <?php Pjax::begin(); ?>
+              <?= GridView::widget([
+                      'dataProvider' => $dataProvider,
+                      'columns' => [
+                          ['class' => 'yii\grid\SerialColumn'],
+                          'date',
+                          [
+                            'attribute'=>'al_cash',
+                            'value'=>function($model){
+                              return Retrieve::get_numberFormat($model->al_cash);
+                            }
+                          ],
 
-          <?php Pjax::begin(); ?>
-            <?= GridView::widget([
-                    'dataProvider' => $dataProvider,
-                    //'filterModel' => $searchModel,
-                    'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
+                          [
+                            'attribute'=>'al_three_month',
+                            'value'=>function($model){
+                              return Retrieve::get_numberFormat($model->al_three_month);
+                            }
+                          ],
 
-                        'date',
-                        [
-                          'attribute'=>'al_cash',
-                          'value'=>function($model){
-                            return Retrieve::get_numberFormat($model->al_cash);
-                          }
-                        ],
+                          [
+                            'attribute'=>'al_stocl',
+                            'value'=>function($model){
+                              return Retrieve::get_numberFormat($model->al_stocl);
+                            }
+                          ],
 
-                        [
-                          'attribute'=>'al_three_month',
-                          'value'=>function($model){
-                            return Retrieve::get_numberFormat($model->al_three_month);
-                          }
-                        ],
+                          ['class' => 'yii\grid\ActionColumn'],
+                      ],
+                  ]); ?>
+              <?php Pjax::end(); ?>
+          </div>
 
-                        [
-                          'attribute'=>'al_stocl',
-                          'value'=>function($model){
-                            return Retrieve::get_numberFormat($model->al_stocl);
-                          }
-                        ],
-
-                        ['class' => 'yii\grid\ActionColumn'],
-                    ],
-                ]); ?>
-            <?php Pjax::end(); ?>
-        </div>
         </div>
       </div>
+    </div>
 
 
   </div>

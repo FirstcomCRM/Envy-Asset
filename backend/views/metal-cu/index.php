@@ -52,37 +52,40 @@ $this->params['breadcrumbs'][] = $this->title;
         <h3 class="panel-title">List</h3>
       </div>
       <div class="panel-body">
-        <?php Pjax::begin(); ?>
-          <?= GridView::widget([
-                'dataProvider' => $dataProvider,
-              // /  'filterModel' => $searchModel,
-                'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
-                    'date',
-                    [
-                      'attribute'=>'cu_cash',
-                      'value'=>function($model){
-                        return Retrieve::get_numberFormat($model->cu_cash);
-                      }
-                    ],
+        <div class="table-responsive">
+          <?php Pjax::begin(); ?>
+            <?= GridView::widget([
+                  'dataProvider' => $dataProvider,
+                // /  'filterModel' => $searchModel,
+                  'columns' => [
+                      ['class' => 'yii\grid\SerialColumn'],
+                      'date',
+                      [
+                        'attribute'=>'cu_cash',
+                        'value'=>function($model){
+                          return Retrieve::get_numberFormat($model->cu_cash);
+                        }
+                      ],
 
-                    [
-                      'attribute'=>'cu_three_month',
-                      'value'=>function($model){
-                        return Retrieve::get_numberFormat($model->cu_three_month);
-                      }
-                    ],
+                      [
+                        'attribute'=>'cu_three_month',
+                        'value'=>function($model){
+                          return Retrieve::get_numberFormat($model->cu_three_month);
+                        }
+                      ],
 
-                    [
-                      'attribute'=>'cu_stock',
-                      'value'=>function($model){
-                        return Retrieve::get_numberFormat($model->cu_stock);
-                      }
-                    ],
-                    ['class' => 'yii\grid\ActionColumn'],
-                ],
-            ]); ?>
-        <?php Pjax::end(); ?>
+                      [
+                        'attribute'=>'cu_stock',
+                        'value'=>function($model){
+                          return Retrieve::get_numberFormat($model->cu_stock);
+                        }
+                      ],
+                      ['class' => 'yii\grid\ActionColumn'],
+                  ],
+              ]); ?>
+          <?php Pjax::end(); ?>
+        </div>
+
       </div>
     </div>
 

@@ -52,37 +52,38 @@ $this->params['breadcrumbs'][] = $this->title;
         <h3 class="panel-title">List</h3>
       </div>
       <div class="panel-body">
-        <?php Pjax::begin(); ?>
-         <?= GridView::widget([
-                'dataProvider' => $dataProvider,
-            //    'filterModel' => $searchModel,
-                'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
+        <div class="table-responsive">
+          <?php Pjax::begin(); ?>
+           <?= GridView::widget([
+                  'dataProvider' => $dataProvider,
+                  'columns' => [
+                      ['class' => 'yii\grid\SerialColumn'],
+                      'date',
+                      [
+                        'attribute'=>'ni_cash',
+                        'value'=>function($model){
+                          return Retrieve::get_numberFormat($model->ni_cash);
+                        }
+                      ],
+                      [
+                        'attribute'=>'ni_three_month',
+                        'value'=>function($model){
+                          return Retrieve::get_numberFormat($model->ni_three_month);
+                        }
+                      ],
+                      [
+                        'attribute'=>'ni_stock',
+                        'value'=>function($model){
+                          return Retrieve::get_numberFormat($model->ni_stock);
+                        }
+                      ],
 
-                    'date',
-                    [
-                      'attribute'=>'ni_cash',
-                      'value'=>function($model){
-                        return Retrieve::get_numberFormat($model->ni_cash);
-                      }
-                    ],
-                    [
-                      'attribute'=>'ni_three_month',
-                      'value'=>function($model){
-                        return Retrieve::get_numberFormat($model->ni_three_month);
-                      }
-                    ],
-                    [
-                      'attribute'=>'ni_stock',
-                      'value'=>function($model){
-                        return Retrieve::get_numberFormat($model->ni_stock);
-                      }
-                    ],
+                      ['class' => 'yii\grid\ActionColumn'],
+                  ],
+              ]); ?>
+          <?php Pjax::end(); ?>
+        </div>
 
-                    ['class' => 'yii\grid\ActionColumn'],
-                ],
-            ]); ?>
-        <?php Pjax::end(); ?>
       </div>
     </div>
 

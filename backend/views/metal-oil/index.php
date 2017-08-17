@@ -46,29 +46,35 @@ $this->params['breadcrumbs'][] = $this->title;
           </div>
         </div>
 
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">List</h3>
+          </div>
+          <div class="panel-body">
+            <div class="table-responsive">
+              <?php Pjax::begin(); ?>
+                  <?= GridView::widget([
+                      'dataProvider' => $dataProvider,
+                      //'filterModel' => $searchModel,
+                      'columns' => [
+                          ['class' => 'yii\grid\SerialColumn'],
 
-      <?php Pjax::begin(); ?>
-          <?= GridView::widget([
-              'dataProvider' => $dataProvider,
-              //'filterModel' => $searchModel,
-              'columns' => [
-                  ['class' => 'yii\grid\SerialColumn'],
+                          'date',
+                          'oil_price',
+                          'oil_open',
+                          'oil_high',
+                          'oil_low',
+                          'oil_volume',
+                          'oil_change',
 
-                //  'id',
-                //  'import_metal_id',
-                //  'date_uploaded',
-                  'date',
-                  'oil_price',
-                   'oil_open',
-                   'oil_high',
-                   'oil_low',
-                   'oil_volume',
-                   'oil_change',
+                          ['class' => 'yii\grid\ActionColumn'],
+                      ],
+                  ]); ?>
+                <?php Pjax::end(); ?>
+            </div>
+          </div>
+        </div>
 
-                  ['class' => 'yii\grid\ActionColumn'],
-              ],
-          ]); ?>
-        <?php Pjax::end(); ?>
       </div>
     </div>
 
