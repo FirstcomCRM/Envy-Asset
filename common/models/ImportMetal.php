@@ -200,21 +200,16 @@ class ImportMetal extends \yii\db\ActiveRecord
         $oil = new MetalOil();
         $oil->import_metal_id = $this->id;
         $oil->date_uploaded = $this->date_file;
-        $au->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
+        $oil->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
         $oil->date = str_replace(",", "", $rowData[0][0]);
         $oil->oil_price = $rowData[0][1];
         $oil->oil_open = $rowData[0][2];
         $oil->oil_high = $rowData[0][3];
         $oil->oil_low = $rowData[0][4];
         $oil->oil_change = $rowData[0][6];
-      //  $oil->oil_price = (string)$rowData[0][1];
-      //  $oil->oil_open = (string)$rowData[0][2];
-      //  $oil->oil_high = (string)$rowData[0][3];
-      //  $oil->oil_low = (string)$rowData[0][4];
 
         $oil->oil_volume = (string)$rowData[0][5];
-        //$oil->oil_change = (string)$rowData[0][6];
-
+  
         if (empty($rowData[0][0])) {
           break;
         }
