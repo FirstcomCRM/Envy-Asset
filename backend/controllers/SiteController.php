@@ -72,7 +72,7 @@ class SiteController extends Controller
             ->offset($pagination->offset)
             ->limit($pagination->limit)
             ->all();
-        
+
         return $this->render('index',[
            'pagination' => $pagination,
            'announce'=> $announce,
@@ -92,7 +92,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
+        $this->layout= '/printpreview';
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
