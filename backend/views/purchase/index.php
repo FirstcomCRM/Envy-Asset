@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\PurchaseSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -35,12 +36,21 @@ $this->params['breadcrumbs'][] = $this->title;
               'columns' => [
                   ['class' => 'yii\grid\SerialColumn'],
 
-                  //'id',
-                  'investor',
-                  'product',
+                  [
+                    'attribute'=>'investor',
+                    'value'=>function($model){
+                      return Retrieve::retrieveInvestor($model->investor);
+                    },
+                  ],
+                  [
+                    'attribute'=>'product',
+                    'value'=>function($model){
+                      return Retrieve::retrieveProductName($model->product);
+                    },
+                  ],
                   'share',
                   'price',
-                   'date',
+                  'date',
                   // 'remarks:ntext',
 
                   ['class' => 'yii\grid\ActionColumn'],
