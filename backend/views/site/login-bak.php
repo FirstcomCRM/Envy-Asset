@@ -8,37 +8,18 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->title = 'Login';
-//$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-login">
+    <h1><?= Html::encode($this->title) ?></h1>
 
+    <p>Please fill out the following fields to login:</p>
 
     <div class=row>
       <div class="col-md-3">
 
       </div>
       <div class="col-md-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">Envy Asset</h3>
-          </div>
-          <div class="panel-body">
-            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
-
-                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
-                <?= $form->field($model, 'password')->passwordInput() ?>
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
-
-                <div class="form-group">
-                    <?= Html::submitButton('<i class="fa fa-sign-in" aria-hidden="true"></i> Login', ['class' => 'btn btn-default', 'name' => 'login-button']) ?>
-                </div>
-
-            <?php ActiveForm::end(); ?>
-          </div>
-          <div class="panel-footer text-center">
-              <small><?php echo '@'.date('Y') ?> Powered by Firstcom Solutions Pte Ltd</small>
-          </div>
-        </div>
 
       </div>
       <div class="col-md-3">
@@ -47,4 +28,21 @@ $this->title = 'Login';
     </div>
 
 
+    <div class="row">
+        <div class="col-lg-5">
+            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+
+                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+
+                <?= $form->field($model, 'password')->passwordInput() ?>
+
+                <?= $form->field($model, 'rememberMe')->checkbox() ?>
+
+                <div class="form-group">
+                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                </div>
+
+            <?php ActiveForm::end(); ?>
+        </div>
+    </div>
 </div>
