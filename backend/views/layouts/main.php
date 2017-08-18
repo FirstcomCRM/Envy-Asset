@@ -25,6 +25,7 @@ AppAsset::register($this);
     <?php $this->head() ?>
     <link rel="icon" href="favicon.ico" type="image/ico">
 </head>
+
 <body>
 <?php $this->beginBody() ?>
 
