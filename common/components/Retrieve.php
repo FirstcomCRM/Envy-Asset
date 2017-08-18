@@ -3,6 +3,8 @@ namespace common\components;
 use common\models\User;
 use common\models\InvestStock;
 use common\models\InvestMetal;
+use common\models\Investor;
+use common\models\ProductManagement;
 /*
 Title: retrieve.php
 Date: 2017-08-02
@@ -41,8 +43,27 @@ Class Retrieve{
     }
   }
 
+  //EDR use the french notation format instead of the ISO numeric format
   public static function get_numberFormat($number){
     return number_format($number,2,',','.');
+  }
+
+  public static function retrieveInvestor($id){
+    $invest = Investor::find()->where(['id'=>$id])->one();
+    if (!empty($invest)) {
+      return $invest->company_name;
+    }else {
+      return $invest = null;
+    }
+  }
+
+  public static function retrieveProductName($id){
+    $prod = ProductManagement::find()->where(['id'=>$id])->one();
+    if (!empty($prod)) {
+      return $prod->product_name;
+    }else{
+      return $prod = null;
+    }
   }
 
 }
