@@ -15,23 +15,19 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'stock') ?>
-
-    <?= $form->field($model, 'price') ?>
-
-    <?= $form->field($model, 'date_created') ?>
-
-    <?= $form->field($model, 'date_edited') ?>
-
-    <?php // echo $form->field($model, 'added_by') ?>
-
-    <?php // echo $form->field($model, 'edited_by') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+    <div class="row">
+      <div class="col-md-3">
+        <?= $form->field($model, 'stock')->label(false)->textInput(['placeholder'=>'Stock']) ?>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+            <?= Html::submitButton('<i class="fa fa-search" aria-hidden="true"></i> Search', ['class' => 'btn btn-default']) ?>
+            <?php echo Html::a('<i class="fa fa-undo" aria-hidden="true"></i> Reset',['index'],['class' => 'btn btn-default']) ?>
+        </div>
+      </div>
+      <div class="col-md-3">
+          <?php $form->field($model, 'price') ?>
+      </div>
     </div>
 
     <?php ActiveForm::end(); ?>

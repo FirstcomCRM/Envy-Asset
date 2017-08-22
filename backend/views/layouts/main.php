@@ -61,7 +61,7 @@ AppAsset::register($this);
       ],
           ['label'=>'Transactions', 'class'=>'navbars', 'items'=>[
             ['label'=>'Metal Investment', 'url'=>['/import-metal/index']],
-            ['label'=>'Stock Investment', 'url'=>['/invest-stock/index']],
+            ['label'=>'Stock Investment', 'url'=>['/stocks/index']],
             ['label'=>'Withdrawal', 'url'=>['/withdraw/index']],
             ['label'=>'Deposit', 'url'=>['/deposit-head/index']],
             ['label'=>'Purchase', 'url'=>['/purchase/index']],

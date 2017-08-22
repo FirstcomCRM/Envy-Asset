@@ -65,7 +65,11 @@ class StocksController extends Controller
     {
         $model = new Stocks();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+
+            $model->date_created = date('Y-m-d');
+            $model->added_by = Yii::$app->user->getId();
+            $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -84,7 +88,10 @@ class StocksController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->date_edited = date('Y-m-d');
+            $model->edited_by = Yii::$app->user->getId();
+            $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [

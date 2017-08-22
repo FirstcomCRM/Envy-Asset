@@ -31,7 +31,8 @@ class Stocks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['stock', 'price', 'date_created', 'date_edited', 'added_by', 'edited_by'], 'required'],
+
+            [['stock','price'], 'required'],
             [['price'], 'number'],
             [['date_created', 'date_edited'], 'safe'],
             [['added_by', 'edited_by'], 'integer'],
