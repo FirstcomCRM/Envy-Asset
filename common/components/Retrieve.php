@@ -48,6 +48,10 @@ Class Retrieve{
     return number_format($number,2,',','.');
   }
 
+  public static function retrieveFormat($number){
+    return number_format($number,2);
+  }
+
   public static function retrieveInvestor($id){
     $invest = Investor::find()->where(['id'=>$id])->one();
     if (!empty($invest)) {
