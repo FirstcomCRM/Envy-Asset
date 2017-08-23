@@ -48,69 +48,8 @@ $this->params['breadcrumbs'][] = $this->title;
           ],
       ]) ?>
     </div>
-    <div class="tab-pane fade" id="withdraw"> <!--Start of Withdraw pane--->
 
-      <br>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Withdraw</h3>
-        </div>
-        <div class="panel-body">
-          <?php Pjax::begin(); ?>
-            <?= GridView::widget([
-                  'dataProvider' => $dataWithdraw,
-                //  'filterModel' => $searchModel,
-                  'columns' => [
-                      ['class' => 'yii\grid\SerialColumn'],
-                      [
-                        'attribute'=>'withdraw',
-                        'label'=>'Withdraw',
-                        'value'=> function($model){
-                            return number_format($model->withdraw,2);
-                        },
-                      ],
-                      'date_added',
-                    //  ['class' => 'yii\grid\ActionColumn'],
-                  ],
-              ]); ?>
-          <?php Pjax::end(); ?>
-        </div>
-      </div>
 
-    </div><!--End of Withdraw pane--->
-    <div class="tab-pane fade" id="deposit"><!--Start of Deposit pane--->
-
-      <br>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Deposit</h3>
-        </div>
-        <div class="panel-body">
-          <?php Pjax::begin(); ?>
-            <?= GridView::widget([
-                  'dataProvider' => $deposit,
-                //  'filterModel' => $searchModel,
-                  'columns' => [
-                      ['class' => 'yii\grid\SerialColumn'],
-                      [
-                        'attribute'=>'deposit',
-                        'label'=>'Deposit',
-                        'value'=> function($model){
-                            return number_format($model->deposit,2);
-                        },
-                      ],
-                      'date_added',
-                    //  ['class' => 'yii\grid\ActionColumn'],
-                  ],
-              ]); ?>
-          <?php Pjax::end(); ?>
-        </div>
-      </div>
-
-    </div><!--End of Deposit pane--->
-    <div class="tab-pane fade" id="payout"> <!--Start of payout pane--->
-      <h3>insert payout records file here</h3>
-    </div>
   </div><!--End of payout pane--->
 
 

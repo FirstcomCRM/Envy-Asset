@@ -8,11 +8,8 @@ use common\models\InvestorSearch;
 use common\models\UserPermission;
 use common\models\User;
 use common\models\UserGroup;
-use common\models\DepositHead;
-use common\models\DepositLineSearch;
-use common\models\WithdrawHead;
+use common\models\DepositSearch;
 use common\models\WithdrawSearch;
-use common\models\WithdrawLineSearch;
 //use common\models\DepositLine;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -51,7 +48,7 @@ class InvestorController extends Controller
           return [
               'access' => [
                   'class' => AccessControl::className(),
-                  // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+                    'only' => ['index', 'create', 'update', 'view', 'delete'],
                   'rules' => [
                         [
                             'actions' => $action[$usergroup_id->user_group_id],
@@ -121,7 +118,7 @@ class InvestorController extends Controller
      */
     public function actionView($id)
     {
-        $link_deposit = DepositHead::find()->where(['customer_id'=>$id])->one();
+    /*    $link_deposit = DepositHead::find()->where(['customer_id'=>$id])->one();
         $search = new DepositLineSearch();
         $search->header_id = $link_deposit->id;
         $deposit = $search->search(Yii::$app->request->queryParams);
@@ -129,14 +126,21 @@ class InvestorController extends Controller
         $with = WithdrawHead::find()->where(['customer_id'=>$id])->one();
         $searchWithdraw = new WithdrawLineSearch();
         $searchWithdraw->header_id = $with->id;
-        $dataWithdraw = $searchWithdraw->search(Yii::$app->request->queryParams);
+        $dataWithdraw = $searchWithdraw->search(Yii::$app->request->queryParams);*/
 
       //  print_r($dataWithdraw->getModels());die();
+        $search_dep = new DepositSearch();
+        $search_dep->investor = $id;
+        $deposit = $search_dep->search(Yii::$app->request->queryParams);
+
+        $search_with = new WithdrawSearch();
+        $search_with->investor = $id;
+        $withdraw = $search_with->search(Yii::$app->request->queryParams);
 
         return $this->render('view', [
             'model' => $this->findModel($id),
             'deposit'=>$deposit,
-            'dataWithdraw'=>$dataWithdraw,
+            'withdraw'=>$withdraw,
         ]);
     }
 
@@ -151,7 +155,7 @@ class InvestorController extends Controller
 
         if ($model->load(Yii::$app->request->post()) ) {
             $model->save();
-            $model->addTransact();
+          //  $model->addTransact();
             Yii::$app->session->setFlash('success', "Customer has been added");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
