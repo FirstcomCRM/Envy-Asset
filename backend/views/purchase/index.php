@@ -49,7 +49,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                   ],
                   'share',
-                  'price',
+                  [
+                    'attribute'=>'price',
+                    'value'=>function($model){
+                      return Retrieve::retrieveFormat($model->price);
+                    },
+                  ],
+                //  'price',
                   'date',
                   // 'remarks:ntext',
 

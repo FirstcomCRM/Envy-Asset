@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $model common\models\Purchase */
 
@@ -27,10 +27,25 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
 
-            'investor',
-            'product',
+          [
+            'attribute'=>'investor',
+            'value'=>function($model){
+              return Retrieve::retrieveInvestor($model->investor);
+            },
+          ],
+          [
+            'attribute'=>'product',
+            'value'=>function($model){
+              return Retrieve::retrieveProductName($model->product);
+            },
+          ],
             'share',
-            'price',
+            [
+              'attribute'=>'price',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->price);
+              },
+            ],
             'date',
             'remarks:ntext',
         ],
