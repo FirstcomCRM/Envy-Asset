@@ -3,14 +3,14 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\WithdrawHead */
+/* @var $model common\models\Withdraw */
 
-$this->title = 'Update:' . $model->customer;
+$this->title = 'Withdraw: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Withdraw', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->customer, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="withdraw-head-update">
+<div class="withdraw-update">
 
     <?= $this->render('_form', [
         'model' => $model,

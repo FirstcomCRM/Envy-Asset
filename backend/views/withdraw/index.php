@@ -3,14 +3,15 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use common\components\Retrieve;
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\WithdrawHeadSearch */
+/* @var $searchModel common\models\WithdrawSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Withdraw';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="withdraw-head-index">
+<div class="withdraw-index">
 
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -27,15 +28,34 @@ $this->params['breadcrumbs'][] = $this->title;
       </div>
       <div class="panel-body">
         <p class="text-right">
-            <?= Html::a('<i class="fa fa-plus" aria-hidden="true"></i> Add', ['create'], ['class' => 'btn btn-default']) ?>
+            <?= Html::a('<i class="fa fa-money" aria-hidden="true"></i> Withdraw', ['create'], ['class' => 'btn btn-default']) ?>
         </p>
         <?php Pjax::begin(); ?>
-          <?= GridView::widget([
+            <?= GridView::widget([
                 'dataProvider' => $dataProvider,
-              //  'filterModel' => $searchModel,
+                //'filterModel' => $searchModel,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
-                    'customer',
+                    [
+                      'attribute'=>'investor',
+                      'value'=>function($model){
+                        return Retrieve::retrieveInvestor($model->investor);
+                      },
+                    ],
+                    [
+                      'attribute'=>'price',
+                      'value'=>function($model){
+                          return Retrieve::retrieveFormat($model->price);
+                      },
+                    ],
+
+                    [
+                      'attribute'=>'category',
+                      'value'=>function($model){
+                        return Retrieve::retrieveProductCat($model->category);
+                      },
+                    ],
+                    'date',
                     ['class' => 'yii\grid\ActionColumn'],
                 ],
             ]); ?>

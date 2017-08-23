@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\WithdrawHead */
+/* @var $model common\models\Withdraw */
 
-$this->title = 'Create';
+$this->title = 'Withdraw';
 $this->params['breadcrumbs'][] = ['label' => 'Withdraw', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="withdraw-head-create">
+<div class="withdraw-create">
 
     <?= $this->render('_form', [
         'model' => $model,
