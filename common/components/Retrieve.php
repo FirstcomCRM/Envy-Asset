@@ -44,7 +44,7 @@ Class Retrieve{
     }
   }*/
 
-  //EDR use the french notation format instead of the ISO numeric format
+  //EDR use the french notation format instead of the ISO numeric format. USe in the import metal area
   public static function get_numberFormat($number){
     return number_format($number,2,',','.');
   }
@@ -78,6 +78,10 @@ Class Retrieve{
     }else {
       return $prod = null;
     }
+  }
+
+  public static function retrieveDate_mdy($date){
+    return date('m-d-Y',strtotime($date));
   }
 
 }
