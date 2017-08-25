@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
              'heading'=>'<i class="fa fa-cog" aria-hidden="true"></i> Metal Investment',
              'items'=>[
                  ['label' => 'Import', 'url'=>Url::to(['/import-metal/index'])],
-                 ['label'=>'Metals', 'items'=>[
+                 ['label'=>'Metal Prices', 'items'=>[
                      ['label'=>'Aluminum', 'url'=>Url::to(['/metal-al/index'])],
                      ['label'=>'Copper', 'url'=>Url::to(['/metal-cu/index'])],
                      ['label'=>'Nickel', 'url'=>Url::to(['/metal-ni/index'])],
@@ -29,9 +29,17 @@ $this->params['breadcrumbs'][] = $this->title;
                      ['label'=>'Gold', 'url'=>Url::to(['/metal-au/index'])],
                      ['label'=>'Oil', 'url'=>Url::to(['/metal-oil/index'])],
                    ],
-                 ]
-                   //insert new menu here
+                 ],
+                  ['label'=>'Metals', 'items'=>[
+                      ['label' => 'Transactions', 'url'=>Url::to(['/metal-unrealised/index'])],
+                      ['label' => 'Gain/Loss', 'url'=>Url::to(['/metal-unrealised-gain/index'])],
+
+                    ],
+                  ],
+                  //insert new menu here
+                //  ['label' => 'New Menu', 'url'=>Url::to(['/metal-unrealised/index'])],
                ],
+
              ]);
            ?>
     </div>

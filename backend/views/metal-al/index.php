@@ -18,24 +18,31 @@ $this->params['breadcrumbs'][] = $this->title;
   <div class="row">
     <div class="col-md-2">
       <?php echo SideNav::widget([
-             'type' => 'info',
-             'heading'=>'<i class="fa fa-cog" aria-hidden="true"></i> Aluminum',
-             'items'=>[
-                 ['label' => 'Import', 'url'=>Url::to(['/import-metal/index'])],
+            'type' => 'info',
+            'heading'=>'<i class="fa fa-cog" aria-hidden="true"></i> Aluminum',
+            'items'=>[
+                ['label' => 'Import', 'url'=>Url::to(['/import-metal/index'])],
+                ['label'=>'Metal Prices', 'items'=>[
+                    ['label'=>'Aluminum', 'url'=>Url::to(['/metal-al/index'])],
+                    ['label'=>'Copper', 'url'=>Url::to(['/metal-cu/index'])],
+                    ['label'=>'Nickel', 'url'=>Url::to(['/metal-ni/index'])],
+                    ['label'=>'Zinc', 'url'=>Url::to(['/metal-zn/index'])],
+                    ['label'=>'Gold', 'url'=>Url::to(['/metal-au/index'])],
+                    ['label'=>'Oil', 'url'=>Url::to(['/metal-oil/index'])],
+                  ],
+                ],
                  ['label'=>'Metals', 'items'=>[
-                     ['label'=>'Aluminum', 'url'=>Url::to(['/metal-al/index'])],
-                     ['label'=>'Copper', 'url'=>Url::to(['/metal-cu/index'])],
-                     ['label'=>'Nickel', 'url'=>Url::to(['/metal-ni/index'])],
-                     ['label'=>'Zinc', 'url'=>Url::to(['/metal-zn/index'])],
-                     ['label'=>'Gold', 'url'=>Url::to(['/metal-au/index'])],
-                     ['label'=>'Oil', 'url'=>Url::to(['/metal-oil/index'])],
-                   ],
-                 ]
-                   //insert new menu here
+                     ['label' => 'Transactions', 'url'=>Url::to(['/metal-unrealised/index'])],
+                     ['label' => 'Gain/Loss', 'url'=>Url::to(['/metal-unrealised-gain/index'])],
 
-               ],
-             ]);
-           ?>
+                   ],
+                 ],
+                 //insert new menu here
+               //  ['label' => 'New Menu', 'url'=>Url::to(['/metal-unrealised/index'])],
+              ],
+
+            ]);
+          ?>
     </div>
     <div class="col-md-10">
 

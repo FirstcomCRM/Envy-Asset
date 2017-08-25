@@ -22,6 +22,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'oil_low')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'oil_volume')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'oil_change')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
