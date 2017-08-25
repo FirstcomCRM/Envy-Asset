@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $model common\models\Customer */
 
@@ -49,12 +50,79 @@ $this->params['breadcrumbs'][] = $this->title;
       ]) ?>
     </div>
 
+    <div class="tab-pane fade in" id="withdraw"><!--Start of Withdraw pane--->
+      <br>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Withdraw</h3>
+        </div>
+        <div class="panel-body">
+          <?php Pjax::begin(); ?>
+            <?= GridView::widget([
+              'dataProvider' => $withdraw,
+              'columns' => [
+                  ['class' => 'yii\grid\SerialColumn'],
+                  [
+                    'attribute'=>'price',
+                    'value'=> function($model){
+                      return Retrieve::retrieveFormat($model->price);
+                    }
+                  ],
+                  [
+                    'attribute'=>'category',
+                    'value'=>function($model){
+                      return Retrieve::retrieveProductCat($model->category);
+                    },
+                  ],
+                  'date',
+                  'remarks:ntext',
+                //  ['class' => 'yii\grid\ActionColumn'],
+              ],
+            ]); ?>
+          <?php Pjax::end(); ?>
+        </div>
+      </div>
+    </div><!--End of Withdraw pane--->
 
-  </div><!--End of payout pane--->
+    <div class="tab-pane fade in" id="deposit"><!--Start of Deposit pane--->
+      <br>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Deposit</h3>
+        </div>
+        <div class="panel-body">
+          <?php Pjax::begin(); ?>
+            <?= GridView::widget([
+              'dataProvider' => $deposit,
+              'columns' => [
+                  ['class' => 'yii\grid\SerialColumn'],
+                  [
+                    'attribute'=>'price',
+                    'value'=> function($model){
+                      return Retrieve::retrieveFormat($model->price);
+                    }
+                  ],
+                  [
+                    'attribute'=>'category',
+                    'value'=>function($model){
+                      return Retrieve::retrieveProductCat($model->category);
+                    },
+                  ],
+                  'date',
+                  'remarks:ntext',
+                //  ['class' => 'yii\grid\ActionColumn'],
+              ],
+            ]); ?>
+          <?php Pjax::end(); ?>
+        </div>
+      </div>
+    </div><!--End of Deposit pane--->
 
+    <div class="tab-pane fade in" id="payout"><!--Payout of Deposit pane--->
+      <br>
+      insert payout gridview here
+    </div><!--End of Payout pane--->
 
-
-
-
+  </div><!--End of tab content--->
 
 </div>
