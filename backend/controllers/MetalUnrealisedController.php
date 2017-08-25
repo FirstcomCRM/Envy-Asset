@@ -3,21 +3,21 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\UserGroup;
-use common\models\UserGroupSearch;
+use common\models\MetalUnrealised;
+use common\models\MetalUnrealisedSearch;
 use common\models\UserPermission;
-
 use common\models\User;
-use yii\helpers\ArrayHelper;
-use yii\filters\AccessControl;
+use common\models\UserGroup;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 /**
- * UserGroupController implements the CRUD actions for UserGroup model.
+ * MetalUnrealisedController implements the CRUD actions for MetalUnrealised model.
  */
-class UserGroupController extends Controller
+class MetalUnrealisedController extends Controller
 {
     /**
      * @inheritdoc
@@ -26,7 +26,7 @@ class UserGroupController extends Controller
     {
       $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'usergroup');
       foreach ( $userGroupArray as $uGId => $uGName ){
-          $permission = UserPermission::find()->where(['controller' => 'UserGroup'])->andWhere(['user_group_id' => $uGId ] )->all();
+          $permission = UserPermission::find()->where(['controller' => 'MetalUnrealised'])->andWhere(['user_group_id' => $uGId ] )->all();
           $actionArray = [];
           foreach ( $permission as $p )  {
               $actionArray[] = $p->action;
@@ -39,6 +39,7 @@ class UserGroupController extends Controller
           }
 
       }
+
       $usergroup_id = User::find()->where(['id'=>Yii::$app->user->id])->one();
 
       if (!empty($usergroup_id)) {
@@ -89,16 +90,15 @@ class UserGroupController extends Controller
             ],
         ];
       }
-
     }
 
     /**
-     * Lists all UserGroup models.
+     * Lists all MetalUnrealised models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new UserGroupSearch();
+        $searchModel = new MetalUnrealisedSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -108,7 +108,7 @@ class UserGroupController extends Controller
     }
 
     /**
-     * Displays a single UserGroup model.
+     * Displays a single MetalUnrealised model.
      * @param integer $id
      * @return mixed
      */
@@ -120,17 +120,15 @@ class UserGroupController extends Controller
     }
 
     /**
-     * Creates a new UserGroup model.
+     * Creates a new MetalUnrealised model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new UserGroup();
+        $model = new MetalUnrealised();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->db->createCommand()->insert('auth_item',['name'=>$model->usergroup,'type'=>1, 'description'=>$model->description])->execute();
-            Yii::$app->session->setFlash('success', "User Group has been created");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -140,7 +138,7 @@ class UserGroupController extends Controller
     }
 
     /**
-     * Updates an existing UserGroup model.
+     * Updates an existing MetalUnrealised model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -148,11 +146,15 @@ class UserGroupController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $oldname = $model->usergroup;
+        $model->realised_gain_percent = $model->realised_gain_percent*100;
+        $model->entry_date_usd = date('m-d-Y',strtotime($model->entry_date_usd));
+        $model->exit_date_usd = date('m-d-Y',strtotime($model->exit_date_usd));
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->db->createCommand()->update('auth_item',['name'=>$model->usergroup,'description'=>$model->description],['name'=>$oldname])->execute();
-            Yii::$app->session->setFlash('success', "User Group has been updated");
+        if ($model->load(Yii::$app->request->post())  ) {
+            $model->realised_gain_percent = $model->realised_gain_percent/100;
+            $model->entry_date_usd = date('Y-m-d',strtotime($model->entry_date_usd));
+            $model->exit_date_usd = date('Y-m-d',strtotime($model->exit_date_usd));
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -162,7 +164,7 @@ class UserGroupController extends Controller
     }
 
     /**
-     * Deletes an existing UserGroup model.
+     * Deletes an existing MetalUnrealised model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -170,20 +172,20 @@ class UserGroupController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-        Yii::$app->session->setFlash('success', "User Group has been deleted");
+
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the UserGroup model based on its primary key value.
+     * Finds the MetalUnrealised model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return UserGroup the loaded model
+     * @return MetalUnrealised the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = UserGroup::findOne($id)) !== null) {
+        if (($model = MetalUnrealised::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

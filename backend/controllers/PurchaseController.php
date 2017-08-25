@@ -5,9 +5,14 @@ namespace backend\controllers;
 use Yii;
 use common\models\Purchase;
 use common\models\PurchaseSearch;
+use common\models\UserPermission;
+use common\models\User;
+use common\models\UserGroup;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 /**
  * PurchaseController implements the CRUD actions for Purchase model.
@@ -19,14 +24,72 @@ class PurchaseController extends Controller
      */
     public function behaviors()
     {
+      $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'usergroup');
+      foreach ( $userGroupArray as $uGId => $uGName ){
+          $permission = UserPermission::find()->where(['controller' => 'Purchase'])->andWhere(['user_group_id' => $uGId ] )->all();
+          $actionArray = [];
+          foreach ( $permission as $p )  {
+              $actionArray[] = $p->action;
+          }
+
+          $allow[$uGName] = false;
+          $action[$uGName] = $actionArray;
+          if ( ! empty( $action[$uGName] ) ) {
+              $allow[$uGName] = true;
+          }
+
+      }
+
+      $usergroup_id = User::find()->where(['id'=>Yii::$app->user->id])->one();
+
+      if (!empty($usergroup_id)) {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                  'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
+                      [
+                          'actions' => $action[$usergroup_id->user_group_id],
+                          'allow' => $allow[$usergroup_id->user_group_id],
+                          'roles' => [$usergroup_id->user_group_id],
+                      ],
+                    ],
+                    'denyCallback' => function ($rule, $action) {
+                        throw new \yii\web\HttpException(403, 'Error! You are forbidden to use this module. Please contact System Admin for more information.');
+                      }
+
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'logout' => ['post'],
                 ],
             ],
         ];
+      }else{
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['logout', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
+        ];
+      }
     }
 
     /**

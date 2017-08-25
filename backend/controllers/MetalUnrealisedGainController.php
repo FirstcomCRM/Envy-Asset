@@ -3,21 +3,21 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\DepositHead;
-use common\models\DepositHeadSearch;
-use common\models\DepositLineSearch;
+use common\models\MetalUnrealisedGain;
+use common\models\MetalUnrealisedGainSearch;
+use common\models\UserPermission;
 use common\models\User;
 use common\models\UserGroup;
-use common\models\UserPermission;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
+
 /**
- * DepositHeadController implements the CRUD actions for DepositHead model.
+ * MetalUnrealisedGainController implements the CRUD actions for MetalUnrealisedGain model.
  */
-class DepositHeadController extends Controller
+class MetalUnrealisedGainController extends Controller
 {
     /**
      * @inheritdoc
@@ -26,7 +26,7 @@ class DepositHeadController extends Controller
     {
       $userGroupArray = ArrayHelper::map(UserGroup::find()->all(), 'id', 'usergroup');
       foreach ( $userGroupArray as $uGId => $uGName ){
-          $permission = UserPermission::find()->where(['controller' => 'DepositHead'])->andWhere(['user_group_id' => $uGId ] )->all();
+          $permission = UserPermission::find()->where(['controller' => 'MetalUnrealisedGain'])->andWhere(['user_group_id' => $uGId ] )->all();
           $actionArray = [];
           foreach ( $permission as $p )  {
               $actionArray[] = $p->action;
@@ -39,41 +39,66 @@ class DepositHeadController extends Controller
           }
 
       }
+
       $usergroup_id = User::find()->where(['id'=>Yii::$app->user->id])->one();
 
-      return [
-          'access' => [
-              'class' => AccessControl::className(),
-              // 'only' => ['index', 'create', 'update', 'view', 'delete'],
-              'rules' => [
-                    [
-                        'actions' => $action[$usergroup_id->user_group_id],
-                        'allow' => $allow[$usergroup_id->user_group_id],
-                        'roles' => [$usergroup_id->user_group_id],
+      if (!empty($usergroup_id)) {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                  'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
+                      [
+                          'actions' => $action[$usergroup_id->user_group_id],
+                          'allow' => $allow[$usergroup_id->user_group_id],
+                          'roles' => [$usergroup_id->user_group_id],
+                      ],
                     ],
-                  ],
-                  'denyCallback' => function ($rule, $action) {
-                      throw new \yii\web\HttpException(403, 'Error! You are forbidden to use this module. Please contact System Admin for more information.');
-                    }
+                    'denyCallback' => function ($rule, $action) {
+                        throw new \yii\web\HttpException(403, 'Error! You are forbidden to use this module. Please contact System Admin for more information.');
+                      }
 
-          ],
-          'verbs' => [
-              'class' => VerbFilter::className(),
-              'actions' => [
-                  'logout' => ['post'],
-              ],
-          ],
-      ];
-
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
+        ];
+      }else{
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['logout', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
+        ];
+      }
     }
 
     /**
-     * Lists all DepositHead models.
+     * Lists all MetalUnrealisedGain models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new DepositHeadSearch();
+        $searchModel = new MetalUnrealisedGainSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -83,31 +108,25 @@ class DepositHeadController extends Controller
     }
 
     /**
-     * Displays a single DepositHead model.
+     * Displays a single MetalUnrealisedGain model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
-        $searchModel = new DepositLineSearch();
-        $searchModel->header_id = $id;
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('view', [
-            'model' => $model,
-            'dataProvider'=> $dataProvider,
+            'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new DepositHead model.
+     * Creates a new MetalUnrealisedGain model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new DepositHead();
+        $model = new MetalUnrealisedGain();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -119,7 +138,7 @@ class DepositHeadController extends Controller
     }
 
     /**
-     * Updates an existing DepositHead model.
+     * Updates an existing MetalUnrealisedGain model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -127,8 +146,10 @@ class DepositHeadController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $model->gain_loss = $model->gain_loss * 100;
+        if ($model->load(Yii::$app->request->post()) ) {
+            $model->gain_loss = $model->gain_loss/100;
+            $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -138,7 +159,7 @@ class DepositHeadController extends Controller
     }
 
     /**
-     * Deletes an existing DepositHead model.
+     * Deletes an existing MetalUnrealisedGain model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -151,15 +172,15 @@ class DepositHeadController extends Controller
     }
 
     /**
-     * Finds the DepositHead model based on its primary key value.
+     * Finds the MetalUnrealisedGain model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return DepositHead the loaded model
+     * @return MetalUnrealisedGain the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = DepositHead::findOne($id)) !== null) {
+        if (($model = MetalUnrealisedGain::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

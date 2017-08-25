@@ -41,26 +41,55 @@ class ProductTypeController extends Controller
       }
       $usergroup_id = User::find()->where(['id'=>Yii::$app->user->id])->one();
 
-      return [
-          'access' => [
-              'class' => AccessControl::className(),
-              // 'only' => ['index', 'create', 'update', 'view', 'delete'],
-              'rules' => [
-                    [
-                        'actions' => $action[$usergroup_id->user_group_id],
-                        'allow' => $allow[$usergroup_id->user_group_id],
-                        'roles' => [$usergroup_id->user_group_id],
+      if (!empty($usergroup_id)) {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                  'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
+                      [
+                          'actions' => $action[$usergroup_id->user_group_id],
+                          'allow' => $allow[$usergroup_id->user_group_id],
+                          'roles' => [$usergroup_id->user_group_id],
+                      ],
                     ],
-                  ],
+                    'denyCallback' => function ($rule, $action) {
+                        throw new \yii\web\HttpException(403, 'Error! You are forbidden to use this module. Please contact System Admin for more information.');
+                      }
 
-          ],
-          'verbs' => [
-              'class' => VerbFilter::className(),
-              'actions' => [
-                  'logout' => ['post'],
-              ],
-          ],
-      ];
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
+        ];
+      }else{
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['logout', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
+        ];
+      }
+
     }
 
     /**

@@ -136,7 +136,7 @@ class InvestorController extends Controller
         $search_with = new WithdrawSearch();
         $search_with->investor = $id;
         $withdraw = $search_with->search(Yii::$app->request->queryParams);
-
+      
         return $this->render('view', [
             'model' => $this->findModel($id),
             'deposit'=>$deposit,
