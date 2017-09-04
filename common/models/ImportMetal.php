@@ -11,6 +11,7 @@ use common\models\MetalAu;
 use common\models\MetalOil;
 use common\models\MetalUnrealised;
 use common\models\MetalUnrealisedGain;
+use common\models\MetalNickelDeals;
 /**
  * This is the model class for table "import_metal".
  *
@@ -44,7 +45,8 @@ class ImportMetal extends \yii\db\ActiveRecord
     {
         return [
             [['date_file'], 'required'],
-            [['date_file'], 'safe'],
+            [['date_file','date_added'], 'safe'],
+            [['remarks'],'string'],
             [['file_name'], 'string', 'max' => 75],
             [['file'],'file','skipOnEmpty'=>false, 'mimeTypes'=>'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                'wrongMimeType'=>'Invalid file format. Please use .xls or .xlsx',
@@ -86,8 +88,10 @@ class ImportMetal extends \yii\db\ActiveRecord
       $highestRow = $sheet->getHighestRow();
       $highestColumn = $sheet->getHighestColumn();
 
+
       for ($row=3; $row < $highestRow; $row++) {
          $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
+
          if ($rowData[0][0]=="Date" or $rowData[0][0]=="Aluminium") {
            continue;
          }
@@ -276,10 +280,54 @@ class ImportMetal extends \yii\db\ActiveRecord
           continue;
         }
 
-
-
       }
 
+
+
+      //insert nickel deal here
+  //    $sheet = $objPHPExcel->getSheet(1);
+      $worksheet = $objPHPExcel->getSheet(1); //nickel deal
+      $highestRow = $worksheet->getHighestRow();
+      $highestColumn = $worksheet->getHighestColumn();
+      $testarr = [];
+
+      $column_int = \PHPExcel_Cell::columnIndexFromString($worksheet->getHighestDataColumn());
+
+      $column_int_a = $column_int - 3; //get title
+      $column_letter = \PHPExcel_Cell::stringFromColumnIndex($column_int_a);
+      $testarr [] = $worksheet->getCell($column_letter.'3')->getCalculatedValue();
+
+      $column_int_b = $column_int - 2; //get data
+      $column_letter = \PHPExcel_Cell::stringFromColumnIndex($column_int_b);
+
+      for ($row=3; $row<=$highestRow ; $row++) {
+        $data = $worksheet->getCell($column_letter.$row)->getCalculatedValue();
+        if (!empty($data)) {
+          $testarr[] =  $data;
+        }
+      }
+
+
+      $deals = new MetalNickelDeals();
+      $deals->import_metal_id = $this->id;
+      $deals->date_uploaded = $this->date_file;
+      $deals->title = $testarr[0];
+      $deals->description = $testarr[1];
+      $deals->total_deal_size = $testarr[2];
+      $deals->contract_period = $testarr[3];
+      $deals->purchase_price_a = $testarr[4];
+      $deals->insurance_cost_a = $testarr[5];
+      $deals->forward_price = $testarr[7];
+      $deals->final_sales_price = $testarr[8];
+      $deals->purchase_price_b  = $testarr[9];
+      $deals->insurance_cost_b = $testarr[10];
+      $deals->total_cost_price = $testarr[11];
+      $deals->unrealised_profit_a = $testarr[12];
+      $deals->commision =  $testarr[13];
+      $deals->unrealised_profit_b = $testarr[14];
+      $deals->net_unrealised = $testarr[15];
+      $deals->save(false);
+      unset($testarr);
     }
 
 }
