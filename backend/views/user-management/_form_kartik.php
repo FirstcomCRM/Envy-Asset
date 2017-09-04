@@ -24,11 +24,6 @@ $data = TierLevel::find()->select(['id','tier_level'])->all();
 $tier = ArrayHelper::map($data,'id','tier_level');
 
 $user_tier = UserManagement::find()->where(['id'=>$model->connect_to])->one();
-if (empty($user_tier)) {
-  $x = [];
-}else{
-  $x = [$user_tier->id => $user_tier->name];
-}
 //$user_tier = ArrayHelper::map($data,'id','id');
 
 //print_r($data);
@@ -75,43 +70,29 @@ $data = null;
         <?= $form->field($model, 'remark')->textarea(['rows' => 6]) ?>
         <?= $form->field($model, "apply_tier")->checkbox(['id'=>'apply_tier']); ?>
         <div id="tier-form">
-          <?php echo  $form->field($model,'tier_level')->widget(Select2::className(),[
+          <?php echo $form->field($model,'tier_level')->widget(Select2::className(),[
               'data'=>$tier,
-              'options'=>['placeholder'=>' ','id'=>'cat-id',
-              'onchange' => '
-                      $.post("index.php?r=user-management/lists&id=' . '"+$(this).val(),function(data){
-                        $("select#subcat-id").html(data);
-                      });'
-              ],
+              'options'=>['placeholder'=>' ','id'=>'cat-id'],
               'theme'=> Select2::THEME_BOOTSTRAP,
               'size'=> Select2::MEDIUM,
               'pluginOptions' => [
                 'allowClear' => true
               ],
             ]) ?>
+            <?php echo $form->field($model, "connect_to")->widget(DepDrop::className(),[
+                'options'=>['id'=>'subcat-id' ,'placeholder'=>'Select...'],
+                'type'=>2,
+              //  'data'=>[$model->id => $model->name],
+                'data'=>[$user_tier->id => $user_tier->name],
+                //'data'=>[$line->complaint_id =>  $line->complaint_name],
+                'select2Options'=>['pluginOptions'=>['allowClear'=>true],'size'=> Select2::MEDIUM,'theme'=> Select2::THEME_BOOTSTRAP],
+                'pluginOptions'=>[
+                  'depends'=>['cat-id'],
+                  'placeholder'=>'Select...',
+                  'url'=>Url::to(['/user-management/fetch-tier']),
+                ]
 
-            <?php
-             $form->field($model, 'tier_level')->dropDownList($tier,
-              ['prompt'=>'-Tier Level-',
-              'onchange' => '
-                      $.post("index.php?r=user-management/lists&id=' . '"+$(this).val(),function(data){
-                        $("select#subcat-id").html(data);
-                      });']) ?>
-
-
-
-            <?php echo $form->field($model,'connect_to')->widget(Select2::className(),[
-                //'data'=>[$user_tier->id => $user_tier->name],
-                'data'=>$x,
-                'options'=>['placeholder'=>' ', 'id'=>'subcat-id'],
-                'theme'=> Select2::THEME_BOOTSTRAP,
-                'size'=> Select2::MEDIUM,
-                'pluginOptions' => [
-                  'allowClear' => true
-                ],
-              ]) ?>
-
-
+              ]);  ?>
         </div>
       </div>
       <div class="col-md-4">
