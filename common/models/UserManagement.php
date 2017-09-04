@@ -31,7 +31,7 @@ class UserManagement extends \yii\db\ActiveRecord
    			'sammaye\audittrail\LoggableBehavior'
    		];
  	   }
-     
+
     public static function tableName()
     {
         return 'user_management';
@@ -44,8 +44,9 @@ class UserManagement extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'user_group', 'department', 'email', 'nationality', 'address', 'mobile', 'remark', 'login_id', 'login_password'], 'required'],
-            [['user_id', 'mobile'], 'integer'],
+            [['user_id', 'mobile', 'apply_tier','tier_level'], 'integer'],
             [['remark'], 'string'],
+            [['connect_to'],'string','max'=>3],
             [['name', 'email'], 'string', 'max' => 75],
             [['user_group', 'department', 'nationality'], 'string', 'max' => 50],
             [['address', 'login_password'], 'string', 'max' => 100],
@@ -53,6 +54,7 @@ class UserManagement extends \yii\db\ActiveRecord
             [['login_id'], 'unique'],
             [['email'], 'unique'],
             [['email'],'email'],
+            [['date_adedd'],'safe'],
         ];
     }
 
@@ -69,6 +71,9 @@ class UserManagement extends \yii\db\ActiveRecord
             'department' => 'Department',
             'email' => 'Email',
             'nationality' => 'Nationality',
+            'apply_tier'=>'Apply Tier',
+            'tier_level'=>'Tier Level',
+            'connect_to' => 'Connect To',
             'address' => 'Address',
             'mobile' => 'Mobile',
             'remark' => 'Remark',

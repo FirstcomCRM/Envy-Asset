@@ -38,6 +38,7 @@ class ProductType extends \yii\db\ActiveRecord
             [['type'], 'unique'],
             [['description'], 'string'],
             [['type'], 'string', 'max' => 100],
+            [['date_adedd'],'safe'],
         ];
     }
 

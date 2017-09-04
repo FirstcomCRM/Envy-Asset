@@ -37,6 +37,7 @@ class Stocks extends \yii\db\ActiveRecord
             [['date_created', 'date_edited'], 'safe'],
             [['added_by', 'edited_by'], 'integer'],
             [['stock'], 'string', 'max' => 75],
+            [['date_adedd'],'safe'],
         ];
     }
 

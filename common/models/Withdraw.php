@@ -35,6 +35,7 @@ class Withdraw extends \yii\db\ActiveRecord
             [['price'], 'number'],
             [['date'], 'safe'],
             [['remarks'], 'string'],
+            [['date_adedd'],'safe'],
             [['category'], 'string', 'max' => 75],
         ];
     }

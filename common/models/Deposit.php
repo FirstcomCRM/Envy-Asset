@@ -33,7 +33,7 @@ class Deposit extends \yii\db\ActiveRecord
             [['investor', 'price', 'category', 'date', 'remarks'], 'required'],
             [['investor'], 'integer'],
             [['price'], 'number'],
-            [['date'], 'safe'],
+            [['date','date_added'], 'safe'],
             [['remarks'], 'string'],
             [['category'], 'string', 'max' => 75],
         ];
@@ -51,6 +51,7 @@ class Deposit extends \yii\db\ActiveRecord
             'category' => 'Product Category',
             'date' => 'Date',
             'remarks' => 'Remarks',
+            'date_added'=>'Date Added',
         ];
     }
 }

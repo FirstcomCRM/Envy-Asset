@@ -47,6 +47,7 @@ class Investor extends \yii\db\ActiveRecord
             [['company_name', 'customer_group', 'contact_person'], 'string', 'max' => 75],
             [['email'], 'string', 'max' => 50],
             [['email'],'email'],
+            [['date_added'],'safe'],
         ];
     }
 

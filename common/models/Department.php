@@ -21,7 +21,7 @@ class Department extends \yii\db\ActiveRecord
    			'sammaye\audittrail\LoggableBehavior'
    		];
  	   }
-     
+
     public static function tableName()
     {
         return 'department';
@@ -34,6 +34,7 @@ class Department extends \yii\db\ActiveRecord
     {
         return [
             [['department'], 'required'],
+            [['date_added'], 'safe'],
             [['department'], 'string', 'max' => 75],
         ];
     }
@@ -46,6 +47,7 @@ class Department extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'department' => 'Department',
+            'date_added'=> 'Date Added,'
         ];
     }
 }

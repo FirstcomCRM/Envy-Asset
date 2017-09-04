@@ -38,6 +38,7 @@ class ProductCategory extends \yii\db\ActiveRecord
             [['category'], 'unique'],
             [['description'], 'string'],
             [['category'], 'string', 'max' => 100],
+            [['date_adedd'],'safe'],
         ];
     }
 

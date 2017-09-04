@@ -36,6 +36,7 @@ class InvestorGroup extends \yii\db\ActiveRecord
         return [
             [['customer_group', 'description'], 'required'],
             [['description'], 'string'],
+            [['date_added'],'safe'],
             [['customer_group'], 'string', 'max' => 75],
         ];
     }

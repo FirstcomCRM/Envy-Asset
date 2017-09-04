@@ -46,6 +46,7 @@ class ProductManagement extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['product_price', 'product_cost'], 'number'],
             [['product_name', 'product_code', 'product_type', 'product_cat'], 'string', 'max' => 100],
+            [['date_adedd'],'safe'],
         ];
     }
 
