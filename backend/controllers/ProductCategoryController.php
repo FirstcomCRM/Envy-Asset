@@ -128,7 +128,9 @@ class ProductCategoryController extends Controller
     {
         $model = new ProductCategory();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+            $model->date_added = date('Y-m-d h:i:s');
+            $model->save();
             Yii::$app->session->setFlash('success', "Category has been created");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

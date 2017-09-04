@@ -128,7 +128,9 @@ class PurchaseController extends Controller
     {
         $model = new Purchase();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+            $model->date_added = date('Y-m-d h:i:s');
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [

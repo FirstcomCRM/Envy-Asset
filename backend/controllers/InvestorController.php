@@ -136,7 +136,7 @@ class InvestorController extends Controller
         $search_with = new WithdrawSearch();
         $search_with->investor = $id;
         $withdraw = $search_with->search(Yii::$app->request->queryParams);
-      
+
         return $this->render('view', [
             'model' => $this->findModel($id),
             'deposit'=>$deposit,
@@ -154,6 +154,7 @@ class InvestorController extends Controller
         $model = new Investor();
 
         if ($model->load(Yii::$app->request->post()) ) {
+            $model->date_added = date('Y-m-d h:i:s');
             $model->save();
           //  $model->addTransact();
             Yii::$app->session->setFlash('success', "Customer has been added");

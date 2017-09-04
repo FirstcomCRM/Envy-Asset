@@ -8,7 +8,9 @@ use common\models\UserManagementSearch;
 use common\models\UserPermission;
 use common\models\UserGroup;
 use common\models\User;
+use common\models\TierLevel;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -130,6 +132,7 @@ class UserManagementController extends Controller
 
         if ($model->load(Yii::$app->request->post())  ) {
             if ($model->createUser()) {
+                $model->date_added = date('Y-m-d h:i:s');        
                 $model->save(false);
                 Yii::$app->session->setFlash('success', "User has been created");
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -188,6 +191,45 @@ class UserManagementController extends Controller
         $this->findModel($id)->delete();
         Yii::$app->session->setFlash('success', "User has been deleted");
         return $this->redirect(['index']);
+    }
+
+    public function actionFetchTier(){
+      $out = [];
+      if (isset($_POST['depdrop_parents'])) {
+          $parents = $_POST['depdrop_parents'];
+          if ($parents != null) {
+              $cat_id = $parents[0];
+              $data = TierLevel::find()->where(['id'=>$cat_id])->one();
+              $list = UserManagement::find()->where(['tier_level'=>$data->connecting_level, 'apply_tier'=>1])->select(['id','name'])->asArray()->all();
+              foreach ($list as $i => $part) {
+                $out[] = ['id' => $part['id'], 'name' => $part['name']];
+              }
+                echo Json::encode(['output'=>$out, 'selected'=>'']);
+
+              return;
+          }
+      }
+      echo Json::encode(['output'=>'', 'selected'=>'']);
+    }
+
+
+    public function actionLists($id){
+      $data = TierLevel::find()->where(['id'=>$id])->one();
+      $count = UserManagement::find()->where(['tier_level'=>$data->connecting_level, 'apply_tier'=>1])->count();
+      $list = UserManagement::find()->where(['tier_level'=>$data->connecting_level, 'apply_tier'=>1])->all();
+
+      if ($count>0) {
+        foreach ($list as $i) {
+          echo "<option value='".$i->id."'>".$i->name."</option>";
+        }
+      }else{
+        echo "<option>N/A</option>";
+      }
+
+
+
+    //  print_r($list);
+  //    die('test');
     }
 
     /**

@@ -128,7 +128,9 @@ class DepartmentController extends Controller
     {
         $model = new Department();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+            $model->date_added = date('Y-m-d h:i:s');
+            $model->save();
             Yii::$app->session->setFlash('success', "Department has been created");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

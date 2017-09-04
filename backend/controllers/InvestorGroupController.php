@@ -128,7 +128,9 @@ class InvestorGroupController extends Controller
     {
         $model = new InvestorGroup();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+            $model->date_added = date('Y-m-d h:i:s');
+            $model->save();
             Yii::$app->session->setFlash('success', "Customer Group has been created");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

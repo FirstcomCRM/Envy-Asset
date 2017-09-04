@@ -130,9 +130,11 @@ class ProductManagementController extends Controller
     {
         $model = new ProductManagement();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save() ) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
         //    $model->stocks();
       //      $model->metal();
+            $model->date_added = date('Y-m-d h:i:s');
+            $model->save();
             Yii::$app->session->setFlash('success', "Product has been created");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {

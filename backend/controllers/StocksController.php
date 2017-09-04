@@ -131,6 +131,7 @@ class StocksController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
 
             $model->date_created = date('Y-m-d');
+            $model->date_added = date('Y-m-d h:i:s');
             $model->added_by = Yii::$app->user->getId();
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
