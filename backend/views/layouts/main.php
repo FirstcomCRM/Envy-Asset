@@ -77,7 +77,7 @@ AppAsset::register($this);
         ['label'=>'Setup', 'class'=>'navbars', 'items'=>[
           ['label'=>'User Rights', 'url'=>['user-permission/permission-setting']],
           ['label'=>'Investor Group', 'url'=>['investor-group/index']],
-          ['label'=>'Tier Management', 'url'=>['delivery-order/index']],
+          ['label'=>'Tier Management', 'url'=>['tier-level/index']],
           '<li class="divider"></li>',
           ['label'=>'Gii', 'url'=>['gii/default']],
           ['label'=>'Annoucement', 'url'=>['announcement/index']],
