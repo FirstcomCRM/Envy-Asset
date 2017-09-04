@@ -33,9 +33,9 @@ $this->params['breadcrumbs'][] = $this->title;
                   ['label'=>'Metals', 'items'=>[
                       ['label' => 'Transactions', 'url'=>Url::to(['/metal-unrealised/index'])],
                       ['label' => 'Gain/Loss', 'url'=>Url::to(['/metal-unrealised-gain/index'])],
-
                     ],
                   ],
+                  ['label' => 'Nickel Deals', 'url'=>Url::to(['/metal-nickel-deals/index'])],
                   //insert new menu here
                 //  ['label' => 'New Menu', 'url'=>Url::to(['/metal-unrealised/index'])],
                ],

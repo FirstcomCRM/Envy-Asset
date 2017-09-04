@@ -37,6 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                    ],
                  ],
+                  ['label' => 'Nickel Deals', 'url'=>Url::to(['/metal-nickel-deals/index'])],
                  //insert new menu here
                //  ['label' => 'New Menu', 'url'=>Url::to(['/metal-unrealised/index'])],
               ],
