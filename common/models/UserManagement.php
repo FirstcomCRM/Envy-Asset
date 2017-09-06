@@ -40,12 +40,13 @@ class UserManagement extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules() 
     {
         return [
             [['name', 'user_group', 'department', 'email', 'nationality', 'address', 'mobile', 'remark', 'login_id', 'login_password'], 'required'],
             [['user_id', 'mobile', 'apply_tier','tier_level'], 'integer'],
             [['remark'], 'string'],
+            [['name'],'unique'],
             [['connect_to'],'string','max'=>3],
             [['name', 'email'], 'string', 'max' => 75],
             [['user_group', 'department', 'nationality'], 'string', 'max' => 50],
