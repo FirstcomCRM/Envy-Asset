@@ -1,6 +1,7 @@
 <?php
 namespace common\components;
 use common\models\User;
+use common\models\UserManagement;
 use common\models\InvestStock;
 use common\models\InvestMetal;
 use common\models\Investor;
@@ -14,7 +15,7 @@ Developer: EDR
 */
 
 Class Retrieve{
-  //EDR, retrieve the user profile, particulart the username.
+  //EDR, retrieve the user profile, particularly the username.
   public static function retrieveUsername($id){
     $users = User::find()->where(['id'=>$id])->one();
     if (!empty($users)) {
@@ -25,34 +26,28 @@ Class Retrieve{
 
   }
 
-  //EDR retrive the product name used in Investment area
-/*  public static function retrieveProduct($id){
-    $prod = InvestStock::find()->where(['id'=>$id])->one();
-    if (!empty($prod)) {
-      return $prod->product;
-    }else{
-      return $prod = null;
+    //EDR retrieve data from UserManagement, also the user profile
+  public static function retrieveUsernameManagement($id){
+    $users = UserManagement::find()->where(['id'=>$id])->one();
+    if (!empty($users)) {
+      return $users->name;
+    }else {
+      return $users = null;
     }
-  }*/
 
-  /*public static function retrieveMetalProduct($id){
-    $prod = InvestMetal::find()->where(['id'=>$id])->one();
-    if (!empty($prod)) {
-      return $prod->product;
-    }else{
-      return $prod = null;
-    }
-  }*/
+  }
 
   //EDR use the french notation format instead of the ISO numeric format. USe in the import metal area
   public static function get_numberFormat($number){
     return number_format($number,2,',','.');
   }
 
+  //edr default numeric formatting
   public static function retrieveFormat($number){
     return number_format($number,2);
   }
 
+  //edr retrieve Investor information from Investor Model
   public static function retrieveInvestor($id){
     $invest = Investor::find()->where(['id'=>$id])->one();
     if (!empty($invest)) {
@@ -62,6 +57,7 @@ Class Retrieve{
     }
   }
 
+  //edr retrieve the product information from ProductManagement Model
   public static function retrieveProductName($id){
     $prod = ProductManagement::find()->where(['id'=>$id])->one();
     if (!empty($prod)) {
@@ -71,6 +67,7 @@ Class Retrieve{
     }
   }
 
+  //edr retrieve product category information from ProductCategory Model
   public static function retrieveProductCat($id){
     $cat = ProductCategory::find()->where(['id'=>$id])->one();
     if (!empty($cat)) {
@@ -80,6 +77,7 @@ Class Retrieve{
     }
   }
 
+  //edr changed date format to m-d-y
   public static function retrieveDate_mdy($date){
     return date('m-d-Y',strtotime($date));
   }
