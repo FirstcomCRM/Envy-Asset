@@ -157,7 +157,7 @@ class InvestorController extends Controller
             $model->date_added = date('Y-m-d h:i:s');
             $model->save();
           //  $model->addTransact();
-            Yii::$app->session->setFlash('success', "Customer has been added");
+            Yii::$app->session->setFlash('success', "Investor has been added");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -177,7 +177,7 @@ class InvestorController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', "Customer has been updated");
+            Yii::$app->session->setFlash('success', "Investor has been updated");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -195,7 +195,7 @@ class InvestorController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-        Yii::$app->session->setFlash('success', "Customer has been deleted");
+        Yii::$app->session->setFlash('success', "Invesstor has been deleted");
         return $this->redirect(['index']);
     }
 

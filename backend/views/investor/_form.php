@@ -12,8 +12,8 @@ use common\models\UserManagement;
 $data = InvestorGroup::find()->select(['customer_group'])->all();
 $cgroup = ArrayHelper::map($data,'customer_group','customer_group');
 
-$data = UserManagement::find()->all();
-$sales = ArrayHelper::map($data,'name','name');
+$data = UserManagement::find()->where(['apply_tier'=>1])->orderBy(['id'=>SORT_ASC])->all();
+$sales = ArrayHelper::map($data,'id','name');
 
 $data = null;
 

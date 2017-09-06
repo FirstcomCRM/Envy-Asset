@@ -42,8 +42,8 @@ class Investor extends \yii\db\ActiveRecord
         return [
             [['company_name', 'customer_group', 'contact_person', 'email', 'mobile', 'address'], 'required'],
             [['company_name'],'unique'],
-            [['mobile'], 'integer'],
-            [['address', 'remark', 'salesperson'], 'string'],
+            [['mobile','salesperson'], 'integer'],
+            [['address', 'remark'], 'string'],
             [['company_name', 'customer_group', 'contact_person'], 'string', 'max' => 75],
             [['email'], 'string', 'max' => 50],
             [['email'],'email'],

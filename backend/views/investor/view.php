@@ -5,12 +5,26 @@ use yii\widgets\DetailView;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use common\components\Retrieve;
+use common\models\Withdraw;
+use common\models\Deposit;
 /* @var $this yii\web\View */
 /* @var $model common\models\Customer */
 
 $this->title = $model->company_name;
 $this->params['breadcrumbs'][] = ['label' => 'Investor', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+$withdraw_sum = 0;
+$deposit_sum = 0;
+
+foreach ($withdraw->getModels() as $key => $value) {
+  $withdraw_sum += $value->price;
+}
+
+foreach ($deposit->getModels() as $key => $value) {
+  $deposit_sum += $value->price;
+}
+
 ?>
 <div class="customer-view">
 
@@ -26,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
   </p>
 
   <ul class="nav nav-tabs">
-    <li class="active"><a href="#profile" data-toggle="tab">Customer Profile</a></li>
+    <li class="active"><a href="#profile" data-toggle="tab">Investor Profile</a></li>
     <li><a href="#withdraw" data-toggle="tab">Withdrawal Records</a></li>
     <li><a href="#deposit" data-toggle="tab">Deposit Records</a></li>
     <li><a href="#payout" data-toggle="tab">Payout Records</a></li>
@@ -41,11 +55,20 @@ $this->params['breadcrumbs'][] = $this->title;
               'company_name',
               'customer_group',
               'contact_person',
-              'salesperson',
+              [
+                'attribute'=>'salesperson',
+                'value'=>function($model){
+                  return Retrieve::retrieveUsernameManagement($model->salesperson);
+                },
+              ],
               'email:email',
               'mobile',
               'address:ntext',
               'remark:ntext',
+              [
+                'label'=>'Balance',
+                'value'=> number_format($deposit_sum - $withdraw_sum,2),
+              ],
           ],
       ]) ?>
     </div>
