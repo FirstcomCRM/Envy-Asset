@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use common\models\Investor;
 use common\models\ProductManagement;
@@ -29,13 +30,22 @@ $data = null;
 
         <?php echo $form->field($model,'investor')->widget(Select2::className(),[
            'data'=>$invest,
-           'options'=>['placeholder'=>'Investor '],
+           'options'=>['placeholder'=>'Investor',
+            'onchange'=>'$.post("'.url::to(['purchase/get-sales','id'=>'']).
+              '"+$(this).val(),function( data )
+                {
+                  $("#salesperson").val( data );
+                });'
+
+            ],
            'theme'=> Select2::THEME_BOOTSTRAP,
            'size'=> Select2::MEDIUM,
            'pluginOptions' => [
              'allowClear' => true
            ],
          ]) ?>
+
+         <?php echo $form->field($model, 'salesperson')->textInput(['readOnly'=>true, 'id'=>'salesperson']) ?>
 
          <?php echo $form->field($model,'product')->widget(Select2::className(),[
             'data'=>$prod,

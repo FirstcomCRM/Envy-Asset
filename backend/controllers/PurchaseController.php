@@ -8,6 +8,10 @@ use common\models\PurchaseSearch;
 use common\models\UserPermission;
 use common\models\User;
 use common\models\UserGroup;
+use common\models\UserManagement;
+use common\models\Investor;
+use common\models\Commission;
+use common\models\TierReduction;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -131,6 +135,31 @@ class PurchaseController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             $model->date_added = date('Y-m-d h:i:s');
             $model->save();
+            //die();
+            $x = UserManagement::find()->where(['name'=>$model->salesperson])->one();
+            $tier = TierReduction::find()->where(['id'=>1])->one();
+            $highest = $tier->highest_percent;
+        //    die($x->connect_to);
+            $y = true;
+            while ($y == true) {
+                $nconnect = $x->connect_to;
+                $nname = $x->id;
+
+                if ($x->connect_to != 'N/A') {
+                  $this->comms($nname,$highest,$model);
+                }else{
+                  $this->comms($x->id,$highest,$model);
+                  break;
+                }
+
+                $x = UserManagement::find()->where(['id'=>$nconnect])->one();
+                $highest = $highest-$tier->reduction_percent;
+                if ($highest<=$tier->lowest_percent) {
+                    $highest = $tier->lowest_percent;
+                }
+
+            }
+
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -171,6 +200,15 @@ class PurchaseController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionGetSales($id){
+      // $data = Investor::find()->where(['id'=>$id])->one();
+      //die($id);
+        //die($id);
+       $find = Investor::find()->where(['id'=>$id])->one();
+       $sales = UserManagement::find()->where(['id'=>$find->salesperson])->one();
+       echo $sales->name;
+   }
+
     /**
      * Finds the Purchase model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -185,5 +223,18 @@ class PurchaseController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    protected function comms($xid,$highest,$model){
+        $comm = new Commission();
+        $comm->transact_id = $model->id;
+        $comm->transact_type = 'Purchase';
+        $comm->transact_amount = $model->price; //questionable?
+        $comm->transact_date =$model->date;
+        $comm->sales_person = $xid;
+        $comm->commision_percent = $highest;
+        $comm->commission = $comm->commision_percent * $comm->transact_amount;
+        $comm->date_added = date('Y-m-d h:i:s');
+        $comm->save();
     }
 }

@@ -18,7 +18,7 @@ class PurchaseSearch extends Purchase
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['id','salesperson'], 'integer'],
             [['investor', 'product', 'share', 'date', 'remarks'], 'safe'],
             [['price'], 'number'],
         ];
@@ -63,6 +63,7 @@ class PurchaseSearch extends Purchase
             'id' => $this->id,
             'price' => $this->price,
             'date' => $this->date,
+            'salesperson'=>$this->salesperson,
         ]);
 
         $query->andFilterWhere(['like', 'investor', $this->investor])

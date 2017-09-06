@@ -35,6 +35,7 @@ class Purchase extends \yii\db\ActiveRecord
             [['price'], 'number'],
             [['date'], 'safe'],
             [['remarks'], 'string'],
+            [['salesperson'], 'string'],
             [['investor', 'product', 'share'], 'string', 'max' => 75],
             [['date_adedd'],'safe'],
         ];
@@ -52,6 +53,7 @@ class Purchase extends \yii\db\ActiveRecord
             'share' => 'Share',
             'price' => 'Price',
             'date' => 'Date',
+            'salesperson'=>'Sales Person',
             'remarks' => 'Remarks',
         ];
     }
