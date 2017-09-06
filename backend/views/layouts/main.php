@@ -70,7 +70,7 @@ AppAsset::register($this);
           ['label'=>'Reports', 'class'=>'navbars', 'items'=>[
           //  ['label'=>'User Log Files', 'url'=>['/user-log/index']],
             ['label'=>'Investment Overview', 'url'=>['toollist/index']],
-            ['label'=>'Commision Report', 'url'=>['toollist/index']],
+            ['label'=>'Commission Report', 'url'=>['commission/index']],
             ['label'=>'Customer Report', 'url'=>['toollist/index']],
         ],
       ],
