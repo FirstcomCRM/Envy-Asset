@@ -57,6 +57,12 @@ $this->params['breadcrumbs'][] = $this->title;
                   ],
                 //  'price',
                   'date',
+                  [
+                    'attribute'=>'salesperson',
+                    'value'=>function($model){
+                      return Retrieve::retrieveUsernameManagement($model->salesperson);
+                    },
+                  ],
                   // 'remarks:ntext',
 
                   ['class' => 'yii\grid\ActionColumn'],

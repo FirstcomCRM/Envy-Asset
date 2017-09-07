@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use common\models\Investor;
 use common\models\ProductManagement;
+use common\models\UserManagement;
 use kartik\widgets\Select2;
 use kartik\widgets\DatePicker;
 /* @var $this yii\web\View */
@@ -19,6 +20,14 @@ $data = ProductManagement::find()->orderBy(['product_name'=>SORT_ASC])->select([
 $prod = ArrayHelper::map($data,'id','product_name');
 
 $data = null;
+
+$salesperson = Usermanagement::find()->where(['id'=>$model->salesperson])->one();
+if (empty($salesperson)) {
+    $x = [];
+}else{
+  $x = [$salesperson->id => $salesperson->name];
+}
+
 ?>
 
 <div class="purchase-form">
@@ -34,7 +43,7 @@ $data = null;
             'onchange'=>'$.post("'.url::to(['purchase/get-sales','id'=>'']).
               '"+$(this).val(),function( data )
                 {
-                  $("#salesperson").val( data );
+                  $("#salesperson").html( data );
                 });'
 
             ],
@@ -45,7 +54,9 @@ $data = null;
            ],
          ]) ?>
 
-         <?php echo $form->field($model, 'salesperson')->textInput(['readOnly'=>true, 'id'=>'salesperson']) ?>
+         <?php // $form->field($model, 'salesperson')->textInput(['readOnly'=>true, 'id'=>'salesperson']) ?>
+
+         <?php echo $form->field($model, 'salesperson')->dropDownList($x,['id'=>'salesperson']) ?>
 
          <?php echo $form->field($model,'product')->widget(Select2::className(),[
             'data'=>$prod,

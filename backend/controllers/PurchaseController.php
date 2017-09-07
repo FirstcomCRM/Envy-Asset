@@ -136,7 +136,8 @@ class PurchaseController extends Controller
             $model->date_added = date('Y-m-d h:i:s');
             $model->save();
             //die();
-            $x = UserManagement::find()->where(['name'=>$model->salesperson])->one();
+            //$x = UserManagement::find()->where(['name'=>$model->salesperson])->one();
+            $x = UserManagement::find()->where(['id'=>$model->salesperson])->one();
             $tier = TierReduction::find()->where(['id'=>1])->one();
             $highest = $tier->highest_percent;
         //    die($x->connect_to);
@@ -206,7 +207,13 @@ class PurchaseController extends Controller
         //die($id);
        $find = Investor::find()->where(['id'=>$id])->one();
        $sales = UserManagement::find()->where(['id'=>$find->salesperson])->one();
-       echo $sales->name;
+       //echo $sales->name;
+       if (!empty($sales)) {
+          echo "<option value='".$sales->id."'>".$sales->name."</option>";
+
+       }else{
+           echo "<option>N/A</option>";
+       }
    }
 
     /**
