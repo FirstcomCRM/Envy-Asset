@@ -10,12 +10,15 @@ use common\models\User;
 use common\models\UserGroup;
 use common\models\DepositSearch;
 use common\models\WithdrawSearch;
+use common\models\PurchaseSearch;
 //use common\models\DepositLine;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
+use yii\db\Command;
+
 /**
  * CustomerController implements the CRUD actions for Customer model.
  */
@@ -137,12 +140,19 @@ class InvestorController extends Controller
         $search_with->investor = $id;
         $withdraw = $search_with->search(Yii::$app->request->queryParams);
 
+        $search_pur = new PurchaseSearch();
+        $search_pur->investor = $id;
+        $purchase = $search_pur->search(Yii::$app->request->queryParams);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
             'deposit'=>$deposit,
             'withdraw'=>$withdraw,
+            'purchase'=>$purchase,
         ]);
     }
+
+
 
     /**
      * Creates a new Customer model.
@@ -154,11 +164,16 @@ class InvestorController extends Controller
         $model = new Investor();
 
         if ($model->load(Yii::$app->request->post()) ) {
-            $model->date_added = date('Y-m-d h:i:s');
-            $model->save();
-          //  $model->addTransact();
+          if ($model->createUser()) {
             Yii::$app->session->setFlash('success', "Investor has been added");
             return $this->redirect(['view', 'id' => $model->id]);
+          }else{
+            Yii::$app->session->setFlash('error', "Failed to create Investor");
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+          }
+
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -176,9 +191,17 @@ class InvestorController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', "Investor has been updated");
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) ) {
+            if ($model->updateUser() ) {
+              Yii::$app->session->setFlash('success', "Investor has been updated");
+              return $this->redirect(['view', 'id' => $model->id]);
+            }else{
+              Yii::$app->session->setFlash('error', "Failed to update Investor");
+              return $this->render('update', [
+                  'model' => $model,
+              ]);
+            }
+
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -195,8 +218,36 @@ class InvestorController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+        $del = User::find()->where(['customer_id'=>$id])->one();
+        if (!empty($del)) {
+          $del->delete();
+        }
+        //  Yii::$app->db->createCommand()->delete('grand_line', ['Header_ID' => $id])->execute();
         Yii::$app->session->setFlash('success', "Invesstor has been deleted");
         return $this->redirect(['index']);
+    }
+
+    public function actionCView($id){
+      $search_dep = new DepositSearch();
+      $search_dep->investor = $id;
+      $deposit = $search_dep->search(Yii::$app->request->queryParams);
+
+      $search_with = new WithdrawSearch();
+      $search_with->investor = $id;
+      $withdraw = $search_with->search(Yii::$app->request->queryParams);
+
+      $search_pur = new PurchaseSearch();
+      $search_pur->investor = $id;
+      $purchase = $search_pur->search(Yii::$app->request->queryParams);
+
+      $this->layout = 'c-main';
+
+      return $this->render('c-view', [
+          'model' => $this->findModel($id),
+          'deposit'=>$deposit,
+          'withdraw'=>$withdraw,
+          'purchase'=>$purchase,
+      ]);
     }
 
     /**

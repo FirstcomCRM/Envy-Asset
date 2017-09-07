@@ -6,6 +6,7 @@ use kartik\widgets\Select2;
 use yii\helpers\ArrayHelper;
 use common\models\InvestorGroup;
 use common\models\UserManagement;
+use common\models\UserGroup;
 /* @var $this yii\web\View */
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
@@ -14,6 +15,9 @@ $cgroup = ArrayHelper::map($data,'customer_group','customer_group');
 
 $data = UserManagement::find()->where(['apply_tier'=>1])->orderBy(['id'=>SORT_ASC])->all();
 $sales = ArrayHelper::map($data,'id','name');
+
+$data = UserGroup::find()->select(['usergroup'])->all();
+$group = ArrayHelper::map($data,'usergroup','usergroup');
 
 $data = null;
 
@@ -50,8 +54,19 @@ $data = null;
       </div>
 
       <div class="col-md-6">
-        <?= $form->field($model, 'address')->textarea(['rows' => 6]) ?>
-        <?= $form->field($model, 'remark')->textarea(['rows' => 4]) ?>
+        <?= $form->field($model, 'address')->textarea(['rows' => 3]) ?>
+        <?= $form->field($model, 'remark')->textarea(['rows' => 3]) ?>
+        <?= $form->field($model, 'username')->textInput() ?>
+        <?= $form->field($model, 'password')->passwordInput() ?>
+        <?php echo $form->field($model,'usergroup')->widget(Select2::className(),[
+            'data'=>$group,
+            'options'=>['placeholder'=>' '],
+            'theme'=> Select2::THEME_BOOTSTRAP,
+            'size'=> Select2::MEDIUM,
+            'pluginOptions' => [
+              'allowClear' => true
+            ],
+          ]) ?>
         <div class="form-group">
             <?= Html::submitButton($model->isNewRecord ? '<i class="fa fa-pencil" aria-hidden="true"></i> Create' : '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update',
             ['class' => $model->isNewRecord ? 'btn btn-default' : 'btn btn-default']) ?>

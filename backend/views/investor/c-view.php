@@ -11,7 +11,7 @@ use common\models\Deposit;
 /* @var $model common\models\Customer */
 
 $this->title = $model->company_name;
-$this->params['breadcrumbs'][] = ['label' => 'Investor', 'url' => ['index']];
+
 $this->params['breadcrumbs'][] = $this->title;
 
 $withdraw_sum = 0;
@@ -28,17 +28,6 @@ foreach ($deposit->getModels() as $key => $value) {
 ?>
 <div class="customer-view">
 
-  <p class="text-right">
-      <?= Html::a('<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update Profile', ['update', 'id' => $model->id], ['class' => 'btn btn-default']) ?>
-      <?= Html::a('<i class="fa fa-trash-o" aria-hidden="true"></i> Delete Profile', ['delete', 'id' => $model->id], [
-          'class' => 'btn btn-default',
-          'data' => [
-              'confirm' => 'Are you sure you want to delete this item?',
-              'method' => 'post',
-          ],
-      ]) ?>
-  </p>
-
   <ul class="nav nav-tabs">
     <li class="active"><a href="#profile" data-toggle="tab">Investor Profile</a></li>
     <li><a href="#withdraw" data-toggle="tab">Withdrawal Records</a></li>
@@ -50,30 +39,29 @@ foreach ($deposit->getModels() as $key => $value) {
   <div class="tab-content">
     <div class="tab-pane fade in active" id="profile">
       <br>
-      <div class="table-responsive">
-        <?= DetailView::widget([
-            'model' => $model,
-            'attributes' => [
-                'company_name',
-                'customer_group',
-                'contact_person',
-                [
-                  'attribute'=>'salesperson',
-                  'value'=>function($model){
-                    return Retrieve::retrieveUsernameManagement($model->salesperson);
-                  },
-                ],
-                'email:email',
-                'mobile',
-                'address:ntext',
-                'remark:ntext',
-                [
-                  'label'=>'Balance',
-                  'value'=> number_format($deposit_sum - $withdraw_sum,2),
-                ],
-            ],
-        ]) ?>
-      </div>
+      <?= DetailView::widget([
+          'model' => $model,
+          'attributes' => [
+              'company_name',
+              'customer_group',
+              'contact_person',
+              [
+                'attribute'=>'salesperson',
+                'value'=>function($model){
+                  return Retrieve::retrieveUsernameManagement($model->salesperson);
+                },
+              ],
+              'email:email',
+              'mobile',
+              'address:ntext',
+              'remark:ntext',
+              'username',
+              [
+                'label'=>'Balance',
+                'value'=> number_format($deposit_sum - $withdraw_sum,2),
+              ],
+          ],
+      ]) ?>
     </div>
 
     <div class="tab-pane fade in" id="withdraw"><!--Start of Withdraw pane--->
@@ -104,30 +92,6 @@ foreach ($deposit->getModels() as $key => $value) {
                     'date',
                     'remarks:ntext',
                   //  ['class' => 'yii\grid\ActionColumn'],
-                  [
-                    'header'=>'Action',
-                    'class'=>'yii\grid\ActionColumn',
-                    'template'=>'{view}{update}',
-                    'buttons'=>[
-                      'view'=>function($url,$model){
-                        return Html::a('<i class="fa fa-eye" aria-hidden="true"></i> ',$url,['id'=>$model->id, 'title'=>Yii::t('app','View'), 'data-pjax'=>0]);
-                      },
-                      'update'=>function($url,$model){
-                          return Html::a('<i class="fa fa-pencil-square-o" aria-hidden="true"></i> ',$url,['id'=>$model->id, 'title'=>Yii::t('app','Update'), 'data-pjax'=>0]);
-                      },
-                    ],
-                    'urlCreator'=>function($action,$model,$key,$index){
-                      if($action==='view'){
-                        $url='?r=withdraw%2Fview&id='.$model->id;
-                        return $url;
-                      }
-                      if($action==='update'){
-                        $url='?r=withdraw%2Fupdate&id='.$model->id;
-                        return $url;
-                      }
-
-                    }
-                  ],
                 ],
               ]); ?>
             <?php Pjax::end(); ?>
@@ -164,30 +128,6 @@ foreach ($deposit->getModels() as $key => $value) {
                     'date',
                     'remarks:ntext',
                   //  ['class' => 'yii\grid\ActionColumn'],
-                  [
-                    'header'=>'Action',
-                    'class'=>'yii\grid\ActionColumn',
-                    'template'=>'{view}{update}',
-                    'buttons'=>[
-                      'view'=>function($url,$model){
-                        return Html::a('<i class="fa fa-eye" aria-hidden="true"></i> ',$url,['id'=>$model->id, 'title'=>Yii::t('app','View'), 'data-pjax'=>0]);
-                      },
-                      'update'=>function($url,$model){
-                          return Html::a('<i class="fa fa-pencil-square-o" aria-hidden="true"></i> ',$url,['id'=>$model->id, 'title'=>Yii::t('app','Update'), 'data-pjax'=>0]);
-                      },
-                    ],
-                    'urlCreator'=>function($action,$model,$key,$index){
-                      if($action==='view'){
-                        $url='?r=deposit%2Fview&id='.$model->id;
-                        return $url;
-                      }
-                      if($action==='update'){
-                        $url='?r=deposit%2Fupdate&id='.$model->id;
-                        return $url;
-                      }
-
-                    }
-                  ],
                 ],
               ]); ?>
             <?php Pjax::end(); ?>
@@ -231,36 +171,11 @@ foreach ($deposit->getModels() as $key => $value) {
                   'salesperson',
                   'remarks:ntext',
                 //  ['class' => 'yii\grid\ActionColumn'],
-                [
-                  'header'=>'Action',
-                  'class'=>'yii\grid\ActionColumn',
-                  'template'=>'{view}{update}',
-                  'buttons'=>[
-                    'view'=>function($url,$model){
-                      return Html::a('<i class="fa fa-eye" aria-hidden="true"></i> ',$url,['id'=>$model->id, 'title'=>Yii::t('app','View'), 'data-pjax'=>0]);
-                    },
-                    'update'=>function($url,$model){
-                        return Html::a('<i class="fa fa-pencil-square-o" aria-hidden="true"></i> ',$url,['id'=>$model->id, 'title'=>Yii::t('app','Update'), 'data-pjax'=>0]);
-                    },
 
-                  ],
-                  'urlCreator'=>function($action,$model,$key,$index){
-                    if($action==='view'){
-                      $url='?r=purchase%2Fview&id='.$model->id;
-                      return $url;
-                    }
-                    if($action==='update'){
-                      $url='?r=pruchase%2Fupdate&id='.$model->id;
-                      return $url;
-                    }
-
-                  }
-                ],
               ],
             ]); ?>
             <?php Pjax::end(); ?>
           </div>
-
         </div>
       </div>
     </div>
