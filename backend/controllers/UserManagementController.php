@@ -132,7 +132,7 @@ class UserManagementController extends Controller
 
         if ($model->load(Yii::$app->request->post())  ) {
             if ($model->createUser()) {
-                $model->date_added = date('Y-m-d h:i:s');        
+                $model->date_added = date('Y-m-d h:i:s');
                 $model->save(false);
                 Yii::$app->session->setFlash('success', "User has been created");
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -188,7 +188,13 @@ class UserManagementController extends Controller
      */
     public function actionDelete($id)
     {
+        $ids = $this->findModel($id);
         $this->findModel($id)->delete();
+        $del = User::find()->where(['id'=>$ids->user_id])->one();
+        if (!empty($del)) {
+          $del->delete();
+        }
+
         Yii::$app->session->setFlash('success', "User has been deleted");
         return $this->redirect(['index']);
     }
