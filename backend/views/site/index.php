@@ -37,5 +37,5 @@ $this->title = 'Envy Asset';
    </div>
 
   </div>
-
+  <hr>
 </div>

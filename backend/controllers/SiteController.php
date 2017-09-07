@@ -5,9 +5,11 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\data\Pagination;
 use common\models\LoginForm;
 use common\models\Announcement;
-use yii\data\Pagination;
+use common\models\User;
+
 /**
  * Site controller
  */
@@ -73,7 +75,15 @@ class SiteController extends Controller
             ->limit($pagination->limit)
             ->all();
 
+      //      echo Yii::$app->user->id;die();
+        $investor = User::find()->where(['id'=>Yii::$app->user->id])->one();
+      //  print_r($investor);die();
+        if ($investor->customer_id != 0) {
+          $this->layout = 'c-main.php';
+        }
+
         return $this->render('index',[
+           'investor'=>$investor,
            'pagination' => $pagination,
            'announce'=> $announce,
         ]);
