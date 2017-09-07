@@ -11,6 +11,7 @@ use backend\assets\AppAsset;
 use common\widgets\Alert;
 use yii\web\View;
 use kartik\nav\NavX;
+use common\models\User;
 
 AppAsset::register($this);
 ?>
@@ -30,6 +31,9 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div class="wrap">
+
+    <?php $investor = User::find()->where(['id'=>Yii::$app->user->id])->one(); ?>
+
     <?php
     NavBar::begin([
         'brandLabel' => 'Envy',
@@ -50,49 +54,8 @@ AppAsset::register($this);
     //];
     } else {
       $menuItems = [
-            ['label' => 'Management', 'items'=>[
-            ['label'=>'Product Management', 'url'=>['/product-management/index']],
-            ['label'=>'Investor Management', 'url'=>['/investor/index']],
-            ['label'=>'Staff Management', 'url'=>['/user-management/index']],
+            ['label'=>'Investor Profile', 'url'=>['/investor/c-view','id'=>$investor->customer_id]],
 
-        //    '<li class="divider"></li>',
-          //  ['label'=>'Test2', 'url'=>'#'],
-          ]
-      ],
-          ['label'=>'Transactions', 'class'=>'navbars', 'items'=>[
-            ['label'=>'Metal Investment', 'url'=>['/import-metal/index']],
-            ['label'=>'Stock Investment', 'url'=>['/stocks/index']],
-            ['label'=>'Withdraw', 'url'=>['/withdraw/index']],
-            ['label'=>'Deposit', 'url'=>['/deposit/index']],
-            ['label'=>'Purchase', 'url'=>['/purchase/index']],
-        ],
-      ],
-          ['label'=>'Reports', 'class'=>'navbars', 'items'=>[
-          //  ['label'=>'User Log Files', 'url'=>['/user-log/index']],
-            ['label'=>'Investment Overview', 'url'=>['toollist/index']],
-            ['label'=>'Commission Report', 'url'=>['commission/index']],
-            ['label'=>'Customer Report', 'url'=>['toollist/index']],
-        ],
-      ],
-        ['label'=>'Setup', 'class'=>'navbars', 'items'=>[
-          ['label'=>'User Rights', 'url'=>['user-permission/permission-setting']],
-          ['label'=>'Investor Group', 'url'=>['investor-group/index']],
-          ['label'=>'Tier Management', 'url'=>['tier-level/index']],
-          '<li class="divider"></li>',
-          ['label'=>'Gii', 'url'=>['gii/default']],
-          ['label'=>'Annoucement', 'url'=>['announcement/index']],
-          ],
-        ],
-
-          ['label'=>'Misc', 'class'=>'navbars', 'items'=>[
-          ['label'=>'User group', 'url'=>['/user-group/index']],
-          ['label'=>'Department', 'url'=>['/department/index']],
-          ['label'=>'Product Type', 'url'=>['/product-type/index']],
-          ['label'=>'Product Category', 'url'=>['/product-category/index']],
-          ['label'=>'Country', 'url'=>['/country/index']],
-
-        ],
-      ],
 
         //insert
       ];
