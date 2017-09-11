@@ -232,6 +232,9 @@ class PurchaseController extends Controller
         }
     }
 
+    /**
+    *Protected function that creates a new comission record based on the loop  in the create function.
+    */
     protected function comms($xid,$highest,$model){
         $comm = new Commission();
         $comm->transact_id = $model->id;

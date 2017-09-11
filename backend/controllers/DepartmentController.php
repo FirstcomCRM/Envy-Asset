@@ -76,7 +76,7 @@ class DepartmentController extends Controller
                     ],
                     [
                         'actions' => ['logout', 'index'],
-                        'allow' => true,
+                        'allow' =>   true,
                         'roles' => ['@'],
                     ],
                 ],

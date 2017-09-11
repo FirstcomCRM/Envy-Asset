@@ -58,7 +58,8 @@ class SiteController extends Controller
 
     /**
      * Displays homepage.
-     *
+     * Displays the annoucements created in the AnnoucmentController by 5,
+     * Also if the login id is an investor, use the custom view meant for investor. Else, use the staff/employee view.
      * @return string
      */
     public function actionIndex()

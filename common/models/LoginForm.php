@@ -40,6 +40,7 @@ class LoginForm extends Model
      */
     public function validatePassword($attribute, $params)
     {
+    
         if (!$this->hasErrors()) {
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
@@ -55,6 +56,7 @@ class LoginForm extends Model
      */
     public function login()
     {
+
         if ($this->validate()) {
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
         } else {

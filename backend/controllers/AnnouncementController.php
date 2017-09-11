@@ -96,6 +96,7 @@ class AnnouncementController extends Controller
     /**
      * Lists all Announcement models.
      * @return mixed
+     * Uses pagination class to produce the pagination
      */
     public function actionIndex()
     {

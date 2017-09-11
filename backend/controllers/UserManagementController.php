@@ -130,7 +130,8 @@ class UserManagementController extends Controller
     {
         $model = new UserManagement();
 
-        if ($model->load(Yii::$app->request->post())  ) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+              //die();
             if ($model->createUser()) {
                 $model->date_added = date('Y-m-d h:i:s');
                 $model->save(false);
@@ -161,7 +162,7 @@ class UserManagementController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post())  ) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             if ($model->updateUser() ) {
               $model->save(false);
               Yii::$app->session->setFlash('success', "User has been updated");
@@ -219,6 +220,9 @@ class UserManagementController extends Controller
     }
 
 
+    /*
+    * Used for dependent dropdown when selecting the tier
+    */
     public function actionLists($id){
       $data = TierLevel::find()->where(['id'=>$id])->one();
       $count = UserManagement::find()->where(['tier_level'=>$data->connecting_level, 'apply_tier'=>1])->count();

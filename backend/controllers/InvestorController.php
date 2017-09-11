@@ -117,6 +117,7 @@ class InvestorController extends Controller
     /**
      * Displays a single Customer model.
      * @param integer $id
+     * Added three search-type class that shows investor record based on their ids
      * @return mixed
      */
     public function actionView($id)
@@ -157,6 +158,7 @@ class InvestorController extends Controller
     /**
      * Creates a new Customer model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     * Has a investor account login, where creating an investor automatically creates an account to login
      * @return mixed
      */
     public function actionCreate()
@@ -184,6 +186,7 @@ class InvestorController extends Controller
     /**
      * Updates an existing Customer model.
      * If update is successful, the browser will be redirected to the 'view' page.
+     * Update the user account that is used to login as well
      * @param integer $id
      * @return mixed
      */
@@ -227,6 +230,11 @@ class InvestorController extends Controller
         return $this->redirect(['index']);
     }
 
+
+    /**
+    *A custom-view for investors. When investors login, this will show their resepctive records, such as
+    *Also prevents investors to access other applications that is only meant for the staff/employees
+    */
     public function actionCView($id){
       $search_dep = new DepositSearch();
       $search_dep->investor = $id;

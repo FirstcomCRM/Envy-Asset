@@ -88,6 +88,10 @@ class UserPermissionController extends \yii\web\Controller
 
   }
 
+  /*
+  * One type function, get all the controller that managed the site and apply the user-permission via using c
+  *checkboxes
+  */
     public function actionPermissionSetting()
     {
       $controllerlist = [];

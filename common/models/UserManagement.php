@@ -40,7 +40,7 @@ class UserManagement extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules() 
+    public function rules()
     {
         return [
             [['name', 'user_group', 'department', 'email', 'nationality', 'address', 'mobile', 'remark', 'login_id', 'login_password'], 'required'],
@@ -83,6 +83,7 @@ class UserManagement extends \yii\db\ActiveRecord
         ];
     }
     public function createUser(){
+      
       if (!$this->validate() ) {
         return false;
       }else {
