@@ -71,7 +71,7 @@ AppAsset::register($this);
           //  ['label'=>'User Log Files', 'url'=>['/user-log/index']],
             ['label'=>'Investment Overview', 'url'=>['toollist/index']],
             ['label'=>'Commission Report', 'url'=>['commission/index']],
-            ['label'=>'Customer Report', 'url'=>['toollist/index']],
+            ['label'=>'Investor Report', 'url'=>['investor-report/index']],
         ],
       ],
         ['label'=>'Setup', 'class'=>'navbars', 'items'=>[
