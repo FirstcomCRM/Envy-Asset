@@ -26,7 +26,7 @@ $data = null;
         'action' => ['index'],
         'method' => 'get',
     ]); ?>
-
+      
       <div class="row">
         <div class="col-md-3">
           <?php echo $form->field($model,'investor')->label(false)->widget(Select2::className(),[
