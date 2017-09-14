@@ -15,11 +15,14 @@ class PurchaseSearch extends Purchase
     /**
      * @inheritdoc
      */
+    public $start;
+    public $end;
+
     public function rules()
     {
         return [
             [['id','salesperson'], 'integer'],
-            [['investor', 'product', 'share', 'date', 'remarks'], 'safe'],
+            [['investor', 'product', 'share', 'date','start','end', 'remarks'], 'safe'],
             [['price'], 'number'],
         ];
     }
@@ -72,5 +75,35 @@ class PurchaseSearch extends Purchase
             ->andFilterWhere(['like', 'remarks', $this->remarks]);
 
         return $dataProvider;
+    }
+
+    public function report_search($params){
+      $query = Purchase::find();
+
+      // add conditions that should always apply here
+
+      $dataProvider = new ActiveDataProvider([
+          'query' => $query,
+      ]);
+
+      $this->load($params);
+
+      if (!empty($this->date) ) {
+        list($this->start,$this->end) = explode(' - ', $this->date);
+      }else{
+        $this->start = '';
+        $this->end = '';
+      }
+
+      if (!$this->validate()) {
+          // uncomment the following line if you do not want to return any records when validation fails
+          // $query->where('0=1');
+          return $dataProvider;
+      }
+
+      $query->where(['between','date',$this->start,$this->end]);
+
+      return $dataProvider;
+
     }
 }
