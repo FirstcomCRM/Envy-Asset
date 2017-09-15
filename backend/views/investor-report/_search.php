@@ -44,11 +44,10 @@ $data = null;
               <?php echo Html::a('<i class="fa fa-undo" aria-hidden="true"></i> Reset',['index'],['class' => 'btn btn-default']) ?>
               <?php echo Html::a('<i class="fa fa-envelope-open" aria-hidden="true"></i> Email',
               ['compose-email'],['class' => 'btn btn-warning', 'id'=>'email-button']) ?>
+
           </div>
       </div>
     </div>
-
-
 
     <?php ActiveForm::end(); ?>
 

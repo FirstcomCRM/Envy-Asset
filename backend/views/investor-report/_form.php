@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
 use common\models\Investor;
 use common\models\ProductManagement;
 use common\models\UserManagement;
@@ -29,10 +30,10 @@ if (empty($salesperson)) {
 }
 
 ?>
-
+<?php   Pjax::begin(['enablePushState' => false, 'id'=>'inv-form'])  ?>
 <div class="purchase-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id'=>'investor-form', 'options'=>['data-pjax'=>true]]); ?>
 
     <div class="row">
       <div class="col-md-6">
@@ -96,3 +97,4 @@ if (empty($salesperson)) {
     <?php ActiveForm::end(); ?>
 
 </div>
+<?php Pjax::end() ?>

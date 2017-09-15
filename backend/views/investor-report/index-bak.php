@@ -13,10 +13,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <h1>investor-report/index</h1>
 
 <p>
-    You may change the content of this page by modifying
+    You may change the content of this page by modifying INDEX_BAK
     the file <code><?= __FILE__; ?></code>.
 </p>
-
 
 <div class="investor-report-index">
   <div class="panel panel-default">
@@ -38,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('<i class="fa fa-wheelchair" aria-hidden="true"></i> Modal Testing Update', FALSE, ['value' => Url::to(['investor-report/update', 'id' => 3]), 'class' => 'btn btn-default modalButton','id'=>'modalButton' ]); ?>
       </p>
 
-        <?php Pjax::begin(['id'=>'investor', 'linkSelector'=>false]); ?>
+        <?php Pjax::begin(['id'=>'investor','enablePushState' => false]); ?>
          <?= GridView::widget([
             'dataProvider' => $dataProvider,
           //  'filterModel' => $searchModel,
@@ -49,9 +48,9 @@ $this->params['breadcrumbs'][] = $this->title;
                   'attribute'=>'investor',
                   'format'=>'raw',
                   'value'=>function($model){
-                  //  return  Html::a('<i class="fa fa-wheelchair" aria-hidden="true"></i> Modal Testing Update-3',FALSE, ['value' => Url::to(['investor-report/update', 'id' => $model->id]), 'class' => 'modalButton btn btn-default', 'data-pjax'=>0]);
+                    return  Html::a('<i class="fa fa-wheelchair" aria-hidden="true"></i> Modal Testing Update-3',FALSE, ['value' => Url::to(['investor-report/update', 'id' => $model->id]), 'class' => 'modalButton' ]);
                   //  return  Html::a('Profile', ['update', 'id' => 3], ['class' => 'modalButton']) ;
-                    return Retrieve::retrieveInvestor($model->investor);
+                    //return Retrieve::retrieveInvestor($model->investor);
                   },
                 ],
                 [
@@ -77,37 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                  'remarks:ntext',
 
-              //  ['class' => 'yii\grid\ActionColumn'],
-              [
-                'header'=>'Action',
-                'class'=>'yii\grid\ActionColumn',
-                'template'=>'{view}{update}',
-                'options'=>['style'=>'padding:5px'],
-                'buttons'=>[
-                  'view'=>function($url,$model,$key){
-                    return Html::a('<i class="fa fa-eye" aria-hidden="true"></i>',$url,
-                    [
-                //    'id'=>'test',
-                    'data-pjax'=>0,
-                    'class'=>'modalButton',
-                  //  'value'=>Yii::$app->urlManager->createUrl('investor-report/view?'),
-                    'value' => Url::to(['investor-report/view', 'id' => $key])
-                    ]
-                  );
-
-                  },
-                  'update'=>function($url,$model,$key){
-                    return Html::a('<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',$url,
-                    [
-                    //  'id'=>$model->id,
-                      'data-pjax'=>0,
-                      'class'=>'modalButton',
-                      'value' => Url::to(['investor-report/update', 'id' => $key])
-                    ]
-                  );
-                  },
-                ],
-              ],
+                ['class' => 'yii\grid\ActionColumn'],
             ],
         ]); ?>
       <?php Pjax::end(); ?>
@@ -121,7 +90,6 @@ $this->params['breadcrumbs'][] = $this->title;
     'header'=>'Update test',
     'id'=>'modals',
     'size'=>'modal-lg',
-    //'clientOptions' => ['backdrop' => false],
     'footer' => '<a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>',
   //  'closeButton'=>'tag',
   ]);
@@ -133,7 +101,6 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php Modal::end() ?>
-
 
 <?php
 $this->registerJs(
