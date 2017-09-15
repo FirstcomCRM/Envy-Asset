@@ -128,3 +128,7 @@ table.detail-view th {
 table.detail-view td {
     width: 75%;
 }
+
+.modalButton{
+  padding-right: 5px;
+}
