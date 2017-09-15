@@ -35,13 +35,22 @@ class InvestorReportController extends \yii\web\Controller
       ]);
     }
 
+    public function actionView($id)
+    {
+        return $this->renderAjax('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
     public function actionUpdate($id){
       $model = $this->findModel($id);
 
       if ($model->load(Yii::$app->request->post()) && $model->save()) {
-          return $this->redirect(['index']);
+          //return $this->redirect(['index']);die();
+          //die('test11');
         //  return $this->redirect(['view', 'id' => $model->id]);
       } else {
+          //die('test');
           return $this->renderAjax('update', [
               'model' => $model,
           ]);
@@ -64,8 +73,8 @@ class InvestorReportController extends \yii\web\Controller
    }
 
    public function actionComposeEmail(){
-      ini_set('max_execution_time', 180);
-      ini_set("memory_limit", "512M");
+       ini_set('max_execution_time', 180);
+       ini_set("memory_limit", "512M");
        $searchModel = new PurchaseSearch();
        $dataProvider = $searchModel->report_search(Yii::$app->session->get('investor-report'));
 
