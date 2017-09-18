@@ -81,7 +81,6 @@ class InvestorReportController extends \yii\web\Controller
        $newDate = date('M-Y',strtotime($searchModel->start));
        $title = 'Investor Report '.$newDate;
 
-
        $mpdf = new mPDF('utf-8','A3-L');
        $mpdf->content = $this->renderPartial('report-pdf',[
           'searchModel'=>$searchModel,
@@ -112,10 +111,12 @@ class InvestorReportController extends \yii\web\Controller
         ->attachContent($attach,['fileName'=>$title.'.pdf','contentType' => 'application/pdf'])
         ->send();
         Yii::$app->session->setFlash('success', "Email sent");
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+
+        //return $this->render('index', [
+          //  'searchModel' => $searchModel,
+            //'dataProvider' => $dataProvider,
+      //  ]);
+        return $this->redirect(['index']);
       //  print_r(array_unique($toArray));
       //  foreach (array_unique($toArray) as $key => $value) {
         //  echo $value.'<br>';
