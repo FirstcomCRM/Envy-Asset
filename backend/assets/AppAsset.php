@@ -20,6 +20,7 @@ class AppAsset extends AssetBundle
       'js/user-permission.js',
       'js/custom_user.js',
       'js/modals.js',
+      'js/reports.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
