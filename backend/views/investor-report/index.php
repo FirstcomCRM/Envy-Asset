@@ -10,13 +10,6 @@ use common\components\Retrieve;
 $this->title = 'Investor Report';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<h1>investor-report/index</h1>
-
-<p>
-    You may change the content of this page by modifying
-    the file <code><?= __FILE__; ?></code>.
-</p>
-
 
 <div class="investor-report-index">
   <div class="panel panel-default">
@@ -25,6 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="panel-body">
         <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+        <?= Html::checkbox('confirm', false, ['label' => 'Confirm Report' ,'class'=>'email-checkbox']); ?>
+        <div id="email-div">
+          <?php echo Html::a('<i class="fa fa-envelope-open" aria-hidden="true"></i> Send Email',
+          ['compose-email'],['class' => 'btn btn-warning send-email', 'id'=>'email-button']) ?>
+        </div>
+
+
     </div>
   </div>
 
@@ -34,8 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="panel-body">
       <p>
-        <?= Html::a('<i class="fa fa-plus" aria-hidden="true"></i> Predefined Update', ['update', 'id'=>3], ['class' => 'btn btn-default modalUpdate']) ?>
-        <?= Html::a('<i class="fa fa-wheelchair" aria-hidden="true"></i> Modal Testing Update', FALSE, ['value' => Url::to(['investor-report/update', 'id' => 3]), 'class' => 'btn btn-default modalButton','id'=>'modalButton' ]); ?>
+        <?php Html::a('<i class="fa fa-plus" aria-hidden="true"></i> Predefined Update', ['update', 'id'=>3], ['class' => 'btn btn-default modalUpdate']) ?>
+        <?php Html::a('<i class="fa fa-wheelchair" aria-hidden="true"></i> Modal Testing Update', FALSE, ['value' => Url::to(['investor-report/update', 'id' => 3]), 'class' => 'btn btn-default modalButton','id'=>'modalButton' ]); ?>
       </p>
 
         <?php Pjax::begin(['id'=>'investor', 'linkSelector'=>false]); ?>
@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
           //  'filterModel' => $searchModel,
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
-                'id',
+            //    'id',
                 [
                   'attribute'=>'investor',
                   'format'=>'raw',
@@ -116,9 +116,11 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 
+
+
 <?php
   Modal::begin([
-    'header'=>'Update test',
+    'header'=>'Investor Report',
     'id'=>'modals',
     'size'=>'modal-lg',
     //'clientOptions' => ['backdrop' => false],

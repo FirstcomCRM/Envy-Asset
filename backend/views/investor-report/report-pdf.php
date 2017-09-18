@@ -4,7 +4,12 @@ use common\components\Retrieve;
 ?>
 
 <?php
-$newDate = date('M-Y',strtotime($searchModel->start));
+if (!empty($searchModel->start)) {
+  $newDate = date('M-Y',strtotime($searchModel->start));
+}else{
+  $newData = '';
+}
+
  ?>
 <style>
   .head{
