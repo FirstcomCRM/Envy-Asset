@@ -127,7 +127,7 @@ class WithdrawController extends Controller
     public function actionCreate()
     {
         $model = new Withdraw();
-
+        $model->date = date('Y-m-d');
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             $model->date_added = date('Y-m-d h:i:s');
             $model->save();
