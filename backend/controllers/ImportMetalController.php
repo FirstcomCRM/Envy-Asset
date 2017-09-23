@@ -191,6 +191,21 @@ class ImportMetalController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionTruncate(){
+      Yii::$app->db->createCommand()->truncateTable('import_metal')->execute();
+      Yii::$app->db->createCommand()->truncateTable('metal_al')->execute();
+      Yii::$app->db->createCommand()->truncateTable('metal_au')->execute();
+      Yii::$app->db->createCommand()->truncateTable('metal_cu')->execute();
+      Yii::$app->db->createCommand()->truncateTable('metal_ni')->execute();
+      Yii::$app->db->createCommand()->truncateTable('metal_nickel_deals')->execute();
+      Yii::$app->db->createCommand()->truncateTable('metal_oil')->execute();
+      Yii::$app->db->createCommand()->truncateTable('metal_unrealised')->execute();
+      Yii::$app->db->createCommand()->truncateTable('metal_unrealised_gain')->execute();
+      Yii::$app->db->createCommand()->truncateTable('metal_zn')->execute();
+      Yii::$app->session->setFlash('success',"Truncate Successful");
+      return $this->redirect(['index']);
+    }
+
     /**
      * Finds the ImportMetal model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
