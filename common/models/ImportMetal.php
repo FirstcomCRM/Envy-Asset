@@ -222,6 +222,8 @@ class ImportMetal extends \yii\db\ActiveRecord
         $oil->save(false);
       }
 
+
+        //
       $sheet = $objPHPExcel->getSheet(2);
       $highestRow = $sheet->getHighestRow();
       $highestColumn = $sheet->getHighestColumn();
@@ -233,55 +235,61 @@ class ImportMetal extends \yii\db\ActiveRecord
         'zn'=>'Zinc (unrealised)',
         'cu'=>'Copper (unrealised)',
         'un'=>'Unrealised gain/(loss)',
-
+        're'=>'Realised gain/(loss)',
       ];
       $ammo = 0;
+        for ($row=5; $row<=$highestRow ; $row++) {
+          $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
+          $node = array_search($rowData[0][0],$metal_un);
+          if (!empty($node) && ($node != 're' && $node != 'un')) {
+            $metal = new MetalUnrealised();
+            $metal->import_metal_id = $this->id;
+            $metal->date_uploaded = $this->date_file;
+            $metal->commodity = $rowData[0][0];
+            $metal->position = $rowData[0][1];
+            $metal->entry_date_usd = date($format = "Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($rowData[0][2]));
+            $metal->entry_price_usd = $rowData[0][3];
+            $metal->entry_value_usd = $rowData[0][4];
+            $metal->exit_date_usd = date($format = "Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($rowData[0][6]));
+            $metal->exit_price_usd = $rowData[0][7];
+            $metal->exit_value_usd = $rowData[0][8];
+            $metal->realised_gain_usd = $rowData[0][10];
+            $metal->realised_gain_percent = (float)$rowData[0][11];
+            $metal->profit_lost_usd = $rowData[0][12];
+            $metal->profit_lost_sgd = $rowData[0][13];
+            $metal->save(false);
+          }elseif ($node == 're' || $node=='un' || $ammo != 0) {
+            if ($node == 're') {
+              $gain = new MetalUnrealisedGain();
+              $gain->date_uploaded = $this->date_file;
+              $gain->import_metal_id = $this->id;
+              $gain->re_description = $rowData[0][0];
+              $gain->re_usd = $rowData[0][1];
+              $gain->re_sgd = $rowData[0][3];
+              $gain->save(false);
+              $ammo = 1;
+            }elseif($node == 'un'){
+              $update = MetalUnrealisedGain::find()->where(['import_metal_id'=>$this->id])->one();
+              $update->description = $rowData[0][0];
+              $update->usd = $rowData[0][1];
+              $update->sgd = $rowData[0][3];
+              $update->save(false);
 
-      for ($row=5; $row<=$highestRow ; $row++) {
-        $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
-
-        $node = array_search($rowData[0][0],$metal_un);
-
-        if (!empty($node) && $node != 'un') {
-          $metal = new MetalUnrealised();
-          $metal->import_metal_id = $this->id;
-          $metal->date_uploaded = $this->date_file;
-          $metal->commodity = $rowData[0][0];
-          $metal->position = $rowData[0][1];
-          $metal->entry_date_usd = date($format = "Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($rowData[0][2]));
-          $metal->entry_price_usd = $rowData[0][3];
-          $metal->entry_value_usd = $rowData[0][4];
-          $metal->exit_date_usd = date($format = "Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($rowData[0][6]));
-          $metal->exit_price_usd = $rowData[0][7];
-          $metal->exit_value_usd = $rowData[0][8];
-          $metal->realised_gain_usd = $rowData[0][10];
-          $metal->realised_gain_percent = (float)$rowData[0][11];
-          $metal->profit_lost_usd = $rowData[0][12];
-          $metal->profit_lost_sgd = $rowData[0][13];
-          $metal->save(false);
-        }elseif ($node == 'un' || $ammo == 1) {
-          if ($ammo == 1) {
-            $update = MetalUnrealisedGain::find()->where(['import_metal_id'=>$this->id])->one();
-            $update->gain_loss = $rowData[0][3];
-            $update->save(false);
-            $ammo = 0;
-            break;
-          }else{
-            $gain = new MetalUnrealisedGain();
-            $gain->date_uploaded = $this->date_file;
-            $gain->import_metal_id = $this->id;
-            $gain->description = $rowData[0][0];
-            $gain->usd = $rowData[0][1];
-            $gain->sgd = $rowData[0][3];
-            $gain->save(false);
+            }elseif ($ammo == 1) { //update re_gain_loss at $node == re
+              $update = MetalUnrealisedGain::find()->where(['import_metal_id'=>$this->id])->one();
+              $update->re_gain_loss = $rowData[0][3];
+              $update->save(false);
+              $ammo =2;
+            }elseif ($ammo === 2) {//update gain_loss at $node == un
+              $update = MetalUnrealisedGain::find()->where(['import_metal_id'=>$this->id])->one();
+              $update->gain_loss = $rowData[0][3];
+              $update->save(false);
+            }
+          //  $ammo++;
+          } else{
+            continue;
           }
-          $ammo = 1;
-        } else{
-          continue;
         }
-
-      }
-
 
 
       //insert nickel deal here
