@@ -15,11 +15,14 @@ class CommissionSearch extends Commission
     /**
      * @inheritdoc
      */
+    public $start;
+    public $end;
+
     public function rules()
     {
         return [
             [['id', 'transact_id', 'sales_person'], 'integer'],
-            [['transact_type', 'transact_date', 'date_added'], 'safe'],
+            [['transact_type', 'transact_date', 'date_added','start','end'], 'safe'],
             [['transact_amount', 'commision_percent', 'commission'], 'number'],
         ];
     }
@@ -51,6 +54,14 @@ class CommissionSearch extends Commission
         ]);
 
         $this->load($params);
+        
+        if (!empty($this->transact_date) ) {
+          list($this->start,$this->end) = explode(' - ', $this->transact_date);
+        }else{
+          $this->start = '';
+          $this->end = '';
+        }
+
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -63,14 +74,14 @@ class CommissionSearch extends Commission
             'id' => $this->id,
             'transact_id' => $this->transact_id,
             'transact_amount' => $this->transact_amount,
-            'transact_date' => $this->transact_date,
             'sales_person' => $this->sales_person,
             'commision_percent' => $this->commision_percent,
             'commission' => $this->commission,
             'date_added' => $this->date_added,
         ]);
 
-        $query->andFilterWhere(['like', 'transact_type', $this->transact_type]);
+        $query->andFilterWhere(['like', 'transact_type', $this->transact_type])
+              ->andFilterWhere(['between','transact_date',$this->start,$this->end]);
 
         return $dataProvider;
     }
