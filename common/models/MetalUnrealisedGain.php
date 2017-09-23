@@ -32,9 +32,9 @@ class MetalUnrealisedGain extends \yii\db\ActiveRecord
         return [
           //  [['import_metal_id', 'description', 'usd', 'sgd', 'gain_loss'], 'required'],
             [['import_metal_id'], 'integer'],
-            [['usd', 'sgd', 'gain_loss'], 'number'],
+            [['usd', 'sgd', 'gain_loss','re_usd','re_sgd','re_gain_loss'], 'number'],
             [['date_uploaded'], 'safe'],
-            [['description'], 'string', 'max' => 75],
+            [['description','re_description'], 'string', 'max' => 75],
         ];
     }
 
@@ -47,10 +47,14 @@ class MetalUnrealisedGain extends \yii\db\ActiveRecord
             'id' => 'ID',
             'date_uploaded'=>'Date Uploaded',
             'import_metal_id' => 'Import Metal ID',
-            'description' => 'Description',
+            'description' => 'Unrealised Description',
             'usd' => 'USD',
             'sgd' => 'SGD',
             'gain_loss' => 'Gain/Loss %',
+            're_description'=>'Realised Description',
+            're_usd'=>'USD',
+            're_sgd'=>'SGD',
+            're_gain_loss'=>'Gain/Loss %',
         ];
     }
 }
