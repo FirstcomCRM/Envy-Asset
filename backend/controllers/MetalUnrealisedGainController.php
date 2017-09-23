@@ -147,8 +147,10 @@ class MetalUnrealisedGainController extends Controller
     {
         $model = $this->findModel($id);
         $model->gain_loss = $model->gain_loss * 100;
+        $model->re_gain_loss = $model->re_gain_loss * 100;
         if ($model->load(Yii::$app->request->post()) ) {
             $model->gain_loss = $model->gain_loss/100;
+            $model->re_gain_loss = $model->re_gain_loss/100;
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
