@@ -29,12 +29,14 @@ $this->params['breadcrumbs'][] = $this->title;
           //  'id',
           //  'import_metal_id',
             'date_uploaded',
+            'description',
             [
               'attribute'=>'usd',
               'value'=>function($model){
                 return Retrieve::retrieveFormat($model->usd);
               },
             ],
+
             [
               'attribute'=>'sgd',
               'value'=>function($model){
@@ -45,6 +47,25 @@ $this->params['breadcrumbs'][] = $this->title;
               'attribute'=>'gain_loss',
               'value'=> function($model){
                 return $model->gain_loss * 100;
+              },
+            ],
+            're_description',
+            [
+              'attribute'=>'re_usd',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->re_usd);
+              },
+            ],
+            [
+              'attribute'=>'re_sgd',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->re_sgd);
+              },
+            ],
+            [
+              'attribute'=>'re_gain_loss',
+              'value'=> function($model){
+                return $model->re_gain_loss * 100;
               },
             ],
         ],

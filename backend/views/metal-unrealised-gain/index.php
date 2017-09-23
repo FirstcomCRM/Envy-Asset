@@ -68,6 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['class' => 'yii\grid\SerialColumn'],
 
                         'date_uploaded',
+                        'description',
                         [
                           'attribute'=>'usd',
                           'value'=>function($model){
