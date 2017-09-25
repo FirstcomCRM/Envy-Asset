@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $model common\models\MetalNickelDeals */
 
@@ -33,16 +33,66 @@ $this->params['breadcrumbs'][] = $this->title;
             'description',
             'total_deal_size',
             'contract_period',
-            'purchase_price_a',
-            'insurance_cost_a',
-            'forward_price',
-            'final_sales_price',
-            'purchase_price_b',
-            'insurance_cost_b',
-            'total_cost_price',
-            'unrealised_profit_a',
-            'commision',
-            'unrealised_profit_b',
+            [
+              'attribute'=>'purchase_price_a',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->purchase_price_a);
+              },
+            ],
+            [
+              'attribute'=>'insurance_cost_a',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->insurance_cost_a);
+              },
+            ],
+            [
+              'attribute'=>'forward_price',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->forward_price);
+              },
+            ],
+            [
+              'attribute'=>'final_sales_price',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->final_sales_price);
+              },
+            ],
+            [
+              'attribute'=>'purchase_price_b',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->purchase_price_b);
+              },
+            ],
+            [
+              'attribute'=>'insurance_cost_b',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->insurance_cost_b);
+              },
+            ],
+            [
+              'attribute'=>'total_cost_price',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->total_cost_price);
+              },
+            ],
+            [
+              'attribute'=>'unrealised_profit_a',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->unrealised_profit_a);
+              },
+            ],
+            [
+              'attribute'=>'commision',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->commision);
+              },
+            ],
+            [
+              'attribute'=>'unrealised_profit_b',
+              'value'=>function($model){
+                return Retrieve::retrieveFormat($model->unrealised_profit_b);
+              },
+            ],
             'net_unrealised',
         ],
     ]) ?>
