@@ -11,6 +11,7 @@ use common\models\UserPermission;
 use common\models\Purchase;
 use common\models\PurchaseSearch;
 use common\models\Investor;
+use common\components\Retrieve;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -95,6 +96,8 @@ class InvestorReportController extends \yii\web\Controller
     {
       $searchModel = new PurchaseSearch();
       $dataProvider = $searchModel->report_search(Yii::$app->request->queryParams);
+
+
       $session = Yii::$app->session;
       if (!$session->isActive) {
           $session->open();
@@ -153,12 +156,11 @@ class InvestorReportController extends \yii\web\Controller
        $newDate = date('M-Y',strtotime($searchModel->start));
        $title = 'Investor Report '.$newDate;
 
-       $mpdf = new mPDF('utf-8','A3-L');
-       $mpdf->content = $this->renderPartial('report-pdf',[
-          'searchModel'=>$searchModel,
-          'dataProvider' => $dataProvider,
+       $mpdf = new mPDF('utf-8','A3');
+       $mpdf->content = $this->renderPartial('row-pdf',[
+           'searchModel'=>$searchModel,
         ]);
-        $mpdf->setFooter('{PAGENO}');
+        $mpdf->setFooter('|GROWTH - CONSISTENCY - ETHICS|{PAGENO}');
         $mpdf->WriteHTML($mpdf->content);
         $attach = $mpdf->Output('','S');
         foreach ($dataProvider->getModels() as $key => $value) {
@@ -172,6 +174,7 @@ class InvestorReportController extends \yii\web\Controller
         $message .= '<p>Please find attached file.</p>';
         $message .= '<p>Thank you.</p>';
         $testcc = 'eumerjoseph.ramos@yahoo.com';
+     // $testcc = 'jasonchong@firstcom.com.sg';
         Yii::$app->mailer->compose()
         ->setTo($toArray)
       //  ->setFrom([$eng->email => $eng->fullname])
@@ -182,21 +185,69 @@ class InvestorReportController extends \yii\web\Controller
     //    ->setReplyTo([$eng->email])
         ->attachContent($attach,['fileName'=>$title.'.pdf','contentType' => 'application/pdf'])
         ->send();
-        Yii::$app->session->setFlash('success', "Email sent");
-
-        //return $this->render('index', [
-          //  'searchModel' => $searchModel,
-            //'dataProvider' => $dataProvider,
-      //  ]);
+        Yii::$app->session->setFlash('success', "Email sent to all investor");
         return $this->redirect(['index']);
-      //  print_r(array_unique($toArray));
-      //  foreach (array_unique($toArray) as $key => $value) {
-        //  echo $value.'<br>';
-        //}
+
+   }
+
+   public function actionDownloadPdf($id, $type=null){
+     $model = $this->findModel($id);
+     $searchModel = new PurchaseSearch();
+     $dataProvider =  $searchModel->report_search(Yii::$app->session->get('investor-report'));
+     $newDate = date('M-Y',strtotime($searchModel->start));
+     $invest = Retrieve::retrieveInvestor($model->investor);
+     $title = $invest.'-'.$id.'-'.$newDate;
+
+     $mpdf = new mPDF('utf-8','A3');
+     $mpdf->content = $this->renderPartial('row-pdf',[
+        'model'=>$model,
+        'searchModel'=>$searchModel,
+      ]);
+      $mpdf->setFooter('|GROWTH - CONSISTENCY - ETHICS|{PAGENO}');
+      $mpdf->WriteHTML($mpdf->content);
+      if ($type=='email') {
+        $attach = $mpdf->Output('','S');
+        $this->singleEmail($model,$attach,$title);
+        Yii::$app->session->setFlash('success', "Email sent");
+        return $this->redirect(['d-index']);
+
+      }else{
+        $mpdf->Output($title.'.pdf','D');
+      //  $mpdf->Output($title.'.pdf','I');
+        exit();
+      }
+   }
+
+   public function actionDIndex(){
+     $searchModel = new PurchaseSearch();
+     $dataProvider =  $searchModel->report_search(Yii::$app->session->get('investor-report'));
+
+     return $this->render('d-index', [
+         'searchModel' => $searchModel,
+         'dataProvider' => $dataProvider,
+     ]);
+   }
 
 
-        //$mpdf->Output($title.'.pdf','I');
-        //exit;
+   protected function singleEmail($model,$attach,$title){
+  //   die('email');
+     $cust = Investor::find()->where(['id'=>$model->investor])->one();
+     $message = "<p>Greetings,</p>";
+     $message .= '<p>Please find attached file...</p>';
+     $message .= '<p>Thank you.</p>';
+     $testcc = 'eumerjoseph.ramos@yahoo.com';
+    // $testcc = 'jasonchong@firstcom.com.sg';
+     Yii::$app->mailer->compose()
+     ->setTo($cust->email)
+   //  ->setFrom([$eng->email => $eng->fullname])
+     ->setFrom(['no-reply@envy.cc' => 'no-reply@envy.cc'])
+     ->setCc($testcc) //temp
+     ->setSubject('Investor Report')
+     ->setHtmlBody($message)
+ //    ->setReplyTo([$eng->email])
+     ->attachContent($attach,['fileName'=>$title.'.pdf','contentType' => 'application/pdf'])
+     ->send();
+
    }
 
     protected function findModel($id)
