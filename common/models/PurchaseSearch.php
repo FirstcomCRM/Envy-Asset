@@ -74,7 +74,7 @@ class PurchaseSearch extends Purchase
             ->andFilterWhere(['like', 'share', $this->share])
             ->andFilterWhere(['like', 'remarks', $this->remarks]);
 
-        return $dataProvider;
+        return $dataProvider; 
     }
 
     public function report_search($params){
@@ -85,7 +85,8 @@ class PurchaseSearch extends Purchase
       $dataProvider = new ActiveDataProvider([
           'query' => $query,
           'pagination'=>[
-            'pageSize'=>5,
+            'pageSize'=>20,
+            //'class'=>'testdata',
           ],
       ]);
 
