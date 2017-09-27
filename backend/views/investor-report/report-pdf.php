@@ -15,6 +15,15 @@ if (!empty($searchModel->start)) {
   .head{
     margin-bottom: 15px;
   }
+
+  .page-break{
+    page-break-after: always;
+  }
+
+  .cover-image{
+    text-align: center;
+  }
+
   .investor-report{
     width: 100%;
     border-collapse: collapse;
@@ -25,6 +34,23 @@ if (!empty($searchModel->start)) {
   }
 
 </style>
+
+<div class="cover-image">
+  <?php  $front = Yii::getAlias('@images').'/'.'front-page.png' ?>
+  <?php  $logo = Yii::getAlias('@images').'/'.'logo.png' ?>
+  <img src="<?php echo $logo ?>" alt="logo" class="front-page">
+  <img src="<?php echo $front ?>" alt="Front" class="front-page">
+  <div class="cover-description">
+    <h1><strong>Investor Report</strong></h1>
+    <h3>As of <?php echo $endDate ?></h3>
+    <h3>Prepared by Envy Asset Management Pte Ltd</h3>
+  </div>
+</div>
+
+
+<div class="page-break">
+
+</div>
 
 <div class="head">
   Investor Report for : <?php echo $newDate ?>

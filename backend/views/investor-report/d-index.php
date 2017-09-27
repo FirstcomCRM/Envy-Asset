@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php Html::a('<i class="fa fa-wheelchair" aria-hidden="true"></i> Modal Testing Update', FALSE, ['value' => Url::to(['investor-report/update', 'id' => 3]), 'class' => 'btn btn-default modalButton','id'=>'modalButton' ]); ?>
       </p>
 
-        <?php Pjax::begin(['id'=>'investor', 'linkSelector'=>false]); ?>
+      <?php Pjax::begin(['id'=>'investor', 'linkSelector'=>false]); ?>
          <?= GridView::widget([
             'dataProvider' => $dataProvider,
           //  'filterModel' => $searchModel,
