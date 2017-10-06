@@ -97,7 +97,6 @@ class InvestorReportController extends \yii\web\Controller
       $searchModel = new PurchaseSearch();
       $dataProvider = $searchModel->report_search(Yii::$app->request->queryParams);
 
-
       $session = Yii::$app->session;
       if (!$session->isActive) {
           $session->open();

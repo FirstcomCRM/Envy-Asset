@@ -98,7 +98,7 @@ class CommissionController extends Controller
     {
         $searchModel = new CommissionSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
