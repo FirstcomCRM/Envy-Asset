@@ -48,10 +48,13 @@ class Commission extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'transact_id' => 'Transaction ID',
+          //  'transact_id' => 'Transaction ID',
+            'transact_id' => 'Purchase No',
             'transact_type' => 'Transaction Type',
-            'transact_amount' => 'Transaction Amount',
-            'transact_date' => 'Transaction Date',
+            //'transact_amount' => 'Transaction Amount',
+            'transact_amount' => 'Amount',
+            //'transact_date' => 'Transaction Date',
+            'transact_date' => 'Date',
             'sales_person' => 'Sales Person',
             'commision_percent' => 'Commision Percentage',
             'commission' => 'Commission',
