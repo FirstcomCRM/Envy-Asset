@@ -19,6 +19,7 @@ $sales = ArrayHelper::map($data,'id','name');
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        //'method' => 'post',
     ]); ?>
 
     <div class="row">
@@ -49,6 +50,9 @@ $sales = ArrayHelper::map($data,'id','name');
               'allowClear' => true
             ],
           ]) ?>
+      </div>
+      <div class="col-md-3">
+        <?php echo $form->field($model,'transact_id')->textInput(['placeholder'=>'Purchase No'])->label(false) ?>
       </div>
       <div class="col-md-3">
         <div class="form-group">

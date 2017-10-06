@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="commission-index">
 
+
     <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Search</h3>
@@ -22,53 +23,67 @@ $this->params['breadcrumbs'][] = $this->title;
       </div>
     </div>
 
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">List</h3>
-      </div>
-      <div class="panel-body">
+    <?php //if (count($dataProvider->getModels()) != 0): ?>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">List</h3>
+        </div>
+        <div class="panel-body">
 
-        <?php Pjax::begin(); ?>
-          <?= GridView::widget([
-                'dataProvider' => $dataProvider,
-                //'filterModel' => $searchModel,
-                'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
-                    'transact_id',
-                    'transact_type',
-                    [
-                      'attribute'=>'transact_amount',
-                      'value'=>function($model){
-                        return Retrieve::retrieveFormat($model->transact_amount);
-                      }
-                    ],
-                    'transact_date',
-                    [
-                      'attribute'=>'sales_person',
-                      'value'=> function($model){
-                        return Retrieve::retrieveUsernameManagement($model->sales_person);
-                      },
-                    ],
-                //    'sales_person',
-                    [
-                      'attribute'=>'commision_percent',
-                      'value'=>function($model){
-                        return $model->commision_percent*100;
-                      },
-                    ],
-                    [
-                      'attribute'=>'commission',
-                      'value'=>function($model){
-                        return Retrieve::retrieveFormat($model->commission);
-                      }
-                    ],
+          <?php Pjax::begin(); ?>
+            <?= GridView::widget([
+                  'dataProvider' => $dataProvider,
+                  //'filterModel' => $searchModel,
+                  'columns' => [
+                      ['class' => 'yii\grid\SerialColumn'],
+                      'transact_id',
+                      'transact_date',
+                      [
+                        'attribute'=>'sales_person',
+                        'value'=> function($model){
+                          return Retrieve::retrieveUsernameManagement($model->sales_person);
+                        },
+                      ],
+                      [
+                        'attribute'=>'commision_percent',
+                        'value'=>function($model){
+                          return $model->commision_percent*100;
+                        },
+                      ],
+                      [
+                        'attribute'=>'transact_amount',
+                        'value'=>function($model){
+                          return Retrieve::retrieveFormat($model->transact_amount);
+                        }
+                      ],
 
-                    ['class' => 'yii\grid\ActionColumn'],
-                ],
-            ]); ?>
-        <?php Pjax::end(); ?>
+
+                  //    'sales_person',
+
+                      [
+                        'attribute'=>'commission',
+                        'value'=>function($model){
+                          return Retrieve::retrieveFormat($model->commission);
+                        }
+                      ],
+
+                    //  ['class' => 'yii\grid\ActionColumn'],
+                    [
+                      'header'=>'Action',
+                      'class'=>'yii\grid\ActionColumn',
+                      'template'=>'{view}',
+                    ],
+                  ],
+              ]); ?>
+          <?php Pjax::end(); ?>
+        </div>
       </div>
-    </div>
+    <?php //else: ?>
+      <!---<div class="alert alert-warning">
+        <strong>Warning!</strong> Indicates a warning that might need attention.
+      </div>--->
+    <?php //endif; ?>
+
 
 
 </div>
