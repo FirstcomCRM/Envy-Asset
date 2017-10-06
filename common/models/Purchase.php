@@ -47,7 +47,8 @@ class Purchase extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+        //    'id' => 'ID',
+            'id' => 'Purchase No',
             'investor' => 'Investor',
             'product' => 'Product',
             'share' => 'Share',
