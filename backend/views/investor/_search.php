@@ -30,7 +30,7 @@ $data = null;
       <div class="col-md-3">
         <?php echo $form->field($model,'company_name')->label(false)->widget(Select2::className(),[
            'data'=>$company,
-           'options'=>['placeholder'=>'Investor '],
+           'options'=>['placeholder'=>'Investor ', 'class'=>'qty-invoice'],
            'theme'=> Select2::THEME_BOOTSTRAP,
            'size'=> Select2::MEDIUM,
            'pluginOptions' => [

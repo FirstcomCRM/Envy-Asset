@@ -105,9 +105,7 @@ foreach ($deposit->getModels() as $key => $value) {
                     'remarks:ntext',
                   //  ['class' => 'yii\grid\ActionColumn'],
                   [
-                    'header'=>'Action',
-                    'class'=>'yii\grid\ActionColumn',
-                    'template'=>'{view}{update}',
+                    
                     'buttons'=>[
                       'view'=>function($url,$model){
                         return Html::a('<i class="fa fa-eye" aria-hidden="true"></i> ',$url,['id'=>$model->id, 'title'=>Yii::t('app','View'), 'data-pjax'=>0]);
