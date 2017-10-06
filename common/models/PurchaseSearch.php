@@ -74,7 +74,7 @@ class PurchaseSearch extends Purchase
             ->andFilterWhere(['like', 'share', $this->share])
             ->andFilterWhere(['like', 'remarks', $this->remarks]);
 
-        return $dataProvider; 
+        return $dataProvider;
     }
 
     public function report_search($params){
@@ -105,7 +105,14 @@ class PurchaseSearch extends Purchase
           return $dataProvider;
       }
 
-      $query->where(['between','date',$this->start,$this->end]);
+      if (!empty($this->id) || !empty($this->salesperson) || !empty($this->date) ) {
+        $query->andFilterwhere(['between','date',$this->start,$this->end])
+              ->andFilterWhere(['salesperson'=>$this->salesperson])
+              ->andFilterwhere(['id'=>$this->id]);
+      }else{
+        $query->andFilterwhere(['id'=>0]);
+      }
+
 
       return $dataProvider;
 
