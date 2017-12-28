@@ -19,7 +19,7 @@ class StocksSearch extends Stocks
     {
         return [
             [['id', 'added_by', 'edited_by'], 'integer'],
-            [['stock', 'date_created', 'date_edited'], 'safe'],
+            [['stock', 'add_in', 'buy_in_price', 'current_market', 'unrealized', 'date_created', 'date_edited', 'date_added'], 'safe'],
             [['price'], 'number'],
         ];
     }
@@ -66,9 +66,14 @@ class StocksSearch extends Stocks
             'date_edited' => $this->date_edited,
             'added_by' => $this->added_by,
             'edited_by' => $this->edited_by,
+            'date_added' => $this->date_added,
         ]);
 
-        $query->andFilterWhere(['like', 'stock', $this->stock]);
+        $query->andFilterWhere(['like', 'stock', $this->stock])
+            ->andFilterWhere(['like', 'add_in', $this->add_in])
+            ->andFilterWhere(['like', 'buy_in_price', $this->buy_in_price])
+            ->andFilterWhere(['like', 'current_market', $this->current_market])
+            ->andFilterWhere(['like', 'unrealized', $this->unrealized]);
 
         return $dataProvider;
     }
