@@ -95,17 +95,28 @@ class InvestorReportController extends \yii\web\Controller
     public function actionIndex()
     {
       $searchModel = new PurchaseSearch();
-      $dataProvider = $searchModel->report_search(Yii::$app->request->queryParams);
+
+      $request = Yii::$app->request;
 
       $session = Yii::$app->session;
       if (!$session->isActive) {
           $session->open();
       }
+
+      $test = $request->get();
+      if (array_key_exists('PurchaseSearch', $test)) {
+
+      }else{
+          $searchModel->dummy_id = 0;
+      }
+      $dataProvider = $searchModel->report_search(Yii::$app->request->queryParams);
+
       $session['investor-report'] = Yii::$app->request->queryParams;
     //  $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
       return $this->render('index', [
           'searchModel' => $searchModel,
           'dataProvider' => $dataProvider,
+          'test'=>$test,
       ]);
     }
 
