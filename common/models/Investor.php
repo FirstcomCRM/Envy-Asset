@@ -21,6 +21,7 @@ class Investor extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+     public $file;
      public function behaviors()
       {
        return [
@@ -47,6 +48,9 @@ class Investor extends \yii\db\ActiveRecord
             [['email'], 'string', 'max' => 50],
             [['email'],'email'],
             [['date_added'],'safe'],
+            [['file'],'file','skipOnEmpty'=>false, 'mimeTypes'=>'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+               'wrongMimeType'=>'Invalid file format. Please use .xls or .xlsx',
+            ],
         ];
     }
 
@@ -139,5 +143,36 @@ class Investor extends \yii\db\ActiveRecord
 
       }
 
+    }
+
+    public function upload(){
+      $filename = $this->file->name;
+      $this->file->saveAs(Yii::getAlias('@investor').'/'.$filename);
+      return $filename;
+    }
+
+    public function importExcel($filename){
+      $inputFile = Yii::getAlias('@investor').'/'.$filename;
+      try {
+        $inputFileType = \PHPExcel_IOFactory::identify($inputFile);
+        $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+        $objPHPExcel = $objReader->load($inputFile);
+      } catch (Exception $e) {
+        die('Error');
+      }
+
+      foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+        $highestRow = $worksheet->getHighestRow();
+        for ($row=2; $row <= $highestRow ; $row++) {
+          $invest = new Investor();
+          $invest->company_name = $worksheet->getCellByColumnAndRow(0, $row)->getValue();
+          $invest->contact_person = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+          $invest->email = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+          $invest->mobile =$worksheet->getCellByColumnAndRow(3, $row)->getValue();
+          $invest->address = $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+          $invest->remark = $worksheet->getCellByColumnAndRow(5, $row)->getValue();
+          $invest->save(false);
+        }
+      }
     }
 }
