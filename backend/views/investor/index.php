@@ -28,6 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="panel-body">
         <div class="text-right">
           <?= Html::a('<i class="fa fa-plus" aria-hidden="true"></i> Add', ['create'], ['class' => 'btn btn-default']) ?>
+          <?= Html::a('<i class="fa fa-upload" aria-hidden="true"></i> Import', ['import'], ['class' => 'btn btn-success']) ?>
+          <?= Html::a('<i class="fa fa-download" aria-hidden="true"></i> Download Template', ['download'], ['class' => 'btn btn-success']) ?>
         </div>
         <br>
           <div class="table-responsive">
