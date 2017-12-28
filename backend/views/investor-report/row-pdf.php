@@ -347,6 +347,10 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
   </table>
 </div>
 
+
+
+
+
 <?php
 $al = null;
 $cu =null;
