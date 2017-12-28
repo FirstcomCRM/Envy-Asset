@@ -16,6 +16,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'add_in')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'buy_in_price')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'current_market')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'unrealized')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '<i class="fa fa-pencil" aria-hidden="true"></i> Create' : '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update',

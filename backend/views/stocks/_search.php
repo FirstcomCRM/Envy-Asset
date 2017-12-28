@@ -15,19 +15,35 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <div class="row">
-      <div class="col-md-3">
-        <?= $form->field($model, 'stock')->label(false)->textInput(['placeholder'=>'Stock']) ?>
-      </div>
-      <div class="col-md-3">
-        <div class="form-group">
-            <?= Html::submitButton('<i class="fa fa-search" aria-hidden="true"></i> Search', ['class' => 'btn btn-default']) ?>
-            <?php echo Html::a('<i class="fa fa-undo" aria-hidden="true"></i> Reset',['index'],['class' => 'btn btn-default']) ?>
-        </div>
-      </div>
-      <div class="col-md-3">
-          <?php $form->field($model, 'price') ?>
-      </div>
+
+
+    <?= $form->field($model, 'stock') ?>
+
+    <?= $form->field($model, 'price') ?>
+
+    <?php // $form->field($model, 'add_in') ?>
+
+    <?php // $form->field($model, 'buy_in_price') ?>
+
+    <?php // echo $form->field($model, 'current_market') ?>
+
+    <?php // echo $form->field($model, 'unrealized') ?>
+
+    <?php // echo $form->field($model, 'date_created') ?>
+
+    <?php // echo $form->field($model, 'date_edited') ?>
+
+    <?php // echo $form->field($model, 'added_by') ?>
+
+    <?php // echo $form->field($model, 'edited_by') ?>
+
+    <?php // echo $form->field($model, 'date_added') ?>
+
+    <div class="form-group">
+      <?= Html::submitButton('<i class="fa fa-search" aria-hidden="true"></i> Search', ['class' => 'btn btn-default']) ?>
+
+        <?php echo Html::a('<i class="fa fa-undo" aria-hidden="true"></i> Reset',['index'],['class' => 'btn btn-default']) ?>
+
     </div>
 
     <?php ActiveForm::end(); ?>

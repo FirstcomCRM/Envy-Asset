@@ -3,22 +3,22 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\StocksSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Invest Stock';
+$this->title = 'Stocks';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="stocks-index">
 
+
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Search</h3>
+          <h3 class="panel-title">Search</h3>
       </div>
       <div class="panel-body">
-        <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+          <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
       </div>
     </div>
 
@@ -33,28 +33,28 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php Pjax::begin(); ?>
           <?= GridView::widget([
                 'dataProvider' => $dataProvider,
-                //'filterModel' => $searchModel,
+            //    'filterModel' => $searchModel,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 
+                    //'id',
                     'stock',
-                    [
-                      'attribute'=>'price',
-                      'value'=>function($model){
-                        return Retrieve::retrieveFormat($model->price);
-                      },
-                    ],
-                    //'date_created',
-                  //  'date_edited',
+                    'price',
+                    'add_in',
+                    'buy_in_price',
+                    // 'current_market',
+                    // 'unrealized',
+                    // 'date_created',
+                    // 'date_edited',
                     // 'added_by',
                     // 'edited_by',
-                        //  'id',
+                    // 'date_added',
+
                     ['class' => 'yii\grid\ActionColumn'],
                 ],
             ]); ?>
         <?php Pjax::end(); ?>
       </div>
     </div>
-
 
 </div>
