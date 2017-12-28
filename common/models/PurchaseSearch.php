@@ -17,11 +17,12 @@ class PurchaseSearch extends Purchase
      */
     public $start;
     public $end;
+    public $dummy_id;
 
     public function rules()
     {
         return [
-            [['id','salesperson'], 'integer'],
+            [['id','salesperson','dummy_id'], 'integer'],
             [['investor', 'product', 'share', 'date','start','end', 'remarks'], 'safe'],
             [['price'], 'number'],
         ];
@@ -105,13 +106,14 @@ class PurchaseSearch extends Purchase
           return $dataProvider;
       }
 
-      if (!empty($this->id) || !empty($this->salesperson) || !empty($this->date) ) {
+    //  if (!empty($this->id) || !empty($this->salesperson) || !empty($this->date) ) {
         $query->andFilterwhere(['between','date',$this->start,$this->end])
               ->andFilterWhere(['salesperson'=>$this->salesperson])
-              ->andFilterwhere(['id'=>$this->id]);
-      }else{
-        $query->andFilterwhere(['id'=>0]);
-      }
+              ->andFilterwhere(['id'=>$this->id])
+            ->andFilterwhere(['id'=>$this->dummy_id]);
+    //  }else{
+      //  $query->andFilterwhere(['id'=>0]);
+    //  }
 
 
       return $dataProvider;
