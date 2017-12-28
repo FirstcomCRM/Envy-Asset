@@ -5,15 +5,14 @@ namespace backend\controllers;
 use Yii;
 use common\models\Stocks;
 use common\models\StocksSearch;
+use common\models\UserGroup;
 use common\models\UserPermission;
 use common\models\User;
-use common\models\UserGroup;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
-
 /**
  * StocksController implements the CRUD actions for Stocks model.
  */
@@ -129,7 +128,6 @@ class StocksController extends Controller
         $model = new Stocks();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
-
             $model->date_created = date('Y-m-d');
             $model->date_added = date('Y-m-d h:i:s');
             $model->added_by = Yii::$app->user->getId();
@@ -152,8 +150,8 @@ class StocksController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->date_edited = date('Y-m-d');
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+            $model->date_edited = date('Y-m-d h:i:s');
             $model->edited_by = Yii::$app->user->getId();
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
