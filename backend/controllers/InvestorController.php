@@ -12,6 +12,7 @@ use common\models\DepositSearch;
 use common\models\WithdrawSearch;
 use common\models\PurchaseSearch;
 //use common\models\DepositLine;
+use yii\web\UploadedFile;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -230,6 +231,42 @@ class InvestorController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionImport(){
+      $model = new Investor();
+
+      if ($model->load(Yii::$app->request->post()  ) ) {
+        $model->file = UploadedFile::getInstance($model,'file');
+        if (!empty($model->file) ) {
+            $filename= $model->upload();
+            $model->importExcel($filename);
+            $searchModel = new InvestorSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+            Yii::$app->session->setFlash('success', "Import Successful");
+            //  return $this->redirect(['index', 'searchModel' => $searchModel,  'dataProvider' => $dataProvider]);
+              return $this->redirect(['index']);
+        /*    return $this->render('index', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);*/
+        }
+
+      } else {
+          return $this->render('_import', [
+              'model' => $model,
+          ]);
+      }
+
+    }
+
+    public function actionDownload(){
+        $filename = 'import_customer_sample.xlsx';
+        $path = Yii::getAlias('@webroot');
+        $path1 = Yii::getAlias('@template');
+        $new_path = $path.'/'.$path1.'/'.$filename;
+        Yii::$app->response->sendFile($new_path);
+    }
+
 
     /**
     *A custom-view for investors. When investors login, this will show their resepctive records, such as
@@ -273,4 +310,5 @@ class InvestorController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }
