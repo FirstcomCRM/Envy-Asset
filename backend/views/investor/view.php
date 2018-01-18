@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $withdraw_sum = 0;
 $deposit_sum = 0;
+$purchase_sum = 0;
 
 foreach ($withdraw->getModels() as $key => $value) {
   $withdraw_sum += $value->price;
@@ -24,6 +25,11 @@ foreach ($withdraw->getModels() as $key => $value) {
 foreach ($deposit->getModels() as $key => $value) {
   $deposit_sum += $value->price;
 }
+
+foreach ($purchase->getModels() as $key => $value) {
+  $purchase_sum += $value->price;
+}
+
 
 ?>
 <div class="customer-view">
@@ -87,10 +93,12 @@ foreach ($deposit->getModels() as $key => $value) {
             <?php Pjax::begin(); ?>
               <?= GridView::widget([
                 'dataProvider' => $withdraw,
+                'showFooter'=>TRUE,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
                     [
                       'attribute'=>'price',
+                      'footer' =>  number_format($withdraw_sum,2),
                       'value'=> function($model){
                         return Retrieve::retrieveFormat($model->price);
                       }
@@ -105,7 +113,9 @@ foreach ($deposit->getModels() as $key => $value) {
                     'remarks:ntext',
                   //  ['class' => 'yii\grid\ActionColumn'],
                   [
-                    
+                    'header'=>'Action',
+                   'class'=>'yii\grid\ActionColumn',
+                   'template'=>'{view}{update}',
                     'buttons'=>[
                       'view'=>function($url,$model){
                         return Html::a('<i class="fa fa-eye" aria-hidden="true"></i> ',$url,['id'=>$model->id, 'title'=>Yii::t('app','View'), 'data-pjax'=>0]);
@@ -128,6 +138,7 @@ foreach ($deposit->getModels() as $key => $value) {
                   ],
                 ],
               ]); ?>
+
             <?php Pjax::end(); ?>
           </div>
         </div>
@@ -145,10 +156,12 @@ foreach ($deposit->getModels() as $key => $value) {
             <?php Pjax::begin(); ?>
               <?= GridView::widget([
                 'dataProvider' => $deposit,
+                'showFooter'=>TRUE,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
                     [
                       'attribute'=>'price',
+                      'footer'=>  number_format($deposit_sum,2),
                       'value'=> function($model){
                         return Retrieve::retrieveFormat($model->price);
                       }
@@ -210,6 +223,7 @@ foreach ($deposit->getModels() as $key => $value) {
             <?php Pjax::begin(); ?>
             <?= GridView::widget([
               'dataProvider' => $purchase,
+              'showFooter'=>TRUE,
               'columns' => [
                   ['class' => 'yii\grid\SerialColumn'],
                   [
@@ -221,12 +235,20 @@ foreach ($deposit->getModels() as $key => $value) {
                   'share',
                   [
                     'attribute'=>'price',
+                    'footer'=>  number_format($purchase_sum,2),
+                
                     'value'=>function($model){
                       return Retrieve::retrieveFormat($model->price);
                     },
                   ],
                   'date',
-                  'salesperson',
+
+                  [
+                    'attribute'=>'salesperson',
+                    'value'=>function($model){
+                      return Retrieve::retrieveUsernameManagement($model->salesperson);
+                    },
+                  ],
                   'remarks:ntext',
                 //  ['class' => 'yii\grid\ActionColumn'],
                 [

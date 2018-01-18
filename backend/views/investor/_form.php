@@ -16,8 +16,12 @@ $cgroup = ArrayHelper::map($data,'customer_group','customer_group');
 $data = UserManagement::find()->where(['apply_tier'=>1])->orderBy(['id'=>SORT_ASC])->all();
 $sales = ArrayHelper::map($data,'id','name');
 
-$data = UserGroup::find()->select(['usergroup'])->all();
-$group = ArrayHelper::map($data,'usergroup','usergroup');
+//$data = UserGroup::find()->select(['id','usergroup'])->all();
+//$group = ArrayHelper::map($data,'id','usergroup');
+
+$group = [
+  9=>'Investor',
+];
 
 $data = null;
 
@@ -54,13 +58,14 @@ $data = null;
       </div>
 
       <div class="col-md-6">
-        <?= $form->field($model, 'address')->textarea(['rows' => 3]) ?>
+
+          <?= $form->field($model, 'address')->textarea(['rows' => 6]) ?>
         <?= $form->field($model, 'remark')->textarea(['rows' => 3]) ?>
         <?= $form->field($model, 'username')->textInput() ?>
         <?= $form->field($model, 'password')->passwordInput() ?>
         <?php echo $form->field($model,'usergroup')->widget(Select2::className(),[
             'data'=>$group,
-            'options'=>['placeholder'=>' '],
+          //  'options'=>['placeholder'=>' '],
             'theme'=> Select2::THEME_BOOTSTRAP,
             'size'=> Select2::MEDIUM,
             'pluginOptions' => [
