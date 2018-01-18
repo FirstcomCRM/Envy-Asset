@@ -175,6 +175,16 @@ class ImportMetalController extends Controller
        $model = new ImportMetal();
        $model->importExcel($filename);
      }
+     /*
+     Download file tmeplate for metal price
+     */
+     public function actionDownload(){
+         $filename = 'import_metal_sample.xlsx';
+         $path = Yii::getAlias('@webroot');
+         $path1 = Yii::getAlias('@template');
+         $new_path = $path.'/'.$path1.'/'.$filename;
+         Yii::$app->response->sendFile($new_path);
+     }
 
      /**
       * Deletes an existing ImportMetal model.
