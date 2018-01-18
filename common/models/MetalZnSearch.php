@@ -51,7 +51,7 @@ class MetalZnSearch extends MetalZn
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>[
-              'pageSize'=>10,
+              'pageSize'=>30,
             ]
         ]);
 

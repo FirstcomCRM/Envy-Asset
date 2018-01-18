@@ -52,7 +52,7 @@ class MetalAlSearch extends MetalAl
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>[
-              'pageSize'=>10,
+              'pageSize'=>30,
             ]
         ]);
 

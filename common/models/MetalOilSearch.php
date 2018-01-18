@@ -51,7 +51,7 @@ class MetalOilSearch extends MetalOil
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>[
-              'pageSize'=>10,
+              'pageSize'=>30,
             ]
         ]);
 

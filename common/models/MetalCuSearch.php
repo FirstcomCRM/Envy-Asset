@@ -51,7 +51,7 @@ class MetalCuSearch extends MetalCu
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination'=>[
-              'pageSize'=>10,
+              'pageSize'=>30,
             ]
         ]);
 
