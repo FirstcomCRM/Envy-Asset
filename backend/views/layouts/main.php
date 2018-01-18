@@ -53,7 +53,7 @@ AppAsset::register($this);
             ['label' => 'Management', 'items'=>[
             ['label'=>'Product Management', 'url'=>['/product-management/index']],
             ['label'=>'Investor Management', 'url'=>['/investor/index']],
-            ['label'=>'Staff Management', 'url'=>['/user-management/index']],
+            ['label'=>'User Management', 'url'=>['/user-management/index']],
 
         //    '<li class="divider"></li>',
           //  ['label'=>'Test2', 'url'=>'#'],
@@ -89,7 +89,9 @@ AppAsset::register($this);
           ['label'=>'Department', 'url'=>['/department/index']],
           ['label'=>'Product Type', 'url'=>['/product-type/index']],
           ['label'=>'Product Category', 'url'=>['/product-category/index']],
+          ['label'=>'Nationality', 'url'=>['/nationality/index']],
           ['label'=>'Country', 'url'=>['/country/index']],
+
 
         ],
       ],
