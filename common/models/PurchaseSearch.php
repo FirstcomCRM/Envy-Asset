@@ -23,7 +23,7 @@ class PurchaseSearch extends Purchase
     {
         return [
             [['id','salesperson','dummy_id'], 'integer'],
-            [['investor', 'product', 'share', 'date','start','end', 'remarks'], 'safe'],
+            [['investor', 'product', 'share', 'date','start','end', 'remarks', 'purchase_no'], 'safe'],
             [['price'], 'number'],
         ];
     }
