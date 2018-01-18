@@ -134,7 +134,11 @@ class PurchaseController extends Controller
         $model->date = date('Y-m-d');
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             $model->date_added = date('Y-m-d h:i:s');
-            $model->save();
+          //    $model->Quo_ID = $quo = 'QUO-'. sprintf("%007d", $model->ID);
+            $model->save(false);
+            $model->purchase_no = date('Ym').'-'.sprintf("%005d", $model->id);
+            $model->save(false);
+
             //die();
             //$x = UserManagement::find()->where(['name'=>$model->salesperson])->one();
             $x = UserManagement::find()->where(['id'=>$model->salesperson])->one();
@@ -238,6 +242,7 @@ class PurchaseController extends Controller
     protected function comms($xid,$highest,$model){
         $comm = new Commission();
         $comm->transact_id = $model->id;
+        $comm->transact_no = $model->purchase_no;
         $comm->transact_type = 'Purchase';
         $comm->transact_amount = $model->price; //questionable?
         $comm->transact_date =$model->date;
