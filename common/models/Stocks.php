@@ -25,6 +25,9 @@ class Stocks extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+
+  
+
     public static function tableName()
     {
         return 'stocks';
@@ -36,7 +39,7 @@ class Stocks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['stock', 'price', 'add_in', 'buy_in_price', 'current_market', 'unrealized'], 'required'],
+            [['stock', 'price', 'add_in', 'buy_in_price', 'current_market', 'unrealized','date'], 'required'],
             [['price'], 'number'],
             [['date_created', 'date_edited', 'date_added'], 'safe'],
             [['added_by', 'edited_by'], 'integer'],
@@ -63,6 +66,7 @@ class Stocks extends \yii\db\ActiveRecord
             'added_by' => 'Added By',
             'edited_by' => 'Edited By',
             'date_added' => 'Date Added',
+            'date'=>'Date',
         ];
     }
 }
