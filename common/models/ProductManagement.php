@@ -67,6 +67,14 @@ class ProductManagement extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getCat(){
+          return $this->hasOne(ProductCategory::className(),['id' => 'product_cat'] );
+    }
+
+    public function getType(){
+          return $this->hasOne(ProductType::className(),['id' => 'product_type'] );
+    }
+
   /*  public function stocks(){
       $invest = new InvestStock();
       $invest->product = $this->product_name;
