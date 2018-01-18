@@ -34,8 +34,9 @@ class Purchase extends \yii\db\ActiveRecord
             [['investor', 'product', 'share', 'price', 'date', 'remarks'], 'required'],
             [['price'], 'number'],
             [['date'], 'safe'],
-            [['remarks'], 'string'],
-            [['salesperson'], 'string'],
+            [['remarks','purchase_no'], 'string'],
+        //    [['salesperson'], 'string'],
+            [['salesperson'], 'integer'],
             [['investor', 'product', 'share'], 'string', 'max' => 75],
             [['date_adedd'],'safe'],
         ];
