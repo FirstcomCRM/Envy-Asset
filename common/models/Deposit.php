@@ -47,7 +47,7 @@ class Deposit extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'investor' => 'Investor',
-            'price' => 'Price',
+            'price' => 'Amount',
             'category' => 'Product Category',
             'date' => 'Date',
             'remarks' => 'Remarks',
