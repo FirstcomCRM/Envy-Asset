@@ -37,6 +37,7 @@ class Commission extends \yii\db\ActiveRecord
             [['transact_id', 'sales_person'], 'integer'],
             [['transact_amount', 'commision_percent', 'commission'], 'number'],
             [['transact_date', 'date_added'], 'safe'],
+            [['transact_no'], 'string'],
             [['transact_type'], 'string', 'max' => 50],
         ];
     }
@@ -49,7 +50,8 @@ class Commission extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
           //  'transact_id' => 'Transaction ID',
-            'transact_id' => 'Purchase No',
+            'transact_id' => 'Purchase ID',
+            'transact_no'=> 'Transact No',
             'transact_type' => 'Transaction Type',
             //'transact_amount' => 'Transaction Amount',
             'transact_amount' => 'Amount',
