@@ -48,9 +48,12 @@ class ProductManagementSearch extends ProductManagement
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination'=>[
+              'pageSize'=>30,
+              ],
             'sort'=>[
               'defaultOrder'=>[
-                  'id'=>SORT_DESC,
+                  'product_name'=>SORT_ASC,
               ],
             ],
         ]);
