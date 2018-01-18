@@ -171,6 +171,8 @@ class InvestorController extends Controller
             Yii::$app->session->setFlash('success', "Investor has been added");
             return $this->redirect(['view', 'id' => $model->id]);
           }else{
+        //      print_r($model->getErrors() );die();
+            //  var_dump($model->errors);
             Yii::$app->session->setFlash('error', "Failed to create Investor");
             return $this->render('create', [
                 'model' => $model,
@@ -200,6 +202,7 @@ class InvestorController extends Controller
               Yii::$app->session->setFlash('success', "Investor has been updated");
               return $this->redirect(['view', 'id' => $model->id]);
             }else{
+
               Yii::$app->session->setFlash('error', "Failed to update Investor");
               return $this->render('update', [
                   'model' => $model,
