@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="stocks-view">
 
-  
+
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -30,16 +30,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'stock',
-            'price',
-            'add_in',
-            'buy_in_price',
-            'current_market',
-            'unrealized',
-            'date_created',
-            'date_edited',
-            'added_by',
-            'edited_by',
-            'date_added',
+            'date',
+            'price:decimal',
+            'add_in:decimal',
+            'buy_in_price:decimal',
+            'current_market:decimal',
+            'unrealized:decimal',
+        //    'date_created',
+          //  'date_edited',
+        //    'added_by',
+        //    'edited_by',
+        //    'date_added',
         ],
     ]) ?>
 

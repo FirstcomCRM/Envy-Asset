@@ -39,9 +39,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     //'id',
                     'stock',
-                    'price',
-                    'add_in',
-                    'buy_in_price',
+                    'price:decimal',
+                    'add_in:decimal',
+                    'buy_in_price:decimal',
+                    'date',
                     // 'current_market',
                     // 'unrealized',
                     // 'date_created',

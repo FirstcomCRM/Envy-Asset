@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
+use kartik\widgets\DatePicker;
 /* @var $this yii\web\View */
 /* @var $model common\models\Stocks */
 /* @var $form yii\widgets\ActiveForm */
@@ -15,6 +15,17 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'stock')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
+
+    <?php echo $form->field($model, 'date')->widget(DatePicker::classname(), [
+      'convertFormat'=>true,
+      'type' => DatePicker::TYPE_COMPONENT_APPEND,
+    //  'type'=>1,
+      'readonly' => true,
+      'pluginOptions' => [
+        'autoclose'=>true,
+        'format' => 'php:Y-m-d',
+      ],
+    ]); ?>
 
     <?= $form->field($model, 'add_in')->textInput(['maxlength' => true]) ?>
 
