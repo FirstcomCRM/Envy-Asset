@@ -17,6 +17,7 @@ $this->title = 'Envy Asset';
 
     <div class="tab-pane fade in active" id="news"><!-- start of news tab--->
       <br>
+
       <?php foreach ($announce as $key => $value): ?>
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -30,6 +31,7 @@ $this->title = 'Envy Asset';
         </div>
       <?php endforeach; ?>
      <?= LinkPager::widget(['pagination' => $pagination]) ?>
+    
    </div><!-- End of news tab--->
    <div class="tab-pane fade" id="contract">
      <br>
