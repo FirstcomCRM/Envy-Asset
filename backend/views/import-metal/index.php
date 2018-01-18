@@ -55,6 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
           <p class="text-right">
             <?php Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Truncate Metal', ['truncate'], ['class' => 'btn btn-danger']) ?>
             <?php  Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import-test', ['import'], ['class' => 'btn btn-default']) ?>
+            <?php echo  Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Download Template', ['download'], ['class' => 'btn btn-success']) ?>
             <?php echo Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import', ['create'], ['class' => 'btn btn-default']) ?>
           </p>
           <?php Pjax::begin(); ?>
