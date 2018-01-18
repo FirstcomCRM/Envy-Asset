@@ -14,11 +14,11 @@ use common\models\ProductType;
 /* @var $form yii\widgets\ActiveForm */
 
 
-$data = ProductCategory::find()->select(['category'])->orderBy(['category'=>SORT_ASC])->all();
-$cat = ArrayHelper::map($data,'category','category');
+$data = ProductCategory::find()->select(['id','category'])->orderBy(['category'=>SORT_ASC])->all();
+$cat = ArrayHelper::map($data,'id','category');
 
-$data = ProductType::find()->select(['type'])->orderBy(['type'=>SORT_ASC])->all();
-$type = ArrayHelper::map($data,'type','type');
+$data = ProductType::find()->select(['id','type'])->orderBy(['type'=>SORT_ASC])->all();
+$type = ArrayHelper::map($data,'id','type');
 ?>
 
 <div class="product-management-form">
