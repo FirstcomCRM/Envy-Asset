@@ -7,6 +7,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use kartik\widgets\DepDrop;
 use common\models\UserGroup;
+use common\models\Nationality;
 use common\models\Department;
 use common\models\TierLevel;
 use common\models\UserManagement;
@@ -14,14 +15,18 @@ use common\models\UserManagement;
 /* @var $model common\models\UserManagement */
 /* @var $form yii\widgets\ActiveForm */
 
-$data = UserGroup::find()->select(['usergroup'])->all();
-$group = ArrayHelper::map($data,'usergroup','usergroup');
+$data = UserGroup::find()->select(['id','usergroup'])->where(['<>','id',9])->all();
+$group = ArrayHelper::map($data,'id','usergroup');
 
-$data = Department::find()->select(['department'])->all();
-$dept = ArrayHelper::map($data,'department','department');
+$data = Department::find()->select(['id','department'])->all();
+$dept = ArrayHelper::map($data,'id','department');
 
 $data = TierLevel::find()->select(['id','tier_level'])->all();
 $tier = ArrayHelper::map($data,'id','tier_level');
+
+$data= Nationality::find()->select(['id','nationality'])->all();
+$nation = ArrayHelper::map($data, 'id','nationality');
+
 
 $user_tier = UserManagement::find()->where(['id'=>$model->connect_to])->one();
 if (empty($user_tier)) {
@@ -67,8 +72,21 @@ $data = null;
             ]) ?>
 
         <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'nationality')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
+        <?php $form->field($model, 'nationality')->textInput(['maxlength' => true]) ?>
+
+        <?php echo $form->field($model,'nationality')->widget(Select2::className(),[
+            'data'=>$nation,
+            'options'=>['placeholder'=>' '],
+            'theme'=> Select2::THEME_BOOTSTRAP,
+            'size'=> Select2::MEDIUM,
+            'pluginOptions' => [
+              'allowClear' => true
+            ],
+          ]) ?>
+
+
+
+          <?= $form->field($model, 'address')->textarea(['rows' => 3]) ?>
         <?= $form->field($model, 'mobile')->textInput() ?>
       </div>
       <div class="col-md-4">
@@ -97,7 +115,6 @@ $data = null;
                       $.post("index.php?r=user-management/lists&id=' . '"+$(this).val(),function(data){
                         $("select#subcat-id").html(data);
                       });']) ?>
-
 
 
             <?php echo $form->field($model,'connect_to')->widget(Select2::className(),[

@@ -10,15 +10,15 @@ use common\models\UserManagement;
 /* @var $this yii\web\View */
 /* @var $model common\models\UserManagementSearch */
 /* @var $form yii\widgets\ActiveForm */
-$data = UserGroup::find()->select(['usergroup'])->all();
+$data = UserGroup::find()->select(['id','usergroup'])->where(['<>','id',9])->all();
 $group = ArrayHelper::map($data,'usergroup','usergroup');
 
-$data = Department::find()->select(['department'])->all();
-$dept = ArrayHelper::map($data,'department','department');
+$data = Department::find()->select(['id','department'])->all();
+$dept = ArrayHelper::map($data,'id','department');
 
-$data = UserManagement::find()->select(['name','login_id'])->all();
-$name = ArrayHelper::map($data,'name','name');
-$login_id = ArrayHelper::map($data,'login_id','login_id');
+$data = UserManagement::find()->select(['id','name','login_id'])->all();
+$name = ArrayHelper::map($data,'id','name');
+$login_id = ArrayHelper::map($data,'id','login_id');
 
 $data = null;
 ?>

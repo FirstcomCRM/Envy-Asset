@@ -37,14 +37,22 @@ $this->params['breadcrumbs'][] = $this->title;
                   'columns' => [
                       ['class' => 'yii\grid\SerialColumn'],
                       'name',
-                      'user_group',
-                      'department',
+
+                      [
+                        'attribute'=>'user_group',
+                        'value'=>'group.usergroup',
+                      ],
+                    
+                      [
+                        'attribute'=>'department',
+                        'value'=>'dept.department',
+                      ],
                       'email:email',
-                      'nationality',
-                      'address',
-                      'mobile',
-                      'remark:ntext',
-                      'login_id',
+                  //    'nationality',
+                  //    'address',
+                  //    'mobile',
+                  //    'remark:ntext',
+                  //    'login_id',
                       // 'login_password',
                       //  'id',
                       //    'user_id',
