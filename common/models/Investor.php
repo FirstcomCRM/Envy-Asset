@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use common\models\User;
+use common\models\UserGroup;
 /**
  * This is the model class for table "customer".
  *
@@ -48,7 +49,7 @@ class Investor extends \yii\db\ActiveRecord
             [['email'], 'string', 'max' => 50],
             [['email'],'email'],
             [['date_added'],'safe'],
-            [['file'],'file','skipOnEmpty'=>false, 'mimeTypes'=>'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            [['file'],'file','skipOnEmpty'=>true, 'mimeTypes'=>'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                'wrongMimeType'=>'Invalid file format. Please use .xls or .xlsx',
             ],
         ];
@@ -93,10 +94,12 @@ class Investor extends \yii\db\ActiveRecord
       if (!$this->validate()) {
         return false;
       }else{
+        $group = UserGroup::findOne($this->usergroup);
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
-        $user->user_group_id = $this->usergroup;
+        $user->user_group_id = $group->usergroup;
+      //  $user->user_group_id = $this->usergroup;
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $this->password = $user->password_hash;
@@ -108,7 +111,7 @@ class Investor extends \yii\db\ActiveRecord
         $user->save();
 
         $auth = \Yii::$app->authManager;
-        $role = $auth->getRole($this->usergroup);
+        $role = $auth->getRole($group->usergroup);
         $auth->assign($role, $user->id);
         return true;
       }
@@ -118,28 +121,34 @@ class Investor extends \yii\db\ActiveRecord
       if (!$this->validate() ) {
         return false;
       }else{
+    //    echo $this->usergroup;die();
         $user = User::find()->where(['customer_id'=>$this->id])->one();
-      //  die($this->id);
-        $oldrole = $user->user_group_id;
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->user_group_id = $this->usergroup;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-        $this->password = $user->password_hash;
-        $this->save(false);
-        $user->customer_id = $this->id;
-        $user->save();
+        if (is_null($user) ) {
+          return $this->createUser();
+        }else{
+          $group = UserGroup::findOne($this->usergroup);
+        //  echo $group->usergroup;die();
+          $oldrole =  $group->usergroup;
+          $user->username = $this->username;
+          $user->email = $this->email;
+          $user->user_group_id = $group->usergroup;
+          $user->setPassword($this->password);
+          $user->generateAuthKey();
+          $this->password = $user->password_hash;
+          $this->save(false);
+          $user->customer_id = $this->id;
+          $user->save();
 
-        $auth = \Yii::$app->authManager;
-        $toRevoke = $auth->getRole($oldrole);
-        $auth->revoke($toRevoke, $user->id);
-        $toAssign = $auth->getRole($this->usergroup);
-        $auth->assign($toAssign,$user->id);
-        if ($user->update() != false) {
-          return $user->update() ? $user : null;
+          $auth = \Yii::$app->authManager;
+          $toRevoke = $auth->getRole($oldrole);
+          $auth->revoke($toRevoke, $user->id);
+          $toAssign = $auth->getRole($group->usergroup);
+          $auth->assign($toAssign,$user->id);
+          if ($user->update() != false) {
+            return $user->update() ? $user : null;
+          }
+          return true;
         }
-        return true;
 
       }
 
