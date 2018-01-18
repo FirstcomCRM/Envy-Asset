@@ -15,11 +15,15 @@ class StocksSearch extends Stocks
     /**
      * @inheritdoc
      */
+
+     public $start;
+     public $end;
+
     public function rules()
     {
         return [
             [['id', 'added_by', 'edited_by'], 'integer'],
-            [['stock', 'add_in', 'buy_in_price', 'current_market', 'unrealized', 'date_created', 'date_edited', 'date_added'], 'safe'],
+            [['stock','date', 'add_in', 'buy_in_price', 'current_market', 'unrealized', 'date_created', 'date_edited', 'date_added','start','end'], 'safe'],
             [['price'], 'number'],
         ];
     }
@@ -52,6 +56,10 @@ class StocksSearch extends Stocks
 
         $this->load($params);
 
+        if (!empty($this->date)) {
+          list($this->start,$this->end)= explode(' - ',$this->date);
+        }
+
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -73,7 +81,8 @@ class StocksSearch extends Stocks
             ->andFilterWhere(['like', 'add_in', $this->add_in])
             ->andFilterWhere(['like', 'buy_in_price', $this->buy_in_price])
             ->andFilterWhere(['like', 'current_market', $this->current_market])
-            ->andFilterWhere(['like', 'unrealized', $this->unrealized]);
+            ->andFilterWhere(['like', 'unrealized', $this->unrealized])
+            ->andFilterWhere(['between', 'date', $this->start,$this->end]);
 
         return $dataProvider;
     }
