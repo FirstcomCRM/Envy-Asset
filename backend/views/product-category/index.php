@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ['class' => 'yii\grid\SerialColumn'],
                     'category',
                     'description:ntext',
-
+                    
                     ['class' => 'yii\grid\ActionColumn'],
                 ],
             ]); ?>
