@@ -109,6 +109,7 @@ class InvestorReportController extends \yii\web\Controller
       }else{
           $searchModel->dummy_id = 0;
       }
+
       $dataProvider = $searchModel->report_search(Yii::$app->request->queryParams);
 
       $session['investor-report'] = Yii::$app->request->queryParams;
@@ -204,9 +205,12 @@ class InvestorReportController extends \yii\web\Controller
      $model = $this->findModel($id);
      $searchModel = new PurchaseSearch();
      $dataProvider =  $searchModel->report_search(Yii::$app->session->get('investor-report'));
-     $newDate = date('M-Y',strtotime($searchModel->start));
+     //$newDate = date('M-Y',strtotime($searchModel->start));
      $invest = Retrieve::retrieveInvestor($model->investor);
-     $title = $invest.'-'.$id.'-'.$newDate;
+     $data = Purchase::find()->where(['id'=>$id])->one();
+     $pur_date = date('d M Y', strtotime($data->date));
+
+     $title = $invest.'-'.$pur_date;
 
      $mpdf = new mPDF('utf-8','A3');
      $mpdf->content = $this->renderPartial('row-pdf',[
@@ -220,7 +224,6 @@ class InvestorReportController extends \yii\web\Controller
         $this->singleEmail($model,$attach,$title);
         Yii::$app->session->setFlash('success', "Email sent");
         return $this->redirect(['d-index']);
-
       }else{
         $mpdf->Output($title.'.pdf','D');
       //  $mpdf->Output($title.'.pdf','I');
