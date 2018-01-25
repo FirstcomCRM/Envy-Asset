@@ -59,6 +59,8 @@ class MetalZnSearch extends MetalZn
 
         if (!empty($this->date_filter)) {
           list($this->start,$this->end)= explode(' - ',$this->date_filter);
+          $this->start = date('Y-m-d',strtotime($this->start) );
+          $this->end = date('Y-m-d',strtotime($this->end) );
         }
 
         if (!$this->validate()) {
