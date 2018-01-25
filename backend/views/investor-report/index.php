@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
   </div>
-  
+
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">List</h3>
@@ -44,7 +44,8 @@ $this->params['breadcrumbs'][] = $this->title;
           //  'filterModel' => $searchModel,
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
-                'id',
+
+                'purchase_no',
                 [
                   'attribute'=>'investor',
                   'format'=>'raw',
@@ -63,12 +64,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'share',
                 [
                   'attribute'=>'price',
+                  'headerOptions' => ['style'=>'text-align:right'],
+                  'contentOptions' => ['style' => 'text-align:right'],
+              //    'contentOptions' => ['class' => 'bg-red'],
                   'value'=>function($model){
-                    return Retrieve::retrieveFormat($model->price);
+                    return '$'.Retrieve::retrieveFormat($model->price);
                   },
                 ],
               //  'price',
-                'date',
+                [
+                  'attribute'=>'date',
+                  'format' => ['date', 'php:d M Y'],
+                ],
                 [
                   'attribute'=>'salesperson',
                   'value'=>function($model){
@@ -113,7 +120,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     //  return Html::a('<i class="fa fa-file-pdf-o" aria-hidden="true"></i>', $url, ['title'=>'Download PDF' ,'id'=>'test']);
                   },
                   'email'=>function($url,$model,$key){
-                          return Html::a('<i class="fa fa-envelope-open-o" aria-hidden="true"></i>', ['download-pdf','id'=>$key,'type'=>'email'], ['title'=>'Email', 'style'=>'padding:5px']);
+                          return Html::a('<i class="fa fa-envelope-open-o" aria-hidden="true"></i>', ['download-pdf','id'=>$key,'type'=>'email'],
+                          [
+                            'title'=>'Email',
+                            'style'=>'padding:5px',
+                            'data' => [
+                                'confirm' => 'Are you sure you want to email this item?',
+                                'method' => 'post',
+                            ],
+                          ]);
                     //  return Html::a('<i class="fa fa-file-pdf-o" aria-hidden="true"></i>', $url, ['title'=>'Download PDF' ,'id'=>'test']);
                   },
                 ],

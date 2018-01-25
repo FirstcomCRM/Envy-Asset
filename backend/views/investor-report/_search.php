@@ -52,7 +52,7 @@ $data = null;
           ]) ?>
       </div>
       <div class="col-md-3">
-        <?php echo $form->field($model,'id')->textInput(['placeholder'=>'Purchase No'])->label(false) ?>
+        <?php echo $form->field($model,'purchase_no')->textInput(['placeholder'=>'Purchase No'])->label(false) ?>
       </div>
       <div class="col-md-3">
           <div class="form-group">

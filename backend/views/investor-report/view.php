@@ -13,7 +13,7 @@ use common\components\Retrieve;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-
+          'purchase_no',
           [
             'attribute'=>'investor',
             'value'=>function($model){
@@ -29,11 +29,16 @@ use common\components\Retrieve;
             'share',
             [
               'attribute'=>'price',
+    //          'contentOptions' => ['class' => 'bg-red'],
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->price);
+                return '$'.Retrieve::retrieveFormat($model->price);
               },
             ],
-            'date',
+
+            [
+              'attribute'=>'date',
+              'format' => ['date', 'php:d M Y'],
+            ],
             [
               'attribute'=>'salesperson',
               'value'=>function($model){

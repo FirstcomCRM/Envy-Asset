@@ -45,6 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
             //    'id',
+                'purchase_no',
                 [
                   'attribute'=>'investor',
                   'format'=>'raw',
@@ -63,12 +64,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'share',
                 [
                   'attribute'=>'price',
+                  'headerOptions' => ['style'=>'text-align:right'],
+                  'contentOptions' => ['style' => 'text-align:right'],
                   'value'=>function($model){
-                    return Retrieve::retrieveFormat($model->price);
+                    return '$'.Retrieve::retrieveFormat($model->price);
                   },
                 ],
               //  'price',
-                'date',
+                [
+                  'attribute'=>'date',
+                  'format' => ['date', 'php:d M Y'],
+                ],
                 [
                   'attribute'=>'salesperson',
                   'value'=>function($model){
