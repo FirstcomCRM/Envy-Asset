@@ -4,6 +4,8 @@ namespace common\models;
 
 use Yii;
 use common\models\User;
+use common\models\UserGroup;
+use common\models\Department;
 /**
  * This is the model class for table "user_management".
  *
@@ -43,15 +45,15 @@ class UserManagement extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'user_group', 'department', 'email', 'nationality', 'address', 'mobile', 'remark', 'login_id', 'login_password'], 'required'],
+            [['name', 'user_group', 'department', 'email', 'login_id', 'login_password'], 'required'],
             [['user_id', 'mobile', 'apply_tier','tier_level'], 'integer'],
-            [['remark'], 'string'],
+            [['remark','address'], 'string'],
             [['name'],'unique'],
             [['connect_to'],'string','max'=>3],
             [['name', 'email'], 'string', 'max' => 75],
             [['user_group', 'department', 'nationality'], 'string', 'max' => 50],
-            [['address', 'login_password'], 'string', 'max' => 100],
-            [['login_id'], 'string', 'max' => 25],
+            [['login_password'], 'string', 'max' => 100],
+          //  [['login_id'], 'string', 'max' => 25],
             [['login_id'], 'unique'],
             [['email'], 'unique'],
             [['email'],'email'],
@@ -83,14 +85,16 @@ class UserManagement extends \yii\db\ActiveRecord
         ];
     }
     public function createUser(){
-      
+
       if (!$this->validate() ) {
         return false;
       }else {
+        $name = UserGroup::find()->where(['id'=>$this->user_group])->one();
         $user = new User();
         $user->username = $this->login_id;
         $user->email = $this->email;
-        $user->user_group_id = $this->user_group;
+      //  $user->user_group_id = $this->user_group;
+        $user->user_group_id = $name->usergroup;
         $user->setPassword($this->login_password);
         $this->login_password = $user->password_hash;
         $this->user_id = $user->id;
@@ -98,8 +102,10 @@ class UserManagement extends \yii\db\ActiveRecord
         $user->save();
         $this->user_id = $user->id;
 
+
         $auth = \Yii::$app->authManager;
-        $role = $auth->getRole($this->user_group);
+    //    $role = $auth->getRole($this->user_group);
+        $role = $auth->getRole($name->usergroup);
         $auth->assign($role, $user->id);
         return true;
       }
@@ -112,11 +118,12 @@ class UserManagement extends \yii\db\ActiveRecord
       }else {
         //$user = User::findOne(['username'=>$this->login_id]);
         $user = User::findOne(['id'=>$this->user_id]);
+        $name = UserGroup::find()->where(['id'=>$this->user_group])->one();
 
         $oldrole = $user->user_group_id;
         $user->username = $this->login_id;
         $user->email = $this->email;
-        $user->user_group_id = $this->user_group;
+        $user->user_group_id = $name->usergroup;
         $user->setPassword($this->login_password);
         $this->login_password = $user->password_hash;
         $this->user_id = $user->id;
@@ -127,7 +134,8 @@ class UserManagement extends \yii\db\ActiveRecord
         $auth = \Yii::$app->authManager;
         $toRevoke = $auth->getRole($oldrole);
         $auth->revoke($toRevoke, $user->id);
-        $toAssign = $auth->getRole($this->user_group);
+      //  $toAssign = $auth->getRole($this->user_group);
+        $toAssign = $auth->getRole($name->usergroup);
         $auth->assign($toAssign,$user->id);
         if ($user->update() != false) {
           return $user->update() ? $user : null;
@@ -135,6 +143,14 @@ class UserManagement extends \yii\db\ActiveRecord
         return true;
       }
 
+    }
+
+    public function getDept(){
+      return $this->hasOne(Department::className(),['id' => 'department'] );
+    }
+
+    public function getGroup(){
+      return $this->hasOne(UserGroup::className(),['id' => 'user_group'] );
     }
 
 
