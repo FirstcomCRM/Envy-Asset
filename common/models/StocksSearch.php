@@ -58,6 +58,8 @@ class StocksSearch extends Stocks
 
         if (!empty($this->date)) {
           list($this->start,$this->end)= explode(' - ',$this->date);
+          $this->start = date('Y-m-d',strtotime($this->start) );
+          $this->end = date('Y-m-d',strtotime($this->end) );
         }
 
         if (!$this->validate()) {
