@@ -49,7 +49,7 @@ foreach ($purchase->getModels() as $key => $value) {
     <li class="active"><a href="#profile" data-toggle="tab">Investor Profile</a></li>
     <li><a href="#withdraw" data-toggle="tab">Withdrawal Records</a></li>
     <li><a href="#deposit" data-toggle="tab">Deposit Records</a></li>
-    <li><a href="#payout" data-toggle="tab">Payout Records</a></li>
+  <!---  <li><a href="#payout" data-toggle="tab">Payout Records</a></li>--->
     <li><a href="#purchase" data-toggle="tab">Purchase Records</a></li>
   </ul>
 
@@ -61,6 +61,7 @@ foreach ($purchase->getModels() as $key => $value) {
             'model' => $model,
             'attributes' => [
                 'company_name',
+                'nric',
                 'customer_group',
                 'contact_person',
                 [
@@ -75,7 +76,7 @@ foreach ($purchase->getModels() as $key => $value) {
                 'remark:ntext',
                 [
                   'label'=>'Balance',
-                  'value'=> number_format($deposit_sum - $withdraw_sum,2),
+                  'value'=> '$'.number_format($deposit_sum - $withdraw_sum,2),
                 ],
             ],
         ]) ?>
@@ -98,9 +99,12 @@ foreach ($purchase->getModels() as $key => $value) {
                     ['class' => 'yii\grid\SerialColumn'],
                     [
                       'attribute'=>'price',
-                      'footer' =>  number_format($withdraw_sum,2),
+                      'headerOptions' => ['style'=>'text-align:right'],
+                      'contentOptions' => ['style' => 'text-align:right'],
+                      'footerOptions'=>['style' => 'text-align:right'],
+                      'footer' => '$'.number_format($withdraw_sum,2),
                       'value'=> function($model){
-                        return Retrieve::retrieveFormat($model->price);
+                        return '$'.Retrieve::retrieveFormat($model->price);
                       }
                     ],
                     [
@@ -109,7 +113,10 @@ foreach ($purchase->getModels() as $key => $value) {
                         return Retrieve::retrieveProductCat($model->category);
                       },
                     ],
-                    'date',
+                    [
+                      'attribute'=>'date',
+                      'format' => ['date', 'php:d M Y'],
+                    ],
                     'remarks:ntext',
                   //  ['class' => 'yii\grid\ActionColumn'],
                   [
@@ -161,9 +168,12 @@ foreach ($purchase->getModels() as $key => $value) {
                     ['class' => 'yii\grid\SerialColumn'],
                     [
                       'attribute'=>'price',
-                      'footer'=>  number_format($deposit_sum,2),
+                      'headerOptions' => ['style'=>'text-align:right'],
+                      'contentOptions' => ['style' => 'text-align:right'],
+                      'footerOptions'=>['style' => 'text-align:right'],
+                      'footer'=>  '$'.number_format($deposit_sum,2),
                       'value'=> function($model){
-                        return Retrieve::retrieveFormat($model->price);
+                        return '$'.Retrieve::retrieveFormat($model->price);
                       }
                     ],
                     [
@@ -172,7 +182,10 @@ foreach ($purchase->getModels() as $key => $value) {
                         return Retrieve::retrieveProductCat($model->category);
                       },
                     ],
-                    'date',
+                    [
+                      'attribute'=>'date',
+                      'format' => ['date', 'php:d M Y'],
+                    ],
                     'remarks:ntext',
                   //  ['class' => 'yii\grid\ActionColumn'],
                   [
@@ -207,10 +220,11 @@ foreach ($purchase->getModels() as $key => $value) {
       </div>
     </div><!--End of Deposit pane--->
 
-    <div class="tab-pane fade in" id="payout"><!--Payout of Deposit pane--->
-      <br>
+  <!---  <div class="tab-pane fade in" id="payout"><!--Payout of Deposit pane--->
+    <!----  <br>
       insert payout gridview here
-    </div><!--End of Payout pane--->
+    </div>--->
+    <!--End of Payout pane--->
 
     <div class="tab-pane fade in" id="purchase">
       <br>
@@ -229,24 +243,30 @@ foreach ($purchase->getModels() as $key => $value) {
                   [
                     'attribute'=>'product',
                     'value'=>function($model){
-                      return Retrieve::retrieveProductName($model->product);
+                      return '$'.Retrieve::retrieveProductName($model->product);
                     },
                   ],
                   'share',
                   [
                     'attribute'=>'price',
-                    'footer'=>  number_format($purchase_sum,2),
-                
+                    'headerOptions' => ['style'=>'text-align:right'],
+                    'contentOptions' => ['style' => 'text-align:right'],
+                    'footerOptions'=>['style' => 'text-align:right'],
+                    'footer'=>  '$'.number_format($purchase_sum,2),
+
                     'value'=>function($model){
-                      return Retrieve::retrieveFormat($model->price);
+                      return '$'.Retrieve::retrieveFormat($model->price);
                     },
                   ],
-                  'date',
+                  [
+                    'attribute'=>'date',
+                    'format' => ['date', 'php:d M Y'],
+                  ],
 
                   [
                     'attribute'=>'salesperson',
                     'value'=>function($model){
-                      return Retrieve::retrieveUsernameManagement($model->salesperson);
+                      return '$'.Retrieve::retrieveUsernameManagement($model->salesperson);
                     },
                   ],
                   'remarks:ntext',

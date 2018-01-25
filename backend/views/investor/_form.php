@@ -34,6 +34,7 @@ $data = null;
     <div class="row">
       <div class="col-md-6">
         <?= $form->field($model, 'company_name')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'nric')->textInput(['maxlength' => true]) ?>
         <?php echo $form->field($model,'customer_group')->widget(Select2::className(),[
            'data'=>$cgroup,
            'options'=>['placeholder'=>''],
