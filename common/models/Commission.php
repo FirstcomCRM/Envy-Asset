@@ -51,7 +51,7 @@ class Commission extends \yii\db\ActiveRecord
             'id' => 'ID',
           //  'transact_id' => 'Transaction ID',
             'transact_id' => 'Purchase ID',
-            'transact_no'=> 'Transact No',
+            'transact_no'=> 'Purchase No',
             'transact_type' => 'Transaction Type',
             //'transact_amount' => 'Transaction Amount',
             'transact_amount' => 'Amount',

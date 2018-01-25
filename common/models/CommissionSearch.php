@@ -70,26 +70,21 @@ class CommissionSearch extends Commission
         }
 
         // grid filtering conditions
-      /*  $query->andFilterWhere([
+        $query->andFilterWhere([
             'id' => $this->id,
-            'transact_id' => $this->transact_id,
-            'transact_amount' => $this->transact_amount,
-            'sales_person' => $this->sales_person,
-            'commision_percent' => $this->commision_percent,
-            'commission' => $this->commission,
-            'date_added' => $this->date_added,
-        ]);*/
+
+        ]);
 
       /*  $query->andFilterWhere(['like', 'transact_type', $this->transact_type])
               ->andFilterWhere(['between','transact_date',$this->start,$this->end])
               ->andFilterWhere([  'transact_id' => $this->transact_id,]);*/
-          if (!empty($this->sales_person) || !empty($this->transact_id) || !empty($this->transact_date)){
+      //    if (!empty($this->sales_person) || !empty($this->transact_id) || !empty($this->transact_date)){
             $query->andFilterWhere(['sales_person'=>$this->sales_person])
                   ->andFilterWhere(['between','transact_date',$this->start,$this->end])
                   ->andFilterWhere(['transact_id' => $this->transact_id,]);
-          }else{
-            $query->andFilterWhere(['id'=>0]);
-          }
+      //    }else{
+        //    $query->andFilterWhere(['id'=>0]);
+        //  }
 
         return $dataProvider;
     }
