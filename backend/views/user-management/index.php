@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'=>'user_group',
                         'value'=>'group.usergroup',
                       ],
-                    
+
                       [
                         'attribute'=>'department',
                         'value'=>'dept.department',

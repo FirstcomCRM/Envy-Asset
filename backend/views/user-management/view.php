@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $model common\models\UserManagement */
 
@@ -27,10 +27,26 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'name',
-            'user_group',
-            'department',
+
+            [
+              'attribute'=>'user_group',
+              'value'=>function($model){
+                return Retrieve::retrieveGroup($model->user_group);
+              },
+            ],
+            [
+              'attribute'=>'department',
+              'value'=>function($model){
+                return Retrieve::retrieveDepartment($model->department);
+              },
+            ],
             'email:email',
-            'nationality',
+            [
+              'attribute'=>'nationality',
+              'value'=>function($model){
+                return Retrieve::retrieveNationality($model->nationality);
+              },
+            ],
             'address',
             'mobile',
             'remark:ntext',
