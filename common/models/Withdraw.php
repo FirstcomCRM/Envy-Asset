@@ -30,7 +30,7 @@ class Withdraw extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['investor', 'price', 'category', 'date', 'remarks'], 'required'],
+            [['investor', 'price', 'category', 'date'], 'required'],
             [['investor'], 'integer'],
             [['price'], 'number'],
             [['date'], 'safe'],
