@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'price',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->price);
+                return '$'.Retrieve::retrieveFormat($model->price);
               },
             ],
             [
@@ -44,7 +44,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 return Retrieve::retrieveProductCat($model->category);
               },
             ],
-            'date',
+            [
+              'attribute'=>'date',
+              'format' => ['date', 'php:d M Y'],
+            ],
             'remarks:ntext',
         ],
     ]) ?>

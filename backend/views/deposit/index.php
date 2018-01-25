@@ -47,8 +47,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                       'attribute'=>'price',
+                      'headerOptions' => ['style'=>'text-align:right'],
+                      'contentOptions' => ['style' => 'text-align:right'],
                       'value'=>function($model){
-                        return Retrieve::retrieveFormat($model->price);
+                        return '$'.Retrieve::retrieveFormat($model->price);
                       },
                     ],
                     [
@@ -57,7 +59,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Retrieve::retrieveProductCat($model->category);
                       },
                     ],
-                    'date',
+                    [
+                      'attribute'=>'date',
+                      'format' => ['date', 'php:d M Y'],
+                    ],
                     ['class' => 'yii\grid\ActionColumn'],
                 ],
             ]); ?>

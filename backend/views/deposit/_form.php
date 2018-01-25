@@ -12,7 +12,7 @@ use common\models\ProductCategory;
 /* @var $form yii\widgets\ActiveForm */
 
 $data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->all();
-$invest = ArrayHelper::map($data,'id','company_name');
+$invest = ArrayHelper::map($data,'id','nric_comp');
 
 $data = ProductCategory::find()->orderBy(['category'=>SORT_ASC])->all();
 $cat = ArrayHelper::map($data,'id','category');
@@ -53,7 +53,7 @@ $data = null;
           'readonly' => true,
           'pluginOptions' => [
             'autoclose'=>true,
-            'format' => 'php:Y-m-d',
+            'format' => 'php:d M Y',
           ],
         ]); ?>
       </div>
