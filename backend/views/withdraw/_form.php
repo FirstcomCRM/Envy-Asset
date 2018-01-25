@@ -10,8 +10,8 @@ use kartik\widgets\DatePicker;
 /* @var $this yii\web\View */
 /* @var $model common\models\Withdraw */
 /* @var $form yii\widgets\ActiveForm */
-$data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->select(['id','company_name'])->all();
-$invest = ArrayHelper::map($data,'id','company_name');
+$data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->select(['id','nric_comp'])->all();
+$invest = ArrayHelper::map($data,'id','nric_comp');
 
 $data = ProductCategory::find()->orderBy(['category'=>SORT_ASC])->select(['id','category'])->all();
 $cat = ArrayHelper::map($data,'id','category');
@@ -52,7 +52,8 @@ $data = null;
             'readonly' => true,
             'pluginOptions' => [
               'autoclose'=>true,
-              'format' => 'php:Y-m-d',
+            //  'format' => 'php:Y-m-d',
+                'format' => 'php:d M Y',
             ]
           ]); ?>
         </div>
