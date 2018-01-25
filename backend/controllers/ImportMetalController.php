@@ -130,6 +130,7 @@ class ImportMetalController extends Controller
         $model = new ImportMetal();
 
         if ($model->load(Yii::$app->request->post()) ) {
+            $model->date_file = date('Y-m-d', strtotime($model->date_file) );
             $model->date_added = date('Y-m-d h:i:s');
             $model->file = UploadedFile::getInstance($model,'file');
             if (!empty($model->file)) {
