@@ -2,6 +2,9 @@
 namespace common\components;
 use common\models\User;
 use common\models\UserManagement;
+use common\models\UserGroup;
+use common\models\Nationality;
+use common\models\Department;
 use common\models\InvestStock;
 use common\models\InvestMetal;
 use common\models\Investor;
@@ -80,6 +83,33 @@ Class Retrieve{
   //edr changed date format to m-d-y
   public static function retrieveDate_mdy($date){
     return date('m-d-Y',strtotime($date));
+  }
+
+  public static function retrieveGroup($id){
+    $group = UserGroup::find()->where(['id'=>$id])->one();
+    if (!empty($group) ) {
+      return $group->usergroup;
+    }else{
+      return $group = null;
+    }
+  }
+
+  public static function retrieveDepartment($id){
+    $dept = Department::find()->where(['id'=>$id])->one();
+    if (!empty($dept) ) {
+      return $dept->department;
+    }else{
+      return $dept = null;
+    }
+  }
+
+  public static function retrieveNationality($id){
+    $race = Nationality::find()->where(['id'=>$id])->one();
+    if (!empty($race) ) {
+      return $race->nationality;
+    }else{
+      return $race = null;
+    }
   }
 
 }
