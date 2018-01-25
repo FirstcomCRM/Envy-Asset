@@ -25,7 +25,8 @@ use kartik\widgets\DatePicker;
                               'startView'=>'year',
                               'minViewMode'=>'months',
                               //'format' => 'mm-yyyy-dd'
-                              'format' => 'yyyy-mm-dd',
+                            //  'format' => 'yyyy-mm-dd',
+                              'format' => 'd M yyyy',
                           ]
                       ]) ?>
         </div>

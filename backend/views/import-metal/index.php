@@ -66,7 +66,10 @@ $this->params['breadcrumbs'][] = $this->title;
                       ['class' => 'yii\grid\SerialColumn'],
 
                     //  'id',
-                      'date_file',
+                    [
+                      'attribute'=>'date_file',
+                      'format' => ['date', 'php:d M Y'],
+                    ],
                       'file_name',
 
                       ['class' => 'yii\grid\ActionColumn'],
