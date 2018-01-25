@@ -41,13 +41,14 @@ class Investor extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['company_name', 'customer_group', 'contact_person', 'email', 'mobile', 'address','username','password','usergroup'], 'required'],
-            [['company_name'],'unique'],
+            [['company_name', 'customer_group', 'nric', 'contact_person', 'email', 'mobile', 'address','username','password','usergroup'], 'required'],
+            [['company_name','nric'],'unique'],
             [['mobile','salesperson'], 'integer'],
             [['address', 'remark'], 'string'],
             [['company_name', 'customer_group', 'contact_person'], 'string', 'max' => 75],
             [['email'], 'string', 'max' => 50],
             [['email'],'email'],
+            [['nric_comp'],'string','max'=>50],
             [['date_added'],'safe'],
             [['file'],'file','skipOnEmpty'=>true, 'mimeTypes'=>'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                'wrongMimeType'=>'Invalid file format. Please use .xls or .xlsx',
@@ -63,6 +64,8 @@ class Investor extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'company_name' => 'Investor Name',
+            'nric'=>'NRIC',
+            'nric_comp'=>'NRIC Customer',
             'customer_group' => 'Group',
             'contact_person' => 'Contact Person',
             'salesperson'=>'Sales Person',
@@ -103,6 +106,7 @@ class Investor extends \yii\db\ActiveRecord
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $this->password = $user->password_hash;
+        $this->nric_comp = $this->nric.' '.$this->company_name;
         $this->date_added = date('Y-m-d h:i:s');
         //$user->user_id = 0;
       //  $user->save();
@@ -135,6 +139,7 @@ class Investor extends \yii\db\ActiveRecord
           $user->setPassword($this->password);
           $user->generateAuthKey();
           $this->password = $user->password_hash;
+          $this->nric_comp = $this->nric.' '.$this->company_name;
           $this->save(false);
           $user->customer_id = $this->id;
           $user->save();
