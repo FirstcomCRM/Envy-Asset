@@ -24,10 +24,11 @@ use kartik\daterange\DateRangePicker;
           'useWithAddon'=>false,
           'convertFormat'=>true,
           'pluginOptions'=>[
+            'format' => 'php:d M Y',
             'locale'=>[
               //'format'=> 'M j Y',
               //'format'=> 'm-d-Y',
-              'format'=> 'Y-m-d',
+              'format'=> 'd M Y',
             ],
           ],
           'options'=>[

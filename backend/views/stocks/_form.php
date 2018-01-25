@@ -23,7 +23,8 @@ use kartik\widgets\DatePicker;
       'readonly' => true,
       'pluginOptions' => [
         'autoclose'=>true,
-        'format' => 'php:Y-m-d',
+      //  'format' => 'php:Y-m-d',
+        'format'=>'php:d M Y',
       ],
     ]); ?>
 

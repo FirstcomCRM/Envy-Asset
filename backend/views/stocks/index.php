@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\StocksSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -39,17 +40,38 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     //'id',
                     'stock',
-                    'price:decimal',
-                    'add_in:decimal',
-                    'buy_in_price:decimal',
-                    'date',
-                    // 'current_market',
-                    // 'unrealized',
-                    // 'date_created',
-                    // 'date_edited',
-                    // 'added_by',
-                    // 'edited_by',
-                    // 'date_added',
+                    [
+                      'attribute'=>'price',
+                      'headerOptions' => ['style'=>'text-align:right'],
+                      'contentOptions' => ['style' => 'text-align:right'],
+                      'value'=>function($model){
+                        return '$'.Retrieve::retrieveFormat($model->price);
+                      },
+                    ],
+                    [
+                      'attribute'=>'add_in',
+                      'headerOptions' => ['style'=>'text-align:right'],
+                      'contentOptions' => ['style' => 'text-align:right'],
+                      'value'=>function($model){
+                        return '$'.$model->add_in.'.00';
+                      },
+                    ],
+                    [
+                      'attribute'=>'buy_in_price',
+                      'headerOptions' => ['style'=>'text-align:right'],
+                      'contentOptions' => ['style' => 'text-align:right'],
+                      'value'=>function($model){
+                        return '$'.$model->buy_in_price.'.00';
+                      },
+                    ],
+                  //  'add_in:decimal',
+                //    'buy_in_price:decimal',
+
+                    [
+                      'attribute'=>'date',
+                      'format' => ['date', 'php:d M Y'],
+                    ],
+
 
                     ['class' => 'yii\grid\ActionColumn'],
                 ],
