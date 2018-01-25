@@ -13,8 +13,8 @@ use kartik\widgets\DatePicker;
 /* @var $model common\models\Purchase */
 /* @var $form yii\widgets\ActiveForm */
 
-$data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->select(['id','company_name'])->all();
-$invest = ArrayHelper::map($data,'id','company_name');
+$data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->select(['id','nric_comp'])->all();
+$invest = ArrayHelper::map($data,'id','nric_comp');
 
 $data = ProductManagement::find()->orderBy(['product_name'=>SORT_ASC])->select(['id','product_name'])->all();
 $prod = ArrayHelper::map($data,'id','product_name');
@@ -81,7 +81,7 @@ if (empty($salesperson)) {
           'pluginOptions' => [
             'autoclose'=>true,
           //  'format' => 'mm/dd/yyyy'
-            'format' => 'php:Y-m-d',
+            'format' => 'php:d M Y',
           ]
         ]); ?>
         <?= $form->field($model, 'remarks')->textarea(['rows' => 6]) ?>

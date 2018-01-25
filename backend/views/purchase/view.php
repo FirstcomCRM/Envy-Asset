@@ -26,7 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-          'id',
+
+          'purchase_no',
           [
             'attribute'=>'investor',
             'value'=>function($model){
@@ -43,10 +44,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'price',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->price);
+                return '$'.Retrieve::retrieveFormat($model->price);
               },
             ],
-            'date',
+            [
+              'attribute'=>'date',
+              'format' => ['date', 'php:d M Y'],
+            ],
             [
               'attribute'=>'salesperson',
               'value'=>function($model){
