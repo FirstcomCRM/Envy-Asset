@@ -123,17 +123,7 @@ class InvestorController extends Controller
      */
     public function actionView($id)
     {
-    /*    $link_deposit = DepositHead::find()->where(['customer_id'=>$id])->one();
-        $search = new DepositLineSearch();
-        $search->header_id = $link_deposit->id;
-        $deposit = $search->search(Yii::$app->request->queryParams);
 
-        $with = WithdrawHead::find()->where(['customer_id'=>$id])->one();
-        $searchWithdraw = new WithdrawLineSearch();
-        $searchWithdraw->header_id = $with->id;
-        $dataWithdraw = $searchWithdraw->search(Yii::$app->request->queryParams);*/
-
-      //  print_r($dataWithdraw->getModels());die();
         $search_dep = new DepositSearch();
         $search_dep->investor = $id;
         $deposit = $search_dep->search(Yii::$app->request->queryParams);
@@ -167,17 +157,30 @@ class InvestorController extends Controller
         $model = new Investor();
 
         if ($model->load(Yii::$app->request->post()) ) {
-          if ($model->createUser()) {
-            Yii::$app->session->setFlash('success', "Investor has been added");
-            return $this->redirect(['view', 'id' => $model->id]);
+
+          $data = User::find()->where(['username'=>$model->username])->one();
+          $data_e = User::find()->where(['email'=>$model->email])->one();
+
+          if (empty($data->username) && empty($data_e->email)) {
+
+            if ($model->createUser()) {
+              Yii::$app->session->setFlash('success', "Investor has been added");
+              return $this->redirect(['view', 'id' => $model->id]);
+            }else{
+          //      print_r($model->getErrors() );die();
+              //  var_dump($model->errors);
+              Yii::$app->session->setFlash('error', "Failed to create Investor");
+              return $this->render('create', [
+                  'model' => $model,
+              ]);
+            }
           }else{
-        //      print_r($model->getErrors() );die();
-            //  var_dump($model->errors);
-            Yii::$app->session->setFlash('error', "Failed to create Investor");
+            Yii::$app->session->setFlash('error', "UserName/Email has already been taken");
             return $this->render('create', [
                 'model' => $model,
             ]);
           }
+
 
         } else {
             return $this->render('create', [
@@ -198,16 +201,23 @@ class InvestorController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) ) {
+
             if ($model->updateUser() ) {
               Yii::$app->session->setFlash('success', "Investor has been updated");
               return $this->redirect(['view', 'id' => $model->id]);
             }else{
-
+                  //var_dump($model->errors);die();
               Yii::$app->session->setFlash('error', "Failed to update Investor");
               return $this->render('update', [
                   'model' => $model,
               ]);
             }
+
+            Yii::$app->session->setFlash('error', "UserName/Email has already been taken");
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+
 
         } else {
             return $this->render('update', [
