@@ -22,7 +22,7 @@ use kartik\daterange\DateRangePicker;
             'convertFormat'=>true,
             'pluginOptions'=>[
               'locale'=>[
-                'format'=> 'Y-m-d',
+                'format'=> 'd M Y',
               ],
             ],
             'options'=>[

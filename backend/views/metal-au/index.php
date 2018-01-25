@@ -71,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                           'attribute'=>'au_fixing',
                           'value'=> function($model){
-                             return Retrieve::get_numberFormat($model->au_fixing);
+                             return '$'.Retrieve::get_numberFormat($model->au_fixing);
                           }
                         ],
                         ['class' => 'yii\grid\ActionColumn'],

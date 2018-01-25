@@ -72,19 +72,19 @@ $this->params['breadcrumbs'][] = $this->title;
                            [
                               'attribute'=>'zn_cash',
                               'value'=>function($model){
-                                return Retrieve::get_numberFormat($model->zn_cash);
+                                return '$'.Retrieve::get_numberFormat($model->zn_cash);
                               }
                           ],
                           [
                               'attribute'=>'zn_three_month',
                               'value'=>function($model){
-                                return Retrieve::get_numberFormat($model->zn_three_month);
+                                return '$'.Retrieve::get_numberFormat($model->zn_three_month);
                               }
                           ],
                           [
                               'attribute'=>'zn_stock',
                               'value'=>function($model){
-                                return Retrieve::get_numberFormat($model->zn_stock);
+                                return '$'.Retrieve::get_numberFormat($model->zn_stock);
                               }
                           ],
 

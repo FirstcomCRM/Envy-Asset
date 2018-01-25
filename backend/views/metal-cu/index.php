@@ -72,21 +72,21 @@ $this->params['breadcrumbs'][] = $this->title;
                       [
                         'attribute'=>'cu_cash',
                         'value'=>function($model){
-                          return Retrieve::get_numberFormat($model->cu_cash);
+                          return '$'.Retrieve::get_numberFormat($model->cu_cash);
                         }
                       ],
 
                       [
                         'attribute'=>'cu_three_month',
                         'value'=>function($model){
-                          return Retrieve::get_numberFormat($model->cu_three_month);
+                          return '$'.Retrieve::get_numberFormat($model->cu_three_month);
                         }
                       ],
 
                       [
                         'attribute'=>'cu_stock',
                         'value'=>function($model){
-                          return Retrieve::get_numberFormat($model->cu_stock);
+                          return '$'.Retrieve::get_numberFormat($model->cu_stock);
                         }
                       ],
                       ['class' => 'yii\grid\ActionColumn'],

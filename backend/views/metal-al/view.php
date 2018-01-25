@@ -27,24 +27,25 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
           'date',
+        
           [
             'attribute'=>'al_cash',
             'value'=>function($model){
-              return Retrieve::get_numberFormat($model->al_cash);
+              return '$'.Retrieve::get_numberFormat($model->al_cash);
             }
           ],
 
           [
             'attribute'=>'al_three_month',
             'value'=>function($model){
-              return Retrieve::get_numberFormat($model->al_three_month);
+              return '$'.Retrieve::get_numberFormat($model->al_three_month);
             }
           ],
 
           [
             'attribute'=>'al_stocl',
             'value'=>function($model){
-              return Retrieve::get_numberFormat($model->al_stocl);
+              return '$'.Retrieve::get_numberFormat($model->al_stocl);
             }
           ],
         ],

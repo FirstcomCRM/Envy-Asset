@@ -67,20 +67,19 @@ $this->params['breadcrumbs'][] = $this->title;
                           'position',
                             [
                               'attribute'=>'entry_date_usd',
-                              'value'=>function($model){
-                                return Retrieve::retrieveDate_mdy($model->entry_date_usd);
-                              },
+                              'format' => ['date', 'php:d M Y'],
                             ],
+
                            [
                              'attribute'=>'entry_price_usd',
                              'value'=>function($model){
-                               return Retrieve::retrieveFormat($model->entry_price_usd);
+                               return '$'.Retrieve::retrieveFormat($model->entry_price_usd);
                              },
                            ],
                            [
                              'attribute'=>'entry_value_usd',
                              'value'=>function($model){
-                               return Retrieve::retrieveFormat($model->entry_value_usd);
+                               return '$'.Retrieve::retrieveFormat($model->entry_value_usd);
                              },
                            ],
 

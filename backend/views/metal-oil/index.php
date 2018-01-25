@@ -69,10 +69,32 @@ $this->params['breadcrumbs'][] = $this->title;
                           ['class' => 'yii\grid\SerialColumn'],
 
                           'date',
-                          'oil_price',
-                          'oil_open',
-                          'oil_high',
-                          'oil_low',
+                          
+
+                          [
+                            'attribute'=>'oil_price',
+                            'value'=>function($model){
+                              return '$'.$model->oil_price;
+                            }
+                          ],
+                          [
+                            'attribute'=>'oil_open',
+                            'value'=>function($model){
+                              return '$'.$model->oil_open;
+                            }
+                          ],
+                          [
+                            'attribute'=>'oil_high',
+                            'value'=>function($model){
+                              return '$'.$model->oil_high;
+                            }
+                          ],
+                          [
+                            'attribute'=>'oil_low',
+                            'value'=>function($model){
+                              return '$'.$model->oil_price;
+                            }
+                          ],
                           'oil_volume',
                           'oil_change',
 

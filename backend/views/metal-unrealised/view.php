@@ -32,62 +32,60 @@ $this->params['breadcrumbs'][] = $this->title;
             'position',
             [
               'attribute'=>'entry_date_usd',
-              'value'=>function($model){
-                return Retrieve::retrieveDate_mdy($model->entry_date_usd);
-              },
+              'format' => ['date', 'php:d M Y'],
             ],
             [
               'attribute'=>'entry_price_usd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->entry_price_usd);
+                return '$'.Retrieve::retrieveFormat($model->entry_price_usd);
               },
             ],
             [
               'attribute'=>'entry_value_usd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->entry_value_usd);
+                return '$'.Retrieve::retrieveFormat($model->entry_value_usd);
               },
             ],
             [
               'attribute'=>'exit_date_usd',
               'value'=>function($model){
-                  return Retrieve::retrieveDate_mdy($model->exit_date_usd);
+                  return '$'.Retrieve::retrieveDate_mdy($model->exit_date_usd);
               },
             ],
             [
               'attribute'=>'exit_price_usd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->exit_price_usd);
+                return '$'.Retrieve::retrieveFormat($model->exit_price_usd);
               },
             ],
             [
               'attribute'=>'exit_value_usd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->exit_value_usd);
+                return '$'.Retrieve::retrieveFormat($model->exit_value_usd);
               },
             ],
             [
               'attribute'=>'realised_gain_usd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->realised_gain_usd);
+                return '$'.Retrieve::retrieveFormat($model->realised_gain_usd);
               },
             ],
             [
               'attribute'=>'realised_gain_percent',
               'value'=>function($model){
-                return $model->realised_gain_percent * 100;
+                return ($model->realised_gain_percent * 100).'%';
               },
             ],
             [
               'attribute'=>'profit_lost_usd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->profit_lost_usd);
+                return '$'.Retrieve::retrieveFormat($model->profit_lost_usd);
               },
             ],
             [
               'attribute'=>'profit_lost_sgd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->profit_lost_sgd);
+                return '$'.Retrieve::retrieveFormat($model->profit_lost_sgd);
               },
             ],
         ],

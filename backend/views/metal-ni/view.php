@@ -26,24 +26,24 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-    
+
             'date',
             [
               'attribute'=>'ni_cash',
               'value'=>function($model){
-                return Retrieve::get_numberFormat($model->ni_cash);
+                return '$'.Retrieve::get_numberFormat($model->ni_cash);
               }
             ],
             [
               'attribute'=>'ni_three_month',
               'value'=>function($model){
-                return Retrieve::get_numberFormat($model->ni_three_month);
+                return '$'.Retrieve::get_numberFormat($model->ni_three_month);
               }
             ],
             [
               'attribute'=>'ni_stock',
               'value'=>function($model){
-                return Retrieve::get_numberFormat($model->ni_stock);
+                return '$'.Retrieve::get_numberFormat($model->ni_stock);
               }
             ],
         ],

@@ -54,7 +54,11 @@ $this->params['breadcrumbs'][] = $this->title;
               'columns' => [
                   ['class' => 'yii\grid\SerialColumn'],
 
-                  'date_uploaded',
+                
+                  [
+                    'attribute'=>'date_uploaded',
+                    'format' => ['date', 'php:d M Y'],
+                  ],
                   'title',
                   'description',
 

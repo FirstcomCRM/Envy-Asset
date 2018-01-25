@@ -28,7 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
         //    'id',
       //      'import_metal_id',
-            'date_uploaded',
+              [
+                'attribute'=>'date_uploaded',
+                'format' => ['date', 'php:d M Y'],
+              ],
             'title',
             'description',
             'total_deal_size',
@@ -36,25 +39,25 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'purchase_price_a',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->purchase_price_a);
+                return '$'.Retrieve::retrieveFormat($model->purchase_price_a);
               },
             ],
             [
               'attribute'=>'insurance_cost_a',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->insurance_cost_a);
+                return '$'.Retrieve::retrieveFormat($model->insurance_cost_a);
               },
             ],
             [
               'attribute'=>'forward_price',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->forward_price);
+                return '$'.Retrieve::retrieveFormat($model->forward_price);
               },
             ],
             [
               'attribute'=>'final_sales_price',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->final_sales_price);
+                return '$'.Retrieve::retrieveFormat($model->final_sales_price);
               },
             ],
             [
@@ -66,31 +69,31 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'insurance_cost_b',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->insurance_cost_b);
+                return '$'.Retrieve::retrieveFormat($model->insurance_cost_b);
               },
             ],
             [
               'attribute'=>'total_cost_price',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->total_cost_price);
+                return '$'.Retrieve::retrieveFormat($model->total_cost_price);
               },
             ],
             [
               'attribute'=>'unrealised_profit_a',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->unrealised_profit_a);
+                return '$'.Retrieve::retrieveFormat($model->unrealised_profit_a);
               },
             ],
             [
               'attribute'=>'commision',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->commision);
+                return '$'.Retrieve::retrieveFormat($model->commision);
               },
             ],
             [
               'attribute'=>'unrealised_profit_b',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->unrealised_profit_b);
+                return '$'.Retrieve::retrieveFormat($model->unrealised_profit_b);
               },
             ],
             'net_unrealised',

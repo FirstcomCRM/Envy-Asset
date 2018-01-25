@@ -67,24 +67,28 @@ $this->params['breadcrumbs'][] = $this->title;
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
 
-                        'date_uploaded',
+
+                        [
+                          'attribute'=>'date_uploaded',
+                          'format' => ['date', 'php:d M Y'],
+                        ],
                         'description',
                         [
                           'attribute'=>'usd',
                           'value'=>function($model){
-                            return Retrieve::retrieveFormat($model->usd);
+                            return '$'.Retrieve::retrieveFormat($model->usd);
                           },
                         ],
                         [
                           'attribute'=>'sgd',
                           'value'=>function($model){
-                            return Retrieve::retrieveFormat($model->sgd);
+                            return '$'.Retrieve::retrieveFormat($model->sgd);
                           },
                         ],
                         [
                           'attribute'=>'gain_loss',
                           'value'=> function($model){
-                            return $model->gain_loss * 100;
+                            return ($model->gain_loss * 100).'%';
                           },
                         ],
 

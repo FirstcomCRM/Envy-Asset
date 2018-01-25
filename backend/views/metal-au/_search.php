@@ -25,7 +25,7 @@ use kartik\daterange\DateRangePicker;
             'locale'=>[
               //'format'=> 'M j Y',
               //'format'=> 'm-d-Y',
-              'format'=> 'Y-m-d',
+              'format'=> 'd M Y',
             ],
           ],
           'options'=>[

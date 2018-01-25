@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $model common\models\MetalZn */
 
@@ -27,24 +27,23 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
 
-        
             'date',
             [
                'attribute'=>'zn_cash',
                'value'=>function($model){
-                 return Retrieve::get_numberFormat($model->zn_cash);
+                 return '$'.Retrieve::get_numberFormat($model->zn_cash);
                }
            ],
            [
                'attribute'=>'zn_three_month',
                'value'=>function($model){
-                 return Retrieve::get_numberFormat($model->zn_three_month);
+                 return '$'.Retrieve::get_numberFormat($model->zn_three_month);
                }
            ],
            [
                'attribute'=>'zn_stock',
                'value'=>function($model){
-                 return Retrieve::get_numberFormat($model->zn_stock);
+                 return '$'.Retrieve::get_numberFormat($model->zn_stock);
                }
            ],
         ],

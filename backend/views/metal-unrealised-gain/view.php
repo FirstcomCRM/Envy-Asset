@@ -33,39 +33,39 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'usd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->usd);
+                return '$'.Retrieve::retrieveFormat($model->usd);
               },
             ],
 
             [
               'attribute'=>'sgd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->sgd);
+                return '$'.Retrieve::retrieveFormat($model->sgd);
               },
             ],
             [
               'attribute'=>'gain_loss',
               'value'=> function($model){
-                return $model->gain_loss * 100;
+                return ($model->gain_loss * 100).'%';
               },
             ],
             're_description',
             [
               'attribute'=>'re_usd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->re_usd);
+                return '$'.Retrieve::retrieveFormat($model->re_usd);
               },
             ],
             [
               'attribute'=>'re_sgd',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->re_sgd);
+                return '$'.Retrieve::retrieveFormat($model->re_sgd);
               },
             ],
             [
               'attribute'=>'re_gain_loss',
               'value'=> function($model){
-                return $model->re_gain_loss * 100;
+                return ($model->re_gain_loss * 100).'%';
               },
             ],
         ],
