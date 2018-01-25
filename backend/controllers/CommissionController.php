@@ -97,8 +97,20 @@ class CommissionController extends Controller
     public function actionIndex()
     {
         $searchModel = new CommissionSearch();
+
+        $request = Yii::$app->request;
+        $test = $request->get();
+
+      //  print_r($test);die();
+
+        if (array_key_exists('CommissionSearch', $test)) {
+
+        }else{
+            $searchModel->id = 0;
+        }
+
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
