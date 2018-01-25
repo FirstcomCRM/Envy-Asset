@@ -110,7 +110,8 @@ class PurchaseSearch extends Purchase
         $query->andFilterwhere(['between','date',$this->start,$this->end])
               ->andFilterWhere(['salesperson'=>$this->salesperson])
               ->andFilterwhere(['id'=>$this->id])
-            ->andFilterwhere(['id'=>$this->dummy_id]);
+              ->andFilterwhere(['id'=>$this->dummy_id])
+              ->andFilterWhere(['purchase_no'=>$this->purchase_no]);
     //  }else{
       //  $query->andFilterwhere(['id'=>0]);
     //  }

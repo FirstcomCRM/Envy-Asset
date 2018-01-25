@@ -31,7 +31,7 @@ class Purchase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['investor', 'product', 'share', 'price', 'date', 'remarks'], 'required'],
+            [['investor', 'product', 'share', 'price', 'date'], 'required'],
             [['price'], 'number'],
             [['date'], 'safe'],
             [['remarks','purchase_no'], 'string'],
@@ -53,7 +53,7 @@ class Purchase extends \yii\db\ActiveRecord
             'investor' => 'Investor',
             'product' => 'Product',
             'share' => 'Share',
-            'price' => 'Price',
+            'price' => 'Amount',
             'date' => 'Date',
             'salesperson'=>'Sales Person',
             'remarks' => 'Remarks',
