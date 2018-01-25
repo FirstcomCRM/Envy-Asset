@@ -127,8 +127,9 @@ class WithdrawController extends Controller
     public function actionCreate()
     {
         $model = new Withdraw();
-        $model->date = date('Y-m-d');
+        $model->date = date('d M Y');
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+            $model->date = date('Y-m-d', strtotime($model->date) );
             $model->date_added = date('Y-m-d h:i:s');
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
@@ -148,8 +149,10 @@ class WithdrawController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $model->date = date('d M Y', strtotime($model->date) );
+        if ($model->load(Yii::$app->request->post()) && $model->validate  () ) {
+            $model->date = date('Y-m-d', strtotime($model->date) );
+            $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
