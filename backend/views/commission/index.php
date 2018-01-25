@@ -36,8 +36,13 @@ $this->params['breadcrumbs'][] = $this->title;
                   //'filterModel' => $searchModel,
                   'columns' => [
                       ['class' => 'yii\grid\SerialColumn'],
-                      'transact_id',
-                      'transact_date',
+
+                      'transact_no',
+
+                      [
+                        'attribute'=> 'transact_date',
+                        'format' => ['date', 'php:d M Y'],
+                      ],
                       [
                         'attribute'=>'sales_person',
                         'value'=> function($model){
@@ -46,14 +51,17 @@ $this->params['breadcrumbs'][] = $this->title;
                       ],
                       [
                         'attribute'=>'commision_percent',
+                        'label'=>'Commission %',
                         'value'=>function($model){
-                          return $model->commision_percent*100;
+                          return ($model->commision_percent*100).'%';
                         },
                       ],
                       [
                         'attribute'=>'transact_amount',
+                        'headerOptions' => ['style'=>'text-align:right'],
+                        'contentOptions' => ['style' => 'text-align:right'],
                         'value'=>function($model){
-                          return Retrieve::retrieveFormat($model->transact_amount);
+                          return '$'.Retrieve::retrieveFormat($model->transact_amount);
                         }
                       ],
 
@@ -62,8 +70,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
                       [
                         'attribute'=>'commission',
+                        'headerOptions' => ['style'=>'text-align:right'],
+                        'contentOptions' => ['style' => 'text-align:right'],
                         'value'=>function($model){
-                          return Retrieve::retrieveFormat($model->commission);
+                          return '$'.Retrieve::retrieveFormat($model->commission);
                         }
                       ],
 

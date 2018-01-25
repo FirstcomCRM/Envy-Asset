@@ -26,8 +26,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'transact_id',
-            'transact_date',
+
+            'transact_no',
+            [
+              'attribute'=> 'transact_date',
+              'format' => ['date', 'php:d M Y'],
+            ],
             [
               'attribute'=>'sales_person',
               'value'=> function($model){
@@ -35,21 +39,22 @@ $this->params['breadcrumbs'][] = $this->title;
               },
             ],
             [
-              'attribute'=>'commision_percent',
-              'value'=>function($model){
-                return $model->commision_percent*100;
-              },
-            ],
-            [
               'attribute'=>'transact_amount',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->transact_amount);
+                return '$'.Retrieve::retrieveFormat($model->transact_amount);
               }
             ],
             [
+              'attribute'=>'commision_percent',
+              'value'=>function($model){
+                return ($model->commision_percent*100).'%';
+              },
+            ],
+
+            [
               'attribute'=>'commission',
               'value'=>function($model){
-                return Retrieve::retrieveFormat($model->commission);
+                return '$'.Retrieve::retrieveFormat($model->commission);
               }
             ],
         //    'date_added',
