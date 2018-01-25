@@ -2,7 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
+use common\components\Retrieve;
+use common\models\ProductType;
 /* @var $this yii\web\View */
 /* @var $model common\models\ProductManagement */
 
@@ -30,16 +31,37 @@ $this->params['breadcrumbs'][] = $this->title;
             'product_name',
             'description:ntext',
             'product_code',
-            'product_price:decimal',
-            'product_cost:decimal',
+
+            [
+              'attribute'=>'product_price',
+              'value'=>function($model){
+                return '$'.Retrieve::retrieveFormat($model->product_price);
+              },
+            ],
+            [
+              'attribute'=>'product_cost',
+              'value'=>function($model){
+                return '$'.Retrieve::retrieveFormat($model->product_cost);
+              },
+            ],
             [
               'attribute'=>'product_cat',
-              'value'=>'cat.category',
+              'value'=>function($model){
+                return Retrieve::retrieveProductCat($model->product_cat);
+              },
             ],
             [
               'attribute'=>'product_type',
-              'value'=>'type.type',
+              'value'=>function($model){
+                $data = ProductType::find()->where(['id'=>$model->product_type])->one();
+                if (!empty($data) ) {
+                    return $data->type;
+                }else{
+                  return $data = null;
+                }
+              },
             ],
+
         ],
     ]) ?>
 

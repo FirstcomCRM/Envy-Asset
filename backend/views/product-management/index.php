@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use common\components\Retrieve;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\ProductManagementSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -41,8 +42,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     'product_name',
                     'product_code',
                     'description:ntext',
-                    'product_price:decimal',
-                    'product_cost:decimal',
+                    [
+                      'attribute'=>'product_price',
+                      'headerOptions' => ['style'=>'text-align:right'],
+                      'contentOptions' => ['style' => 'text-align:right'],
+                      'value'=>function($model){
+                        return '$'.Retrieve::retrieveFormat($model->product_price);
+                      },
+                    ],
+                    [
+                      'attribute'=>'product_cost',
+                      'headerOptions' => ['style'=>'text-align:right'],
+                      'contentOptions' => ['style' => 'text-align:right'],
+                      'value'=>function($model){
+                        return '$'.Retrieve::retrieveFormat($model->product_cost);
+                      },
+                    ],
                     [
                       'attribute'=>'product_cat',
                       'value'=>'cat.category',
