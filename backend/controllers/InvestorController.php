@@ -162,7 +162,7 @@ class InvestorController extends Controller
           $data_e = User::find()->where(['email'=>$model->email])->one();
 
           if (empty($data->username) && empty($data_e->email)) {
-
+            
             if ($model->createUser()) {
               Yii::$app->session->setFlash('success', "Investor has been added");
               return $this->redirect(['view', 'id' => $model->id]);
@@ -199,7 +199,7 @@ class InvestorController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+        $model->start_date = date('d M Y', strtotime($model->start_date));
         if ($model->load(Yii::$app->request->post()) ) {
 
             if ($model->updateUser() ) {
@@ -248,6 +248,8 @@ class InvestorController extends Controller
       $model = new Investor();
 
       if ($model->load(Yii::$app->request->post()  ) ) {
+        ini_set('max_execution_time', 180);
+        ini_set("memory_limit", "512M");
         $model->file = UploadedFile::getInstance($model,'file');
         if (!empty($model->file) ) {
             $filename= $model->upload();
