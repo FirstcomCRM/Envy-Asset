@@ -72,7 +72,7 @@ if (empty($salesperson)) {
         <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
       </div>
       <div class="col-md-6">
-        <?php $form->field($model, 'date')->textInput() ?>
+        
         <?php echo $form->field($model, 'date')->widget(DatePicker::classname(), [
           //'options' => ['placeholder' => 'Date'],
         //  'value' => '08/10/2004',
