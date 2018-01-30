@@ -40,12 +40,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
                     'company_name',
-                    'customer_group',
-                    'contact_person',
-                    'email:email',
+                    'nric',
                     'mobile',
-                    'address:ntext',
-                    'remark:ntext',
+                    [
+                      'attribute'=>'start_date',
+                      'format'=>['date','php:d M Y'],
+                    ],
+
                     ['class' => 'yii\grid\ActionColumn'],
                 ],
               ]); ?>

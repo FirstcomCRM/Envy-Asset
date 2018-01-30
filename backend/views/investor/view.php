@@ -61,7 +61,9 @@ foreach ($purchase->getModels() as $key => $value) {
             'model' => $model,
             'attributes' => [
                 'company_name',
+              //  'member_code',
                 'nric',
+                'company_registration',
                 'customer_group',
                 'contact_person',
                 [
@@ -71,8 +73,19 @@ foreach ($purchase->getModels() as $key => $value) {
                   },
                 ],
                 'email:email',
+                'email_cc:ntext',
+                'passport_no',
+                'bank_a',
+                'bank_b',
+                'bank_c',
+                'bank_d',
+                'bank_e',
+                  [
+                    'attribute'=>'start_date',
+                    'format'=>['date','php:d M Y'],
+                  ],
                 'mobile',
-                'address:ntext',
+
                 'remark:ntext',
                 [
                   'label'=>'Balance',
