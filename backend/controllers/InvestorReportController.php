@@ -158,6 +158,9 @@ class InvestorReportController extends \yii\web\Controller
        }
    }
 
+   /*
+   *Function to send all investors in the result list an email, together with their CCs???
+   */
    public function actionComposeEmail(){
        ini_set('max_execution_time', 180);
        ini_set("memory_limit", "512M");
@@ -241,19 +244,27 @@ class InvestorReportController extends \yii\web\Controller
      ]);
    }
 
-
+  /*
+  *Email function that sends an email notification to one investor, together with their email_cc
+  */
    protected function singleEmail($model,$attach,$title){
   //   die('email');
      $cust = Investor::find()->where(['id'=>$model->investor])->one();
+     $ccs = explode(",",$cust->email_cc);
+
+     foreach ($ccs as $key => $value) {
+       $testcc[] = trim($value);
+     }
+
      $message = "<p>Greetings,</p>";
      $message .= '<p>Please find attached file...</p>';
      $message .= '<p>Thank you.</p>';
-     $testcc = 'eumerjoseph.ramos@yahoo.com';
-    // $testcc = 'jasonchong@firstcom.com.sg';
+     //$testcc = 'eumerjoseph.ramos@yahoo.com';
+    // $testcc = $ccs;
      Yii::$app->mailer->compose()
      ->setTo($cust->email)
    //  ->setFrom([$eng->email => $eng->fullname])
-     ->setFrom(['no-reply@envy.cc' => 'no-reply@envy.cc'])
+     ->setFrom(['no-reply@envy.com' => 'no-reply@envy.com'])
      ->setCc($testcc) //temp
      ->setSubject('Investor Report')
      ->setHtmlBody($message)
