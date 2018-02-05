@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use kartik\widgets\SideNav;
 use yii\helpers\Url;
+use yii\bootstrap\ButtonDropdown;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\ImportMetalSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -49,17 +50,30 @@ $this->params['breadcrumbs'][] = $this->title;
 
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">List of Metal Import Files</h3>
+          <h3 class="panel-title">Actions</h3>
         </div>
         <div class="panel-body">
-          <p class="text-right">
-            <?php Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Truncate Metal', ['truncate'], ['class' => 'btn btn-danger']) ?>
-            <?php  Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import-test', ['import'], ['class' => 'btn btn-default']) ?>
+          <p>
+            <?php echo Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Truncate Metal', ['truncate'], ['class' => 'btn btn-danger']) ?>
+            <?php echo ButtonDropdown::widget([
+              'label' => 'Import',
+              'options'=>['class'=>'btn btn-primary'],
+              'dropdown' => [
+                'items' => [
+                  ['label' => 'Base Metals', 'url' => Url::to(['/import-metal/base-metal']) ],
+                  ['label' => 'Nickel Deals', 'url' => Url::to(['/import-metal/nickel-deal'])],
+                  ['label' => 'Stocks', 'url' => '#'],
+                ],
+              ],
+            ]); ?>
             <?php echo  Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Download Template', ['download'], ['class' => 'btn btn-success']) ?>
-            <?php echo Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import', ['create'], ['class' => 'btn btn-default']) ?>
+
+            <?php Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import-test', ['import'], ['class' => 'btn btn-default']) ?>
+            <?php Html::a('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Import', ['create'], ['class' => 'btn btn-default']) ?>
+
           </p>
           <?php Pjax::begin(); ?>
-            <?= GridView::widget([
+            <?php GridView::widget([
                   'dataProvider' => $dataProvider,
                 //  'filterModel' => $searchModel,
                   'columns' => [
