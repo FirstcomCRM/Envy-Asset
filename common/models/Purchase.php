@@ -49,7 +49,8 @@ class Purchase extends \yii\db\ActiveRecord
     {
         return [
         //    'id' => 'ID',
-            'id' => 'Purchase No',
+            'id' => 'ID',
+            'purchase_no'=>'Purchase No',
             'investor' => 'Investor',
             'product' => 'Product',
             'share' => 'Share',
