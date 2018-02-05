@@ -176,6 +176,8 @@ class ImportMetalController extends Controller
        $model = new ImportMetal();
        $model->importExcel($filename);
      }
+
+
      /*
      Download file tmeplate for metal price
      */
@@ -185,6 +187,50 @@ class ImportMetalController extends Controller
          $path1 = Yii::getAlias('@template');
          $new_path = $path.'/'.$path1.'/'.$filename;
          Yii::$app->response->sendFile($new_path);
+     }
+
+     public function actionBaseMetal(){
+       $model = new ImportMetal();
+
+       if ($model->load(Yii::$app->request->post()) ) {
+           $model->date_file = date('Y-m-d', strtotime($model->date_file) );
+           $model->date_added = date('Y-m-d h:i:s');
+           $model->file = UploadedFile::getInstance($model,'file');
+           if (!empty($model->file)) {
+             $model->validate();
+             $filename= $model->upload();
+             $model->save(false);
+             $model->importBase($filename);
+           }
+           Yii::$app->session->setFlash('success',"File sucessfully uploaded");
+           return $this->redirect(['view', 'id' => $model->id]);
+       } else {
+           return $this->render('create-base', [
+               'model' => $model,
+           ]);
+       }
+     }
+
+     public function actionNickelDeal(){
+       $model = new ImportMetal();
+
+       if ($model->load(Yii::$app->request->post()) ) {
+           $model->date_file = date('Y-m-d', strtotime($model->date_file) );
+           $model->date_added = date('Y-m-d h:i:s');
+           $model->file = UploadedFile::getInstance($model,'file');
+           if (!empty($model->file)) {
+             $model->validate();
+             $filename= $model->upload();
+             $model->save(false);
+             $model->importNickel($filename);
+           }
+           Yii::$app->session->setFlash('success',"File sucessfully uploaded");
+           return $this->redirect(['view', 'id' => $model->id]);
+       } else {
+           return $this->render('create-nickel', [
+               'model' => $model,
+           ]);
+       }
      }
 
      /**
