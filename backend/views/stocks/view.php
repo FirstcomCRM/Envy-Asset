@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 return '$'.Retrieve::retrieveFormat($model->price);
               },
             ],
+
             [
               'attribute'=>'add_in',
               'value'=>function($model){
@@ -49,9 +50,32 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'buy_in_price',
               'value'=>function($model){
-                return '$'.$model->buy_in_price.'.00';
+                  return '$'.Retrieve::retrieveFormat($model->buy_in_price);
+            //    return '$'.$model->buy_in_price;
               },
             ],
+            [
+              'attribute'=>'sold_price',
+              'value'=>function($model){
+                $data = number_format($model->sold_price,2);
+                return '$'.$data;
+              },
+            ],
+            [
+              'attribute'=>'month_end_price',
+              'value'=>function($model){
+                  return '$'.Retrieve::retrieveFormat($model->month_end_price);
+              //  return '$'.$model->month_end_price;
+              },
+            ],
+            [
+              'attribute'=>'unrealized',
+              'value'=>function($model){
+                  return '$'.Retrieve::retrieveFormat($model->unrealized);
+            //    return '$'.$model->unrealized;
+              },
+            ],
+
           //  'current_market:decimal',
           //  'unrealized:decimal',
 

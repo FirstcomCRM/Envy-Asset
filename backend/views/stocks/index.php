@@ -61,7 +61,8 @@ $this->params['breadcrumbs'][] = $this->title;
                       'headerOptions' => ['style'=>'text-align:right'],
                       'contentOptions' => ['style' => 'text-align:right'],
                       'value'=>function($model){
-                        return '$'.$model->buy_in_price.'.00';
+                        return '$'.Retrieve::retrieveFormat($model->buy_in_price);
+                        //return '$'.$model->buy_in_price.'.00';
                       },
                     ],
                   //  'add_in:decimal',

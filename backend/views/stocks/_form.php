@@ -32,7 +32,9 @@ use kartik\widgets\DatePicker;
 
     <?= $form->field($model, 'buy_in_price')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'current_market')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'sold_price')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'month_end_price')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'unrealized')->textInput(['maxlength' => true]) ?>
 
