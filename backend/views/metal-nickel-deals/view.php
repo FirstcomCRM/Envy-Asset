@@ -96,7 +96,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 return '$'.Retrieve::retrieveFormat($model->unrealised_profit_b);
               },
             ],
-            'net_unrealised',
+            //'net_unrealised',
+            [
+                'attribute'=>'net_unrealised',
+                'value'=>function($model){
+                  $data = $model->net_unrealised*100;
+                  return $data.'%';
+                }
+            ],
         ],
     ]) ?>
 
