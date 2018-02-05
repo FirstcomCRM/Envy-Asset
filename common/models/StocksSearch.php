@@ -23,7 +23,7 @@ class StocksSearch extends Stocks
     {
         return [
             [['id', 'added_by', 'edited_by'], 'integer'],
-            [['stock','date', 'add_in', 'buy_in_price', 'current_market', 'unrealized', 'date_created', 'date_edited', 'date_added','start','end'], 'safe'],
+            [['stock','date', 'add_in', 'buy_in_price', 'month_end_price', 'unrealized', 'date_created', 'date_edited', 'date_added','start','end'], 'safe'],
             [['price'], 'number'],
         ];
     }
@@ -82,7 +82,7 @@ class StocksSearch extends Stocks
         $query->andFilterWhere(['like', 'stock', $this->stock])
             ->andFilterWhere(['like', 'add_in', $this->add_in])
             ->andFilterWhere(['like', 'buy_in_price', $this->buy_in_price])
-            ->andFilterWhere(['like', 'current_market', $this->current_market])
+            ->andFilterWhere(['like', 'month_end_price', $this->month_end_price])
             ->andFilterWhere(['like', 'unrealized', $this->unrealized])
             ->andFilterWhere(['between', 'date', $this->start,$this->end]);
 
