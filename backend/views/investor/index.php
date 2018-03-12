@@ -41,11 +41,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     ['class' => 'yii\grid\SerialColumn'],
                     'company_name',
                     'nric',
+                    'passport_no',
+                    'company_registration',
                     'mobile',
-                    [
-                      'attribute'=>'start_date',
-                      'format'=>['date','php:d M Y'],
-                    ],
+                  
 
                     ['class' => 'yii\grid\ActionColumn'],
                 ],
