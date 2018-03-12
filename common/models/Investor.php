@@ -192,27 +192,72 @@ class Investor extends \yii\db\ActiveRecord
 
       $sheet = $objPHPExcel->getSheet(0);
       $highestRow = $sheet->getHighestRow();
-      $highestColumn = $sheet->getHighestColumn();
+      $highestColumn = 'O';
 
+      $test = [];
       for ($row=2; $row<=$highestRow ; $row++) {
         $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
-        $invest = new Investor();
-        $invest->company_name = $rowData[0][0];
-        $invest->nric = $rowData[0][2];
-        $invest->bank_a = $rowData[0][3];
-        $invest->email = $rowData[0][4];
-        $invest->mobile = $rowData[0][5];
-        $invest->nric_comp = $invest->nric.' '.$invest->company_name;
-        $invest->date_added = date('Y-m-d h:i:s');
-        $test_date = '2018-01-01';
-        $invest->start_date = date('Y-m-d',strtotime($test_date));
-        $invest->date_added = date('Y-m-d h:i:s');
-        $invest->save(false);
-    //    print_r($invest->company_name);die();
+
+        if (!empty($rowData[0][1]) ) {
+          $nric = Investor::find()->where(['nric'=>$rowData[0][1]])->one();
+          if (!is_null($nric) ) {
+            $model = $nric;
+            $this->importUpdate($model, $rowData);
+          }else{
+            $model = new Investor();
+            $this->importUpdate($model, $rowData);
+          }
+        }elseif(!empty($rowData[0][5]) ){
+          $passport = Investor::find()->where(['passport_no'=>$rowData[0][5]])->one();
+          if (!is_null($passport) ) {
+            $model = $passport;
+            $this->importUpdate($model, $rowData);
+          }else{
+            $model = new Investor();
+            $this->importUpdate($model, $rowData);
+          }
+        }else{
+          $model = new Investor();
+          $this->importUpdate($model, $rowData);
+        }
 
       }
+  //    echo '<pre>';
+//      print_r($test);
+//      die();
 
+    }
 
+    protected function importUpdate($model, $rowData){
+      //$model = new Investor();
+      $model->company_name = $rowData[0][0];
+      $model->nric = $rowData[0][1];
+      $model->contact_person = $rowData[0][2];
+      $model->email = $rowData[0][3];
+      $model->mobile = $rowData[0][4];
+      $model->passport_no = $rowData[0][5];
+      $model->company_registration = $rowData[0][6];
+      //  $metal->entry_date_usd = date($format = "Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($rowData[0][2]));
+      $model->start_date = date($format = "Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($rowData[0][7]));
+      $model->email_cc = $rowData[0][8];
+      $model->remark = $rowData[0][9];
+      $model->bank_a = $rowData[0][10];
+      $model->bank_b = $rowData[0][11];
+      $model->bank_c = $rowData[0][12];
+      $model->bank_d = $rowData[0][13];
+      $model->bank_e = $rowData[0][14];
+
+      if (!empty($model->nric)) {
+        $model->nric_comp = $model->nric.' '.$model->company_name;
+      }elseif (!empty($model->passport_no) ) {
+        $model->nric_comp = $model->passport_no.' '.$model->company_name;
+      }else{
+        $model->nric_comp =  $model->company_name;
+      }
+    //  die($model->nric_comp);
+      $model->save(false);
+
+  //    unset($model);
     }
 
 
