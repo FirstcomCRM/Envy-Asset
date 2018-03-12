@@ -12,6 +12,7 @@ use common\models\UserManagement;
 use common\models\Investor;
 use common\models\Commission;
 use common\models\TierReduction;
+use common\models\MetalUnrealisedGain;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -134,18 +135,30 @@ class PurchaseController extends Controller
         $model->date = date('d M Y');
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             $model->date = date('Y-m-d', strtotime($model->date) );
+            $model->expiry_date = date('Y-m-d', strtotime($model->expiry_date) );
             $model->date_added = date('Y-m-d h:i:s');
           //    $model->Quo_ID = $quo = 'QUO-'. sprintf("%007d", $model->ID);
+            $start = date('Y-m-01',strtotime($model->date) );
+            $start = strtotime($start);
+            $end = date('Y-m-01',strtotime($model->expiry_date) );
+            $end = strtotime($end);
+
             $model->save(false);
             $model->purchase_no = date('Ym').'-'.sprintf("%005d", $model->id);
             $model->save(false);
 
-            //die();
-            //$x = UserManagement::find()->where(['name'=>$model->salesperson])->one();
+            while ($start<=$end) {
+              $date_test =  date('Y-m-d', $start);
+              $this->commission($date_test,$model->getAttributes() );
+              $start = strtotime("+1month", $start);
+            }
+
+          /*  die();
+            $x = UserManagement::find()->where(['name'=>$model->salesperson])->one();
             $x = UserManagement::find()->where(['id'=>$model->salesperson])->one();
             $tier = TierReduction::find()->where(['id'=>1])->one();
             $highest = $tier->highest_percent;
-        //    die($x->connect_to);
+            die($x->connect_to);
             $y = true;
             while ($y == true) {
                 $nconnect = $x->connect_to;
@@ -164,8 +177,8 @@ class PurchaseController extends Controller
                     $highest = $tier->lowest_percent;
                 }
 
-            }
-
+            }*/
+            Yii::$app->session->setFlash('success', "Purchase added");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -184,9 +197,13 @@ class PurchaseController extends Controller
     {
         $model = $this->findModel($id);
         $model->date = date('d M Y', strtotime($model->date) );
+        $model->expiry_date = date('d M Y', strtotime($model->expiry_date) );
 
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+
             $model->date = date('Y-m-d', strtotime($model->date) );
+            $model->expiry_date = date('Y-m-d', strtotime($model->expiry_date) );
+
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -224,6 +241,31 @@ class PurchaseController extends Controller
        }
    }
 
+   public function actionAjaxSum(){
+      $multiplier = 0;
+       if ( Yii::$app->request->post() ) {
+            $amount = Yii::$app->request->post()['price'];
+            $expiry_date = Yii::$app->request->post()['expiry_date'];
+            $data = new \DateTime($expiry_date);
+            $expire = $data->format('Y-m-d');
+            $purchase_date = Yii::$app->request->post()['purchase_date'];
+            $data = new \DateTime($purchase_date);
+            $purchase = $data->format('Y-m-01');
+            $metal = MetalUnrealisedGain::find()->where(['between','date_uploaded',$purchase,$expire])->sum('re_gain_loss');
+            if (empty($metal) ) {
+              $multiplier = 0.00;
+            }else{
+              $multiplier = $metal;
+            }
+            $namount = ($amount*$multiplier)/2.0;
+            return number_format($namount,2);
+          //  print_r($namount);
+          //  print_r($multiplier);die();
+          //  print_r($expire);
+          //  die();
+       }
+   }
+
     /**
      * Finds the Purchase model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -255,5 +297,35 @@ class PurchaseController extends Controller
         $comm->commission = $comm->commision_percent * $comm->transact_amount;
         $comm->date_added = date('Y-m-d h:i:s');
         $comm->save();
+    }
+
+    protected function commission($date_test,$model){
+  //   echo '<pre>';
+    //  print_r($date_test );die();
+        $comm = MetalUnrealisedGain::find()->where(['date_uploaded'=>$date_test])->one();
+        if (empty($comm) ) {
+          $multiplier = 0;
+          $date_re = null;
+        }else{
+          $multiplier = $comm->re_gain_loss;
+          $date_re = $comm->date_uploaded;
+        }
+      //  print_r($multiplier);die();
+        $new_comm = new Commission();
+        $new_comm->transact_id = $model['id'];
+        $new_comm->transact_no = $model['purchase_no'];
+        $new_comm->re_month = $date_re;
+        $new_comm->transact_type = 'Purchase';
+        $new_comm->transact_amount = $model['price'];
+        $new_comm->transact_date =$model['date'];
+        $new_comm->sales_person = $model['salesperson'];
+        $new_comm->commision_percent = $multiplier;
+        $new_comm->commission = ($new_comm->commision_percent * $new_comm->transact_amount)/2;
+        $new_comm->commission_comp = $new_comm->commission;
+        $new_comm->date_added = date('Y-m-d h:i:s');
+        $new_comm->date_expire = $model['expiry_date'];
+        $new_comm->save(false);
+    //    echo '<pre>';
+    //    print_r($model);die();
     }
 }
