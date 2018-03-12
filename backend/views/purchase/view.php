@@ -52,6 +52,10 @@ $this->params['breadcrumbs'][] = $this->title;
               'format' => ['date', 'php:d M Y'],
             ],
             [
+              'attribute'=>'expiry_date',
+              'format' => ['date', 'php:d M Y'],
+            ],
+            [
               'attribute'=>'salesperson',
               'value'=>function($model){
                 return Retrieve::retrieveUsernameManagement($model->salesperson);
