@@ -162,7 +162,7 @@ class InvestorController extends Controller
           $data_e = User::find()->where(['email'=>$model->email])->one();
 
           if (empty($data->username) && empty($data_e->email)) {
-            
+
             if ($model->createUser()) {
               Yii::$app->session->setFlash('success', "Investor has been added");
               return $this->redirect(['view', 'id' => $model->id]);
