@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use common\models\Investor;
-use common\models\ProductCategory;
+use common\models\ProductManagement;
 use kartik\widgets\Select2;
 use kartik\widgets\DatePicker;
 /* @var $this yii\web\View */
@@ -13,8 +13,8 @@ use kartik\widgets\DatePicker;
 $data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->select(['id','nric_comp'])->all();
 $invest = ArrayHelper::map($data,'id','nric_comp');
 
-$data = ProductCategory::find()->orderBy(['category'=>SORT_ASC])->select(['id','category'])->all();
-$cat = ArrayHelper::map($data,'id','category');
+$data = ProductManagement::find()->orderBy(['product_name'=>SORT_ASC])->select(['id','product_name'])->all();
+$prod = ArrayHelper::map($data,'id','product_name');
 
 $data = null;
 ?>
@@ -33,8 +33,8 @@ $data = null;
                'allowClear' => true
              ],
            ]) ?>
-          <?php echo $form->field($model,'category')->widget(Select2::className(),[
-             'data'=>$cat,
+          <?php echo $form->field($model,'product')->widget(Select2::className(),[
+             'data'=>$prod,
              'options'=>['placeholder'=>'Select... '],
              'theme'=> Select2::THEME_BOOTSTRAP,
              'size'=> Select2::MEDIUM,
