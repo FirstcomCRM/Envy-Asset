@@ -10,7 +10,7 @@ use Yii;
  * @property integer $id
  * @property integer $investor
  * @property string $price
- * @property string $category
+ * @property string $product
  * @property string $date
  * @property string $remarks
  */
@@ -30,12 +30,12 @@ class Deposit extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['investor', 'price', 'category', 'date'], 'required'],
+            [['investor', 'price', 'product', 'date'], 'required'],
             [['investor'], 'integer'],
             [['price'], 'number'],
             [['date','date_added'], 'safe'],
             [['remarks'], 'string'],
-            [['category'], 'string', 'max' => 75],
+          
         ];
     }
 
@@ -48,7 +48,7 @@ class Deposit extends \yii\db\ActiveRecord
             'id' => 'ID',
             'investor' => 'Investor',
             'price' => 'Amount',
-            'category' => 'Product Category',
+            'product' => 'Product',
             'date' => 'Date',
             'remarks' => 'Remarks',
             'date_added'=>'Date Added',
