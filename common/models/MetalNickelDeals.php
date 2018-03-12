@@ -42,7 +42,7 @@ class MetalNickelDeals extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['import_metal_id', 'date_uploaded', 'unrealised_profit_a', 'commision', 'unrealised_profit_b', 'net_unrealised'], 'required'],
+            [['unrealised_profit_a', 'commision', 'unrealised_profit_b', 'net_unrealised'], 'required'],
             [['import_metal_id'], 'integer'],
             [['date_uploaded'], 'safe'],
             [['purchase_price_a', 'insurance_cost_a', 'forward_price', 'final_sales_price', 'purchase_price_b', 'insurance_cost_b', 'total_cost_price', 'unrealised_profit_a', 'commision', 'unrealised_profit_b', 'net_unrealised'], 'number'],
@@ -72,9 +72,9 @@ class MetalNickelDeals extends \yii\db\ActiveRecord
             'purchase_price_b' => 'Purchase Price',
             'insurance_cost_b' => 'Insurance Cost',
             'total_cost_price' => 'Total Cost Price',
-            'unrealised_profit_a' => 'Realised Profit Before Com',
+            'unrealised_profit_a' => 'Realised Profit Before Commission',
             'commision' => 'Commission',
-            'unrealised_profit_b' => 'Realised Profit After Com',
+            'unrealised_profit_b' => 'Realised Profit After Commission',
             'net_unrealised' => 'Net Realised % return',
         ];
     }
