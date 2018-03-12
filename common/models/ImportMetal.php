@@ -248,11 +248,12 @@ class ImportMetal extends \yii\db\ActiveRecord
           $zn->zn_cash = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
           $zn->zn_three_month = (float)str_replace(',','.',str_replace('.','',$rowData[0][2]));
           $zn->zn_stock = (float)str_replace(',','.',str_replace('.','',$rowData[0][3]));
-          $zn->save(false);
+
           if (empty($rowData[0][0])) {
             break;
           }
-
+          
+          $zn->save(false);
 
       }
 
@@ -270,12 +271,13 @@ class ImportMetal extends \yii\db\ActiveRecord
         $au->au_fixing = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
 
         if (empty($rowData[0][0])) {
+          $nrow = $row+1;
           break;
         }
         $au->save(false);
       }
 
-      for ($row=26; $row<=$highestRow; $row++) {
+      for ($row=$nrow; $row<=$highestRow; $row++) {
         $rowData = $sheet->rangeToArray('K'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
         if ($rowData[0][0]=="Date" or $rowData[0][0]=="WTI Crude Oil") {
          continue;
