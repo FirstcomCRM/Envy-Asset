@@ -21,6 +21,8 @@ class AppAsset extends AssetBundle
       'js/custom_user.js',
       'js/modals.js',
       'js/reports.js',
+      'js/purchase.js',
+      'js/nickel.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
