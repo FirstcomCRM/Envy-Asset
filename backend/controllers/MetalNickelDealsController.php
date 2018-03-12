@@ -64,10 +64,13 @@ class MetalNickelDealsController extends Controller
     public function actionCreate()
     {
         $model = new MetalNickelDeals();
-
+        $model->date_uploaded = date('Y-m-d');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+        //  print_r($model->getErrors());
+        //  die();
             return $this->render('create', [
                 'model' => $model,
             ]);
