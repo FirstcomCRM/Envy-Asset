@@ -33,6 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
               'format' => ['date', 'php:d M Y'],
             ],
             [
+              'attribute'=> 'date_expire',
+              'format' => ['date', 'php:d M Y'],
+            ],
+            [
               'attribute'=>'sales_person',
               'value'=> function($model){
                 return Retrieve::retrieveUsernameManagement($model->sales_person);
@@ -55,6 +59,12 @@ $this->params['breadcrumbs'][] = $this->title;
               'attribute'=>'commission',
               'value'=>function($model){
                 return '$'.Retrieve::retrieveFormat($model->commission);
+              }
+            ],
+            [
+              'attribute'=>'commission_comp',
+              'value'=>function($model){
+                return '$'.Retrieve::retrieveFormat($model->commission_comp);
               }
             ],
         //    'date_added',

@@ -44,6 +44,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format' => ['date', 'php:d M Y'],
                       ],
                       [
+                        'attribute'=> 'date_expire',
+                        'format' => ['date', 'php:d M Y'],
+                      ],
+                      [
                         'attribute'=>'sales_person',
                         'value'=> function($model){
                           return Retrieve::retrieveUsernameManagement($model->sales_person);
@@ -53,7 +57,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'=>'commision_percent',
                         'label'=>'Commission %',
                         'value'=>function($model){
-                          return ($model->commision_percent*100).'%';
+                          if (is_null($model->re_month)) {
+                            return ($model->commision_percent*100).'%';
+                          }else{
+                            $data = new \DateTime($model->re_month);
+                              return ($model->commision_percent*100).'% - '. $data->format('M Y');
+
+                          }
                         },
                       ],
                       [
@@ -78,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                       ],
 
                     //  ['class' => 'yii\grid\ActionColumn'],
-                    [
+                    [,
                       'header'=>'Action',
                       'class'=>'yii\grid\ActionColumn',
                       'template'=>'{view}',
@@ -97,3 +107,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 </div>
+
+
+<?php
+
+    //$data = new \DateTime('2010-01-01');
+    //print_r($data);
+ ?>
