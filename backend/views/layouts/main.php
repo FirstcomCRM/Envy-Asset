@@ -64,7 +64,7 @@ AppAsset::register($this);
             ['label'=>'Stock Investment', 'url'=>['/stocks/index']],
             ['label'=>'Withdraw(Investor)', 'url'=>['/withdraw/index']],
             ['label'=>'Withdraw(Staff)', 'url'=>['/withdraw-staff/index']],
-            ['label'=>'Deposit', 'url'=>['/deposit/index']],
+        //    ['label'=>'Deposit', 'url'=>['/deposit/index']],
             ['label'=>'Purchase(Investor)', 'url'=>['/purchase/index']],
             ['label'=>'Purchase(Staff)', 'url'=>['/purchase-staff/index']],
         ],
