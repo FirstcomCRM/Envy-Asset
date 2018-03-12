@@ -6,7 +6,7 @@ use yii\widgets\ActiveForm;
 use kartik\widgets\Select2;
 use kartik\widgets\DatePicker;
 use common\models\UserManagement;
-use common\models\ProductCategory;
+use common\models\ProductManagement;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\WithdrawSearch */
@@ -14,8 +14,8 @@ use common\models\ProductCategory;
 $data = UserManagement::find()->orderBy(['name'=>SORT_ASC])->select(['id','name'])->all();
 $staff = ArrayHelper::map($data,'id','name');
 
-$data = ProductCategory::find()->orderBy(['category'=>SORT_ASC])->select(['id','category'])->all();
-$cat = ArrayHelper::map($data,'id','category');
+$data = ProductManagement::find()->orderBy(['product_name'=>SORT_ASC])->select(['id','product_name'])->all();
+$prod = ArrayHelper::map($data,'id','product_name');
 
 $data = null;
 ?>
@@ -40,9 +40,9 @@ $data = null;
            ]) ?>
         </div>
         <div class="col-md-3">
-          <?php echo $form->field($model,'category')->label(false)->widget(Select2::className(),[
-             'data'=>$cat,
-             'options'=>['placeholder'=>'Product Category '],
+          <?php echo $form->field($model,'product')->label(false)->widget(Select2::className(),[
+             'data'=>$prod,
+             'options'=>['placeholder'=>'Product '],
              'theme'=> Select2::THEME_BOOTSTRAP,
              'size'=> Select2::MEDIUM,
              'pluginOptions' => [

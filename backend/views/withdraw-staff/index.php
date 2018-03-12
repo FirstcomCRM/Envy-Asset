@@ -52,9 +52,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
 
                     [
-                      'attribute'=>'category',
+                      'attribute'=>'product',
                       'value'=>function($model){
-                        return Retrieve::retrieveProductCat($model->category);
+                        return Retrieve::retrieveProductName($model->product);
                       },
                     ],
                     [
