@@ -19,7 +19,7 @@ class InvestorSearch extends Investor
     {
         return [
             [['id', 'mobile'], 'integer'],
-            [['company_name', 'customer_group', 'contact_person', 'email', 'address', 'remark'], 'safe'],
+            [['company_name', 'customer_group', 'contact_person', 'email', 'address', 'remark','company_registration','nric','passport_no',], 'safe'],
         ];
     }
 
@@ -73,11 +73,9 @@ class InvestorSearch extends Investor
         ]);
 
         $query->andFilterWhere(['like', 'company_name', $this->company_name])
-            ->andFilterWhere(['like', 'customer_group', $this->customer_group])
-            ->andFilterWhere(['like', 'contact_person', $this->contact_person])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'remark', $this->remark]);
+            ->andFilterWhere(['like', 'company_registration', $this->company_registration])
+            ->andFilterWhere(['like', 'passport_no', $this->passport_no])
+            ->andFilterWhere(['like', 'nric', $this->nric]);
 
         return $dataProvider;
     }
