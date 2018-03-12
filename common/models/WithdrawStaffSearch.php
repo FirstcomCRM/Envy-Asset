@@ -18,9 +18,9 @@ class WithdrawStaffSearch extends WithdrawStaff
     public function rules()
     {
         return [
-            [['id', 'staff'], 'integer'],
+            [['id', 'staff', 'product'], 'integer'],
             [['price'], 'number'],
-            [['category', 'date', 'remarks', 'date_added'], 'safe'],
+            [['date', 'remarks', 'date_added'], 'safe'],
         ];
     }
 
@@ -63,12 +63,12 @@ class WithdrawStaffSearch extends WithdrawStaff
             'id' => $this->id,
             'staff' => $this->staff,
             'price' => $this->price,
+            'product' => $this->product,
             'date' => $this->date,
             'date_added' => $this->date_added,
         ]);
 
-        $query->andFilterWhere(['like', 'category', $this->category])
-            ->andFilterWhere(['like', 'remarks', $this->remarks]);
+        $query->andFilterWhere(['like', 'remarks', $this->remarks]);
 
         return $dataProvider;
     }

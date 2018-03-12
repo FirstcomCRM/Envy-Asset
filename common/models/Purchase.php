@@ -32,13 +32,13 @@ class Purchase extends \yii\db\ActiveRecord
     {
         return [
             [['investor', 'product', 'share', 'price', 'date'], 'required'],
-            [['price'], 'number'],
+            [['price','sum_all'], 'number'],
             [['date'], 'safe'],
             [['remarks','purchase_no'], 'string'],
         //    [['salesperson'], 'string'],
             [['salesperson'], 'integer'],
             [['investor', 'product', 'share'], 'string', 'max' => 75],
-            [['date_adedd'],'safe'],
+            [['date_adedd','expiry_date'],'safe'],
         ];
     }
 
@@ -55,9 +55,11 @@ class Purchase extends \yii\db\ActiveRecord
             'product' => 'Product',
             'share' => 'Share',
             'price' => 'Amount',
+            'sum_all'=>'Commission Sum',
             'date' => 'Date',
             'salesperson'=>'Sales Person',
             'remarks' => 'Remarks',
+            'expiry_date'=>'Expiry Date',
         ];
     }
 }

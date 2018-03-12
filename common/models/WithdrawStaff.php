@@ -31,12 +31,12 @@ class WithdrawStaff extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['staff', 'price', 'category', 'date'], 'required'],
+            [['staff', 'price', 'product', 'date'], 'required'],
             [['staff'], 'integer'],
             [['price'], 'number'],
             [['date', 'date_added'], 'safe'],
             [['remarks'], 'string'],
-            [['category'], 'string', 'max' => 75],
+
         ];
     }
 
@@ -49,7 +49,7 @@ class WithdrawStaff extends \yii\db\ActiveRecord
             'id' => 'ID',
             'staff' => 'Staff',
             'price' => 'Amount',
-            'category' => 'Product Category',
+            'product' => 'Product',
             'date' => 'Date',
             'remarks' => 'Remarks',
             'date_added' => 'Date Added',

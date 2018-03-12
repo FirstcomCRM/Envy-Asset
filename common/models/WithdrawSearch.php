@@ -18,9 +18,9 @@ class WithdrawSearch extends Withdraw
     public function rules()
     {
         return [
-            [['id', 'investor'], 'integer'],
+            [['id', 'investor', 'product'], 'integer'],
             [['price'], 'number'],
-            [['category', 'date', 'remarks'], 'safe'],
+            [['date', 'remarks', 'date_added'], 'safe'],
         ];
     }
 
@@ -48,12 +48,6 @@ class WithdrawSearch extends Withdraw
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination'=>[
-              'pageSize'=>10,
-            ],
-            'sort'=>[
-              'defaultOrder'=>['id'=>SORT_DESC],
-            ],
         ]);
 
         $this->load($params);
@@ -69,11 +63,12 @@ class WithdrawSearch extends Withdraw
             'id' => $this->id,
             'investor' => $this->investor,
             'price' => $this->price,
+            'product' => $this->product,
             'date' => $this->date,
+            'date_added' => $this->date_added,
         ]);
 
-        $query->andFilterWhere(['like', 'category', $this->category])
-            ->andFilterWhere(['like', 'remarks', $this->remarks]);
+        $query->andFilterWhere(['like', 'remarks', $this->remarks]);
 
         return $dataProvider;
     }
