@@ -22,8 +22,8 @@ class CommissionSearch extends Commission
     {
         return [
             [['id', 'transact_id', 'sales_person'], 'integer'],
-            [['transact_type', 'transact_date', 'date_added','start','end'], 'safe'],
-            [['transact_amount', 'commision_percent', 'commission'], 'number'],
+            [['transact_type', 'transact_date','date_expire', 'date_added','start','end'], 'safe'],
+            [['transact_amount', 'commision_percent', 'commission','commission_comp'], 'number'],
         ];
     }
 

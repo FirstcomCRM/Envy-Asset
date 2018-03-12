@@ -35,8 +35,8 @@ class Commission extends \yii\db\ActiveRecord
         return [
             [['transact_type', 'transact_amount', 'transact_date', 'sales_person', 'commision_percent', 'commission'], 'required'],
             [['transact_id', 'sales_person'], 'integer'],
-            [['transact_amount', 'commision_percent', 'commission'], 'number'],
-            [['transact_date', 'date_added'], 'safe'],
+            [['transact_amount', 'commision_percent', 'commission','commission_comp'], 'number'],
+            [['transact_date', 'date_added','date_expire','re_month'], 'safe'],
             [['transact_no'], 'string'],
             [['transact_type'], 'string', 'max' => 50],
         ];
@@ -56,11 +56,13 @@ class Commission extends \yii\db\ActiveRecord
             //'transact_amount' => 'Transaction Amount',
             'transact_amount' => 'Amount',
             //'transact_date' => 'Transaction Date',
-            'transact_date' => 'Date',
+            'transact_date' => 'Purchase Date',
             'sales_person' => 'Sales Person',
             'commision_percent' => 'Commision Percentage',
-            'commission' => 'Commission',
+            'commission' => 'Staff Commission',
             'date_added' => 'Date Added',
+            'commission_comp'=>'Company Commission',
+            'date_expire'=>'Expiry Date',
         ];
     }
 }
