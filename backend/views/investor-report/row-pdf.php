@@ -18,15 +18,18 @@ if (!empty($searchModel->start)) {
   $newDate = '';
 }
 
+$start = date('Y-m-01',strtotime($model->date) );
+$end = date('Y-m-t',strtotime($model->date));
+
 //echo $searchModel->start;
-$al = MetalAl::find()->where(['date_uploaded'=>$searchModel->start])->all();
-$cu = MetalCu::find()->where(['date_uploaded'=>$searchModel->start])->all();
-$au = MetalAu::find()->where(['date_uploaded'=>$searchModel->start])->all();
-$ni = MetalNi::find()->where(['date_uploaded'=>$searchModel->start])->all();
-$oil = MetalOil::find()->where(['date_uploaded'=>$searchModel->start])->all();
-$zn = MetalZn::find()->where(['date_uploaded'=>$searchModel->start])->all();
-$unrealised = MetalUnrealised::find()->where(['date_uploaded'=>$searchModel->start])->all();
-$unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchModel->start])->one();
+$al = MetalAl::find()->where(['date_uploaded'=>$start])->all();
+$cu = MetalCu::find()->where(['date_uploaded'=>$start])->all();
+$au = MetalAu::find()->where(['date_uploaded'=>$start])->all();
+$ni = MetalNi::find()->where(['date_uploaded'=>$start])->all();
+$oil = MetalOil::find()->where(['date_uploaded'=>$start])->all();
+$zn = MetalZn::find()->where(['date_uploaded'=>$start])->all();
+$unrealised = MetalUnrealised::find()->where(['date_uploaded'=>$start])->all();
+$unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$start])->one();
  ?>
 <style>
     table{
@@ -98,6 +101,8 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
 
 </style>
 
+
+
 <div class="cover-image">
 
   <?php  $front = Yii::getAlias('@images').'/'.'front-page.png' ?>
@@ -106,7 +111,7 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
   <img src="<?php echo $front ?>" alt="Front" class="front-page">
   <div class="cover-description">
     <h1><strong>Investor Report</strong></h1>
-    <h3>As of <?php echo $endDate ?></h3>
+    <h3>As of <?php echo $end ?></h3>
     <h3>Prepared by Envy Asset Management Pte Ltd</h3>
   </div>
 </div>
@@ -131,7 +136,9 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
         <th class="th-daily">Exit Value</th>
         <th class="th-daily" colspan = "2">Realised Gain/Loss</th>
         <th class="th-daily" colspan = "2">Profit/Loss after transaction fees</th>
+
       </tr>
+    </thead>
       <tr>
         <th></th>
         <th></th>
@@ -162,9 +169,11 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
         <td class="td-metal"><?php echo Retrieve::retrieveFormat($value->profit_lost_sgd) ?></td>
         </tr>
       <?php endforeach; ?>
-    </thead>
+
   </table>
   <br>
+
+
   <table border=1 class="table-metal-sum">
     <tr>
       <td colspan = "4" class="td-metal-sum">Realised Gain/(Loss)</td>
@@ -221,6 +230,7 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
         <th class="th-daily">LME ALUMINUM 3-MONTH</th>
         <th class="th-daily">LME ALUMINUM 3-STOCK</th>
       </tr>
+      </thead>
       <?php foreach ($al as $key => $value): ?>
         <tr>
           <td class="td-daily"><strong><?php echo $value->date ?></strong> </td>
@@ -229,7 +239,7 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
           <td class="td-daily"><?php echo Retrieve::get_numberFormat($value->al_stocl) ?></td>
         </tr>
       <?php endforeach; ?>
-    </thead>
+
   </table>
   <hr>
   <table border="1" class="table-cu">
@@ -243,6 +253,7 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
         <th class="th-daily">LME COPPER 3-MONTH</th>
         <th class="th-daily">LME COPPER 3-STOCK</th>
       </tr>
+      </thead>
       <?php foreach ($cu as $key => $value): ?>
         <tr>
           <td class="td-daily"><strong><?php echo $value->date ?></strong> </td>
@@ -251,9 +262,9 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
           <td class="td-daily"><?php echo Retrieve::get_numberFormat($value->cu_stock) ?></td>
         </tr>
       <?php endforeach; ?>
-    </thead>
-  </table>
 
+  </table>
+<hr>
   <table border="1" class="table-au">
     <thead>
       <tr>
@@ -263,6 +274,7 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
         <th class="th-daily">Date</th>
         <th class="th-daily">GOLD LONDON FIXING</th>
       </tr>
+    </thead>
       <?php foreach ($au as $key => $value): ?>
         <tr>
           <td class="td-daily"><strong><?php echo $value->date ?></strong> </td>
@@ -270,7 +282,7 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
 
         </tr>
       <?php endforeach; ?>
-    </thead>
+
   </table>
 
   <hr>
@@ -285,6 +297,7 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
         <th class="th-daily">LME NICKEL 3-MONTH</th>
         <th class="th-daily">LME NICKEL 3-STOCK</th>
       </tr>
+    </thead>
       <?php foreach ($ni as $key => $value): ?>
         <tr>
           <td class="td-daily"><strong><?php echo $value->date ?></strong> </td>
@@ -293,9 +306,9 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
           <td class="td-daily"><?php echo Retrieve::get_numberFormat($value->ni_stock) ?></td>
         </tr>
       <?php endforeach; ?>
-    </thead>
-  </table>
 
+  </table>
+<hr>
   <table border="1" class="table-oil">
     <thead>
       <tr>
@@ -310,6 +323,7 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
         <th class="th-oil">VOL.</th>
         <th class="th-oil">CHANGE%</th>
       </tr>
+    </thead>
       <?php foreach ($oil as $key => $value): ?>
         <tr>
           <td class="td-oil"><strong><?php echo $value->date ?></strong> </td>
@@ -321,7 +335,7 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
           <td class="td-oil"><?php echo $value->oil_change ?></td>
         </tr>
       <?php endforeach; ?>
-    </thead>
+
   </table>
   <hr>
   <table border="1" class="table-zn">
@@ -335,6 +349,7 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
         <th class="th-daily">ZINC NICKEL 3-MONTH</th>
         <th class="th-daily">ZINC NICKEL 3-STOCK</th>
       </tr>
+    </thead>
       <?php foreach ($zn as $key => $value): ?>
         <tr>
           <td class="td-daily"><strong><?php echo $value->date ?></strong> </td>
@@ -343,8 +358,9 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$searchMod
           <td class="td-daily"><?php echo Retrieve::get_numberFormat($value->zn_stock) ?></td>
         </tr>
       <?php endforeach; ?>
-    </thead>
+
   </table>
+
 </div>
 
 
