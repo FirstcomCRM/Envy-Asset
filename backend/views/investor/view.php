@@ -4,9 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use yii\helpers\Url;
 use common\components\Retrieve;
 use common\models\Withdraw;
 use common\models\Deposit;
+
 /* @var $this yii\web\View */
 /* @var $model common\models\Customer */
 
@@ -121,9 +123,9 @@ foreach ($purchase->getModels() as $key => $value) {
                       }
                     ],
                     [
-                      'attribute'=>'category',
+                      'attribute'=>'product',
                       'value'=>function($model){
-                        return Retrieve::retrieveProductCat($model->category);
+                        return Retrieve::retrieveProductName($model->product);
                       },
                     ],
                     [
@@ -146,11 +148,13 @@ foreach ($purchase->getModels() as $key => $value) {
                     ],
                     'urlCreator'=>function($action,$model,$key,$index){
                       if($action==='view'){
-                        $url='?r=withdraw%2Fview&id='.$model->id;
+                      //  $url='?r=withdraw%2Fview&id='.$model->id;
+                        $url = Url::to(['withdraw/view', 'id'=>$model['id']]);
                         return $url;
                       }
                       if($action==='update'){
-                        $url='?r=withdraw%2Fupdate&id='.$model->id;
+                    //    $url='?r=withdraw%2Fupdate&id='.$model->id;
+                        $url = Url::to(['withdraw/update', 'id'=>$model['id']]);
                         return $url;
                       }
 
@@ -190,9 +194,9 @@ foreach ($purchase->getModels() as $key => $value) {
                       }
                     ],
                     [
-                      'attribute'=>'category',
+                      'attribute'=>'product',
                       'value'=>function($model){
-                        return Retrieve::retrieveProductCat($model->category);
+                        return Retrieve::retrieveProductName($model->product);
                       },
                     ],
                     [
@@ -215,11 +219,13 @@ foreach ($purchase->getModels() as $key => $value) {
                     ],
                     'urlCreator'=>function($action,$model,$key,$index){
                       if($action==='view'){
-                        $url='?r=deposit%2Fview&id='.$model->id;
+                      //  $url='?r=deposit%2Fview&id='.$model->id;
+                        $url = Url::to(['deposit/view', 'id'=>$model['id']]);
                         return $url;
                       }
                       if($action==='update'){
-                        $url='?r=deposit%2Fupdate&id='.$model->id;
+                      //  $url='?r=deposit%2Fupdate&id='.$model->id;
+                        $url = Url::to(['deposit/update', 'id'=>$model['id']]);
                         return $url;
                       }
 
@@ -256,7 +262,7 @@ foreach ($purchase->getModels() as $key => $value) {
                   [
                     'attribute'=>'product',
                     'value'=>function($model){
-                      return '$'.Retrieve::retrieveProductName($model->product);
+                      return Retrieve::retrieveProductName($model->product);
                     },
                   ],
                   'share',
@@ -268,7 +274,7 @@ foreach ($purchase->getModels() as $key => $value) {
                     'footer'=>  '$'.number_format($purchase_sum,2),
 
                     'value'=>function($model){
-                      return '$'.Retrieve::retrieveFormat($model->price);
+                      return Retrieve::retrieveFormat($model->price);
                     },
                   ],
                   [
@@ -279,7 +285,7 @@ foreach ($purchase->getModels() as $key => $value) {
                   [
                     'attribute'=>'salesperson',
                     'value'=>function($model){
-                      return '$'.Retrieve::retrieveUsernameManagement($model->salesperson);
+                      return Retrieve::retrieveUsernameManagement($model->salesperson);
                     },
                   ],
                   'remarks:ntext',
@@ -299,11 +305,13 @@ foreach ($purchase->getModels() as $key => $value) {
                   ],
                   'urlCreator'=>function($action,$model,$key,$index){
                     if($action==='view'){
-                      $url='?r=purchase%2Fview&id='.$model->id;
+                    //  $url='?r=purchase%2Fview&id='.$model->id;
+                      $url = Url::to(['purchase/view', 'id'=>$model['id']]);
                       return $url;
                     }
                     if($action==='update'){
-                      $url='?r=pruchase%2Fupdate&id='.$model->id;
+                    //  $url='?r=purchase%2Fupdate&id='.$model->id;
+                      $url = Url::to(['purchase/update', 'id'=>$model['id']]);
                       return $url;
                     }
 
