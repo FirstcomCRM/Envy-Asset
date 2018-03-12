@@ -69,12 +69,12 @@ if (empty($salesperson)) {
           ]) ?>
 
         <?= $form->field($model, 'share')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'price')->textInput(['maxlength' => true,'onchange'=>'sums()','id'=>'price']) ?>
       </div>
       <div class="col-md-6">
-        
+
         <?php echo $form->field($model, 'date')->widget(DatePicker::classname(), [
-          //'options' => ['placeholder' => 'Date'],
+          'options' => ['id' => 'purchase_date','onchange'=>'sums()'],
         //  'value' => '08/10/2004',
           'convertFormat'=>true,
           'readonly' => true,
@@ -84,7 +84,20 @@ if (empty($salesperson)) {
             'format' => 'php:d M Y',
           ]
         ]); ?>
-        <?= $form->field($model, 'remarks')->textarea(['rows' => 6]) ?>
+        <?php echo $form->field($model, 'expiry_date')->widget(DatePicker::classname(), [
+          //'options' => ['placeholder' => 'Date'],
+            'options' => ['id' => 'expiry_date', 'onchange'=>'sums()'],
+        //  'value' => '08/10/2004',
+          'convertFormat'=>true,
+          'readonly' => true,
+          'pluginOptions' => [
+            'autoclose'=>true,
+          //  'format' => 'mm/dd/yyyy'
+            'format' => 'php:d M Y',
+          ]
+        ]); ?>
+        <?= $form->field($model, 'remarks')->textarea(['rows' => 4]) ?>
+        <?= $form->field($model, 'sum_all')->textInput(['id'=>'sum_all','readOnly'=>true]) ?>
       </div>
     </div>
 
@@ -96,5 +109,10 @@ if (empty($salesperson)) {
     </div>
 
     <?php ActiveForm::end(); ?>
+
+</div>
+
+
+<div class="" id="result">
 
 </div>
