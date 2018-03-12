@@ -39,24 +39,31 @@ $data = null;
          ]) ?>
       </div>
       <div class="col-md-3">
-        <?php echo $form->field($model,'customer_group')->label(false)->widget(Select2::className(),[
-           'data'=>$cgroup,
-           'options'=>['placeholder'=>'Investor Group '],
-           'theme'=> Select2::THEME_BOOTSTRAP,
-           'size'=> Select2::MEDIUM,
-           'pluginOptions' => [
-             'allowClear' => true
-           ],
-         ]) ?>
+          <?= $form->field($model, 'company_registration')->label(false)->textInput(['placeholder'=>'Company Registration']) ?>
+      </div>
+      <div class="col-md-3">
+        <?= $form->field($model, 'nric')->label(false)->textInput(['placeholder'=>'NRIC']) ?>
+      </div>
+
+      <div class="col-md-3">
+
+        <?= $form->field($model, 'passport_no')->label(false)->textInput(['placeholder'=>'Passport']) ?>
+
+      </div>
+    </div>
+    <div class="row">
+
+      <div class="col-md-3">
+        <?= $form->field($model, 'mobile')->label(false)->textInput(['placeholder'=>'Mobile No']) ?>
       </div>
       <div class="col-md-3">
         <div class="form-group">
             <?= Html::submitButton('<i class="fa fa-search" aria-hidden="true"></i> Search', ['class' => 'btn btn-default']) ?>
             <?php echo Html::a('<i class="fa fa-undo" aria-hidden="true"></i> Reset',['index'],['class' => 'btn btn-default']) ?>
         </div>
+
       </div>
     </div>
-
 
 
 
