@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\widgets\DatePicker;
+use common\models\Department;
 /* @var $this yii\web\View */
 /* @var $model common\models\CustomerUpload */
 /* @var $form yii\widgets\ActiveForm */
@@ -21,8 +22,5 @@ use kartik\widgets\DatePicker;
           ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
       </div>
     </div>
-
-
     <?php ActiveForm::end(); ?>
-
 </div>
