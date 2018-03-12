@@ -47,25 +47,37 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="col-md-10">
           <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-      <?php Pjax::begin(); ?>
-       <?= GridView::widget([
-              'dataProvider' => $dataProvider,
-            //  'filterModel' => $searchModel,
-              'columns' => [
-                  ['class' => 'yii\grid\SerialColumn'],
+      <div class="panel panel-default">
+        <div class="panel-heading">
 
-                
-                  [
-                    'attribute'=>'date_uploaded',
-                    'format' => ['date', 'php:d M Y'],
+        </div>
+        <div class="panel-body">
+          <p class="text-right">
+            <?= Html::a('<i class="fa fa-plus" aria-hidden="true"></i> Add', ['create'], ['class' => 'btn btn-default']) ?>
+
+          </p>
+          <?php Pjax::begin(); ?>
+           <?= GridView::widget([
+                  'dataProvider' => $dataProvider,
+                //  'filterModel' => $searchModel,
+                  'columns' => [
+                      ['class' => 'yii\grid\SerialColumn'],
+
+
+                    /*  [
+                        'attribute'=>'date_uploaded',
+                        'format' => ['date', 'php:d M Y'],
+                      ],*/
+                      'title',
+                      'description',
+
+                      ['class' => 'yii\grid\ActionColumn'],
                   ],
-                  'title',
-                  'description',
+              ]); ?>
+          <?php Pjax::end(); ?>
+        </div>
+      </div>
 
-                  ['class' => 'yii\grid\ActionColumn'],
-              ],
-          ]); ?>
-      <?php Pjax::end(); ?>
     </div>
   </div>
 

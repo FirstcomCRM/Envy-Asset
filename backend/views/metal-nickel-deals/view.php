@@ -60,18 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 return '$'.Retrieve::retrieveFormat($model->final_sales_price);
               },
             ],
-            [
-              'attribute'=>'purchase_price_b',
-              'value'=>function($model){
-                return Retrieve::retrieveFormat($model->purchase_price_b);
-              },
-            ],
-            [
-              'attribute'=>'insurance_cost_b',
-              'value'=>function($model){
-                return '$'.Retrieve::retrieveFormat($model->insurance_cost_b);
-              },
-            ],
+
             [
               'attribute'=>'total_cost_price',
               'value'=>function($model){
@@ -100,8 +89,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'=>'net_unrealised',
                 'value'=>function($model){
-                  $data = $model->net_unrealised*100;
-                  return $data.'%';
+                //  $data = $model->net_unrealised;
+                  return $model->net_unrealised.'%';
                 }
             ],
         ],
