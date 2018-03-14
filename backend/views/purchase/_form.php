@@ -19,6 +19,16 @@ $invest = ArrayHelper::map($data,'id','nric_comp');
 $data = ProductManagement::find()->orderBy(['product_name'=>SORT_ASC])->select(['id','product_name'])->all();
 $prod = ArrayHelper::map($data,'id','product_name');
 
+$pur_type = [
+  'Metal'=>'Metal',
+  'Nickel'=>'Nickel',
+];
+
+$ch_type = [
+  'Tier'=>'Tier',
+  'Others'=>'Others',
+];
+
 $data = null;
 
 $salesperson = Usermanagement::find()->where(['id'=>$model->salesperson])->one();
@@ -69,12 +79,10 @@ if (empty($salesperson)) {
           ]) ?>
 
         <?= $form->field($model, 'share')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'price')->textInput(['maxlength' => true,'onchange'=>'sums()','id'=>'price']) ?>
-      </div>
-      <div class="col-md-6">
+        <?= $form->field($model, 'price')->textInput(['maxlength' => true,'id'=>'price']) ?>
 
         <?php echo $form->field($model, 'date')->widget(DatePicker::classname(), [
-          'options' => ['id' => 'purchase_date','onchange'=>'sums()'],
+          'options' => ['id' => 'purchase_date'],
         //  'value' => '08/10/2004',
           'convertFormat'=>true,
           'readonly' => true,
@@ -86,7 +94,7 @@ if (empty($salesperson)) {
         ]); ?>
         <?php echo $form->field($model, 'expiry_date')->widget(DatePicker::classname(), [
           //'options' => ['placeholder' => 'Date'],
-            'options' => ['id' => 'expiry_date', 'onchange'=>'sums()'],
+            'options' => ['id' => 'expiry_date'],
         //  'value' => '08/10/2004',
           'convertFormat'=>true,
           'readonly' => true,
@@ -97,16 +105,32 @@ if (empty($salesperson)) {
           ]
         ]); ?>
         <?= $form->field($model, 'remarks')->textarea(['rows' => 4]) ?>
+
+
+      </div>
+
+      <div class="col-md-6">
+
         <?= $form->field($model, 'sum_all')->textInput(['id'=>'sum_all','readOnly'=>true]) ?>
+        <?php echo $form->field($model, 'trading_days') ?>
+        <?php echo $form->field($model, 'prorated_days') ?>
+        <?php echo $form->field($model, 'purchase_type')->radioList($pur_type,['id'=>'purchase_type', 'class'=>'purchase_type']); ?>
+        <?php echo  $form->field($model, 'charge_type')->dropDownList($ch_type,['id'=>'charge_type'])?>
+        <?php echo $form->field($model, 'company_charge')->textInput(['id'=>'company_charge']) ?>
+
+        <?php echo $form->field($model, 'customer_earn')->textInput(['id'=>'customer_earn', 'readOnly'=>true]) ?>
+        <?php echo $form->field($model, 'company_earn')->textInput(['id'=>'company_earn', 'readOnly'=>true]) ?>
+        <?php echo $form->field($model, 'staff_earn')->textInput(['id'=>'staff_earn', 'readOnly'=>true]) ?>
+
+        <div class="form-group">
+            <?= Html::submitButton($model->isNewRecord ? '<i class="fa fa-pencil" aria-hidden="true"></i> Create' : '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update',
+            ['class' => $model->isNewRecord ? 'btn btn-default' : 'btn btn-default']) ?>
+        </div>
       </div>
     </div>
 
 
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? '<i class="fa fa-pencil" aria-hidden="true"></i> Create' : '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update',
-        ['class' => $model->isNewRecord ? 'btn btn-default' : 'btn btn-default']) ?>
-    </div>
 
     <?php ActiveForm::end(); ?>
 
