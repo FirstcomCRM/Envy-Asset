@@ -62,6 +62,21 @@ $this->params['breadcrumbs'][] = $this->title;
               },
             ],
             'remarks:ntext',
+            'trading_days',
+            'prorated_days',
+            'purchase_type',
+            'charge_type',
+            //s
+            //'company_charge',
+            [
+              'attribute'=>'company_charge',
+              'value'=>function($model){
+                return number_format($model->company_charge*100,2);
+              }
+            ],
+            'customer_earn',
+            'company_earn',
+            'staff_earn',
         ],
     ]) ?>
 
