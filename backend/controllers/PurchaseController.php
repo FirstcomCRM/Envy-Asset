@@ -133,10 +133,13 @@ class PurchaseController extends Controller
     {
         $model = new Purchase();
         $model->date = date('d M Y');
+        $model->purchase_type = 'Metal';
+        $model->company_charge = 0.00;
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             $model->date = date('Y-m-d', strtotime($model->date) );
             $model->expiry_date = date('Y-m-d', strtotime($model->expiry_date) );
             $model->date_added = date('Y-m-d h:i:s');
+            $model->company_charge = $model->company_charge/100;
           //    $model->Quo_ID = $quo = 'QUO-'. sprintf("%007d", $model->ID);
             $start = date('Y-m-01',strtotime($model->date) );
             $start = strtotime($start);
@@ -198,13 +201,15 @@ class PurchaseController extends Controller
         $model = $this->findModel($id);
         $model->date = date('d M Y', strtotime($model->date) );
         $model->expiry_date = date('d M Y', strtotime($model->expiry_date) );
-
+        $model->company_charge = $model->company_charge*100;
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
 
             $model->date = date('Y-m-d', strtotime($model->date) );
             $model->expiry_date = date('Y-m-d', strtotime($model->expiry_date) );
+            $model->company_charge = $model->company_charge/100;
 
             $model->save(false);
+            Yii::$app->session->setFlash('success', "Purchase updated");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -243,6 +248,9 @@ class PurchaseController extends Controller
 
    public function actionAjaxSum(){
       $multiplier = 0;
+      $namount= 0;
+      $customer_amount = 0;
+      $staff_earn = 0;
        if ( Yii::$app->request->post() ) {
             $amount = Yii::$app->request->post()['price'];
             $expiry_date = Yii::$app->request->post()['expiry_date'];
@@ -251,18 +259,38 @@ class PurchaseController extends Controller
             $purchase_date = Yii::$app->request->post()['purchase_date'];
             $data = new \DateTime($purchase_date);
             $purchase = $data->format('Y-m-01');
+
+            $charge_type = Yii::$app->request->post()['charge_type'];
+            $purchase_type = Yii::$app->request->post()['purchase_type'];
+            $com_charge = Yii::$app->request->post()['company_charge'];
+            $com_charge = $com_charge/100;
+
             $metal = MetalUnrealisedGain::find()->where(['between','date_uploaded',$purchase,$expire])->sum('re_gain_loss');
             if (empty($metal) ) {
               $multiplier = 0.00;
             }else{
               $multiplier = $metal;
             }
-            $namount = ($amount*$multiplier)/2.0;
-            return number_format($namount,2);
-          //  print_r($namount);
-          //  print_r($multiplier);die();
-          //  print_r($expire);
-          //  die();
+
+            if ($purchase_type =='Metal' && $charge_type == 'Others') {
+            //  print_r($charge_type.'-'.$purchase_type);
+              $customer_amount  = ($amount*$multiplier); //customer earn
+            //  $namount = ($customer_amount*$com_charge); //company earn
+              $company_earn = ($customer_amount*$com_charge); //company earn
+              $staff_earn = $company_earn/2; //staff earn
+            }else{
+          //  print_r('--');
+            //  $namount = $amount*$multiplier;
+              $company_earn = $amount*$multiplier;
+              $customer_amount = 0;
+              $staff_earn = 0;
+            }
+              //return number_format($namount,2);
+              echo json_encode(array(
+                'customer_amount'=>number_format($customer_amount,2),
+                'company_earn'=>number_format($company_earn,2),
+                'staff_earn'=>number_format($staff_earn,2),
+              ));
        }
    }
 
@@ -315,13 +343,22 @@ class PurchaseController extends Controller
         $new_comm->transact_id = $model['id'];
         $new_comm->transact_no = $model['purchase_no'];
         $new_comm->re_month = $date_re;
-        $new_comm->transact_type = 'Purchase';
+        $new_comm->transact_type = 'Purchase Investor';
         $new_comm->transact_amount = $model['price'];
         $new_comm->transact_date =$model['date'];
         $new_comm->sales_person = $model['salesperson'];
         $new_comm->commision_percent = $multiplier;
-        $new_comm->commission = ($new_comm->commision_percent * $new_comm->transact_amount)/2;
-        $new_comm->commission_comp = $new_comm->commission;
+
+        if ($model['charge_type']=='Others' && $model['purchase_type'] =='Metal') {
+          $customer_amount  = ($new_comm->transact_amount*$multiplier);
+          $new_comm->commission_comp = ($customer_amount*$model['company_charge']);
+        }else{
+          $new_comm->commission_comp = $new_comm->transact_amount*$multiplier;
+        }
+        $new_comm->commission = $new_comm->commission_comp/2;
+        //$new_comm->commission = ($new_comm->commision_percent * $new_comm->transact_amount);
+        //$new_comm->commission_comp = $new_comm->commission/2;
+
         $new_comm->date_added = date('Y-m-d h:i:s');
         $new_comm->date_expire = $model['expiry_date'];
         $new_comm->save(false);
