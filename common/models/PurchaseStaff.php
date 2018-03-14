@@ -34,12 +34,13 @@ class PurchaseStaff extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['staff', 'product', 'share', 'price', 'date', 'salesperson'], 'required'],
-            [['price'], 'number'],
-            [['date', 'date_added'], 'safe'],
+            [['staff', 'product', 'price', 'date',], 'required'],
+            [['price','sum_all','company_charge'], 'number'],
+            [['date', 'date_added','expiry_date'], 'safe'],
             [['salesperson'], 'integer'],
             [['remarks'], 'string'],
             [['purchase_no'], 'string', 'max' => 25],
+            [['trading_days', 'prorated_days', 'purchase_type','charge_type'], 'string', 'max' => 50],
             [['staff', 'product', 'share'], 'string', 'max' => 75],
         ];
     }
@@ -54,12 +55,19 @@ class PurchaseStaff extends \yii\db\ActiveRecord
             'purchase_no' => 'Purchase No',
             'staff' => 'Staff',
             'product' => 'Product',
-            'share' => 'Share',
-            'price' => 'Price',
+            'share' => 'Security Name',
+            'price' => 'Amount',
+            'sum_all'=>'Commission Sum(Company)',
             'date' => 'Date',
             'salesperson' => 'Salesperson',
             'remarks' => 'Remarks',
             'date_added' => 'Date Added',
+            'expiry_date'=>'Expiry Date',
+            'trading_days'=>'Trading days in mth',
+            'prorated_days'=>'Pro-rated days in mth',
+            'purchase_type'=>'Purchase Type',
+            'charge_type'=>'Charge Type',
+            'company_charge'=>'Company Charge',
         ];
     }
 }
