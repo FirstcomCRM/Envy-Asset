@@ -215,7 +215,8 @@ class InvestorReportController extends \yii\web\Controller
 
      $title = $invest.'-'.$pur_date;
 
-     $mpdf = new mPDF('utf-8','A3');
+    // $mpdf = new mPDF('utf-8','A4');
+      $mpdf = new mPDF('utf-8','A3');
      $mpdf->content = $this->renderPartial('row-pdf',[
         'model'=>$model,
         'searchModel'=>$searchModel,
@@ -228,8 +229,8 @@ class InvestorReportController extends \yii\web\Controller
         Yii::$app->session->setFlash('success', "Email sent");
         return $this->redirect(['d-index']);
       }else{
-        $mpdf->Output($title.'.pdf','D');
-      //  $mpdf->Output($title.'.pdf','I');
+      //  $mpdf->Output($title.'.pdf','D');
+        $mpdf->Output($title.'.pdf','I');
         exit();
       }
    }
