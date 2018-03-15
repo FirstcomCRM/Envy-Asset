@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                   'attribute'=>'salesperson',
                   'value'=>function($model){
-                    return Retrieve::retrieveUsernameManagementl($model->salesperson);
+                    return Retrieve::retrieveUsernameManagement($model->salesperson);
                   },
                 ],
                  'remarks:ntext',
