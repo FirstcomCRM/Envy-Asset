@@ -12,6 +12,8 @@ use common\models\MetalOil;
 use common\models\MetalUnrealised;
 use common\models\MetalUnrealisedGain;
 use common\models\MetalNickelDeals;
+use common\models\PurchaseEarning;
+use common\models\Purchase;
 /**
  * This is the model class for table "import_metal".
  *
@@ -100,6 +102,8 @@ class ImportMetal extends \yii\db\ActiveRecord
       're'=>'Realised gain/(loss)',
     ];
 
+    $true_date = null;
+    $multiplier = null;
     $ammo = 0;
       for ($row=5; $row<=$highestRow ; $row++) {
         $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
@@ -125,6 +129,13 @@ class ImportMetal extends \yii\db\ActiveRecord
           if ($node == 're') {
             $gain = new MetalUnrealisedGain();
             $gain->date_uploaded = $this->date_file;
+
+            //edr
+            $mdate = new \DateTime($this->date_file);
+            $mdate->modify('-1month');
+            $gain->true_date = $mdate->format('Y-m-d');
+            $true_date = $gain->true_date;
+
             $gain->import_metal_id = $this->id;
             $gain->re_description = $rowData[0][0];
             $gain->re_usd = $rowData[0][1];
@@ -141,6 +152,7 @@ class ImportMetal extends \yii\db\ActiveRecord
           }elseif ($ammo == 1) { //update re_gain_loss at $node == re
             $update = MetalUnrealisedGain::find()->where(['import_metal_id'=>$this->id])->one();
             $update->re_gain_loss = $rowData[0][3];
+            $multiplier = $update->re_gain_loss;
             $update->save(false);
         //    $ammo =2;
           }elseif ($ammo == 4) {//update gain_loss at $node == un
@@ -154,6 +166,35 @@ class ImportMetal extends \yii\db\ActiveRecord
           continue;
         }
       }
+
+
+      //insert here for the purchase update edrs
+      $data = PurchaseEarning::find()->where(['re_date'=>$true_date])->all();
+      $ids = null;
+
+      if (!empty($data) ) {
+        foreach ($data as $key => $value) {
+          $purs = Purchase::find()->where(['id'=>$value->purchase_id])->one();
+          if ($purs->charge_type == 'Others' && $purs->purchase_type == 'Metal') {
+              $value->customer_earn =  $value->purchase_amount*$multiplier;
+              $value->re_metal_per = $multiplier;
+              $value->company_earn = $value->customer_earn * $purs->company_charge;
+              $value->staff_earn = $value->company_earn/2;
+              $value->save(false);
+
+              $customer_sum = PurchaseEarning::find()->where(['purchase_id'=>$value->purchase_id])->sum('customer_earn');
+              $company_sum = PurchaseEarning::find()->where(['purchase_id'=>$value->purchase_id])->sum('company_earn');
+              $staff_sum = PurchaseEarning::find()->where(['purchase_id'=>$value->purchase_id])->sum('staff_earn');
+
+              $purs->customer_earn = $customer_sum;
+              $purs->company_earn = $company_sum;
+              $purs->staff_earn = $staff_sum;
+              $purs->save(false);
+          }
+        }
+
+      }
+
 
       //insert here
       $sheet = $objPHPExcel->getSheet(1);//daily metal prices
@@ -252,7 +293,7 @@ class ImportMetal extends \yii\db\ActiveRecord
           if (empty($rowData[0][0])) {
             break;
           }
-          
+
           $zn->save(false);
 
       }
