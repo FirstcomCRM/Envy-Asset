@@ -91,6 +91,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             return ($model->gain_loss * 100).'%';
                           },
                         ],
+                        [
+                          'attribute'=>'re_gain_loss',
+                          'value'=> function($model){
+                            return ($model->re_gain_loss * 100).'%';
+                          },
+                        ],
+
 
                         ['class' => 'yii\grid\ActionColumn'],
                     ],
