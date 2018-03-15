@@ -111,7 +111,7 @@ if (empty($salesperson)) {
 
       <div class="col-md-6">
 
-        <?= $form->field($model, 'sum_all')->textInput(['id'=>'sum_all','readOnly'=>true]) ?>
+      
         <?php echo $form->field($model, 'trading_days') ?>
         <?php echo $form->field($model, 'prorated_days') ?>
         <?php echo $form->field($model, 'purchase_type')->radioList($pur_type,['id'=>'purchase_type', 'class'=>'purchase_type']); ?>
