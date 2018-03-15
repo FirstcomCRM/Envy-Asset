@@ -266,10 +266,11 @@ class PurchaseController extends Controller
               $staff_earn = 0;
             }
               //return number_format($namount,2);
+
               echo json_encode(array(
-                'customer_amount'=>number_format($customer_amount,2),
-                'company_earn'=>number_format($company_earn,2),
-                'staff_earn'=>number_format($staff_earn,2),
+                'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
+                'company_earn'=>number_format($company_earn,2,'.',''),
+                'staff_earn'=>number_format($staff_earn,2,'.',''),
               ));
        }
    }
@@ -337,7 +338,7 @@ class PurchaseController extends Controller
           $earning->company_earn = $earning->customer_earn*$model['company_charge'];
           $earning->staff_earn = $earning->company_earn/2;
       }else{
-          $earning->customer_amount = 0;
+          $earning->customer_earn = 0;
           $earning->company_earn  = 0;
           $earning->staff_earn  = 0;
       //  $new_comm->commission_comp = $new_comm->transact_amount*$multiplier;
