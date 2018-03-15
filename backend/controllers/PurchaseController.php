@@ -13,6 +13,7 @@ use common\models\Investor;
 use common\models\Commission;
 use common\models\TierReduction;
 use common\models\MetalUnrealisedGain;
+use common\models\PurchaseEarning;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -152,35 +153,11 @@ class PurchaseController extends Controller
 
             while ($start<=$end) {
               $date_test =  date('Y-m-d', $start);
-              $this->commission($date_test,$model->getAttributes() );
+          //    $this->commission($date_test,$model->getAttributes() );
+              $this->earning($date_test,$model->getAttributes() );
               $start = strtotime("+1month", $start);
             }
 
-          /*  die();
-            $x = UserManagement::find()->where(['name'=>$model->salesperson])->one();
-            $x = UserManagement::find()->where(['id'=>$model->salesperson])->one();
-            $tier = TierReduction::find()->where(['id'=>1])->one();
-            $highest = $tier->highest_percent;
-            die($x->connect_to);
-            $y = true;
-            while ($y == true) {
-                $nconnect = $x->connect_to;
-                $nname = $x->id;
-
-                if ($x->connect_to != 'N/A') {
-                  $this->comms($nname,$highest,$model);
-                }else{
-                  $this->comms($x->id,$highest,$model);
-                  break;
-                }
-
-                $x = UserManagement::find()->where(['id'=>$nconnect])->one();
-                $highest = $highest-$tier->reduction_percent;
-                if ($highest<=$tier->lowest_percent) {
-                    $highest = $tier->lowest_percent;
-                }
-
-            }*/
             Yii::$app->session->setFlash('success', "Purchase added");
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -265,7 +242,9 @@ class PurchaseController extends Controller
             $com_charge = Yii::$app->request->post()['company_charge'];
             $com_charge = $com_charge/100;
 
-            $metal = MetalUnrealisedGain::find()->where(['between','date_uploaded',$purchase,$expire])->sum('re_gain_loss');
+            //$metal = MetalUnrealisedGain::find()->where(['between','date_uploaded',$purchase,$expire])->sum('re_gain_loss');
+            $metal = MetalUnrealisedGain::find()->where(['between','true_date',$purchase,$expire])->sum('re_gain_loss');
+
             if (empty($metal) ) {
               $multiplier = 0.00;
             }else{
@@ -281,7 +260,8 @@ class PurchaseController extends Controller
             }else{
           //  print_r('--');
             //  $namount = $amount*$multiplier;
-              $company_earn = $amount*$multiplier;
+            //  $company_earn = $amount*$multiplier;
+              $company_earn =0;
               $customer_amount = 0;
               $staff_earn = 0;
             }
@@ -327,10 +307,50 @@ class PurchaseController extends Controller
         $comm->save();
     }
 
-    protected function commission($date_test,$model){
+    protected function earning($date_test,$model){
+      $namount= 0;
+      $customer_amount = 0;
+      $staff_earn = 0;
+
+      $comm = MetalUnrealisedGain::find()->where(['true_date'=>$date_test])->one();
+      if (empty($comm) ) {
+        $multiplier = 0;
+        //$date_re = null;
+        $date_re = $date_test;
+      }else{
+        $multiplier = $comm->re_gain_loss;
+        $date_re = $comm->true_date;
+      }
+    //  print_r($multiplier);die();
+      $earning = new PurchaseEarning();
+      $earning->purchase_id = $model['id'];
+      $earning->purchase_date = $model['date'];
+      $earning->expiry_date = $model['expiry_date'];
+      $earning->purchase_amount = $model['price'];
+      $earning->re_date = $date_re;
+      $earning->re_metal_per = $multiplier;
+
+      if ($model['charge_type']=='Others' && $model['purchase_type'] =='Metal') {
+      //  $customer_amount  = ($new_comm->transact_amount*$multiplier);
+      //  $new_comm->commission_comp = ($customer_amount*$model['company_charge']);
+          $earning->customer_earn = $earning->purchase_amount*$multiplier;
+          $earning->company_earn = $earning->customer_earn*$model['company_charge'];
+          $earning->staff_earn = $earning->company_earn/2;
+      }else{
+          $earning->customer_amount = 0;
+          $earning->company_earn  = 0;
+          $earning->staff_earn  = 0;
+      //  $new_comm->commission_comp = $new_comm->transact_amount*$multiplier;
+      }
+
+      $earning->save(false);
+    }
+
+    //edr disabled temporarily. if useless, get rid of it
+  /*  protected function commission($date_test,$model){
   //   echo '<pre>';
     //  print_r($date_test );die();
-        $comm = MetalUnrealisedGain::find()->where(['date_uploaded'=>$date_test])->one();
+        $comm = MetalUnrealisedGain::find()->where(['true_date'=>$date_test])->one();
         if (empty($comm) ) {
           $multiplier = 0;
           $date_re = null;
@@ -364,5 +384,5 @@ class PurchaseController extends Controller
         $new_comm->save(false);
     //    echo '<pre>';
     //    print_r($model);die();
-    }
+  }*/
 }
