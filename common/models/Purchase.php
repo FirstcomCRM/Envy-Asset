@@ -32,7 +32,7 @@ class Purchase extends \yii\db\ActiveRecord
     {
         return [
             [['investor', 'product', 'price', 'date'], 'required'],
-            [['price','sum_all','company_charge','customer_earn','company_earn','staff_earn'], 'number'],
+            [['price','sum_all','company_charge','staff_earn','company_earn','customer_earn'], 'number'],
             [['date'], 'safe'],
             [['remarks','purchase_no'], 'string'],
         //    [['salesperson'], 'string'],
