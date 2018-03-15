@@ -33,7 +33,7 @@ class MetalUnrealisedGain extends \yii\db\ActiveRecord
           //  [['import_metal_id', 'description', 'usd', 'sgd', 'gain_loss'], 'required'],
             [['import_metal_id'], 'integer'],
             [['usd', 'sgd', 'gain_loss','re_usd','re_sgd','re_gain_loss'], 'number'],
-            [['date_uploaded'], 'safe'],
+            [['date_uploaded','true_date'], 'safe'],
             [['description','re_description'], 'string', 'max' => 75],
         ];
     }
