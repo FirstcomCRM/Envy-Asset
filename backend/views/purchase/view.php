@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use common\components\Retrieve;
+use common\models\PurchaseEarning;
 /* @var $this yii\web\View */
 /* @var $model common\models\Purchase */
 
@@ -79,5 +80,46 @@ $this->params['breadcrumbs'][] = $this->title;
             'staff_earn',
         ],
     ]) ?>
+    <?php
+      $data = PurchaseEarning::find()->where(['purchase_id'=>$model->id])->asArray()->all();
+
+      $customer_sum = PurchaseEarning::find()->where(['purchase_id'=>$model->id])->sum('customer_earn');
+      $company_sum = PurchaseEarning::find()->where(['purchase_id'=>$model->id])->sum('company_earn');
+      $staff_sum = PurchaseEarning::find()->where(['purchase_id'=>$model->id])->sum('staff_earn');
+
+
+     ?>
+
+
+
+    <table class="table table-bordered">
+      <thead>
+        <th>Year-Month</th>
+        <th>Metal %</th>
+        <th>Customer Earning</th>
+        <th>Company Earning</th>
+        <th>Staff Earning</th>
+      </thead>
+      <tbody>
+        <?php foreach ($data as $key => $value): ?>
+            <tr>
+              <td><?php echo date('M Y,',strtotime($value['re_date']) ) ?></td>
+              <td><?php echo ($value['re_metal_per']*100).'%' ?></td>
+              <td><?php echo '$'.$value['customer_earn'] ?></td>
+              <td><?php echo '$'.$value['company_earn'] ?></td>
+              <td><?php echo '$'.$value['staff_earn'] ?></td>
+            </tr>
+        <?php endforeach; ?>
+      </tbody>
+      <tfoot>
+        <td></td>
+        <td></td>
+        <td><?php echo '$'.$customer_sum  ?></td>
+        <td><?php echo '$'.$company_sum  ?></td>
+        <td><?php echo '$'.$staff_sum  ?></td>
+      </tfoot>
+    </table>
+
+
 
 </div>
