@@ -8,6 +8,8 @@ use common\models\MetalOil;
 use common\models\MetalZn;
 use common\models\MetalUnrealised;
 use common\models\MetalUnrealisedGain;
+use common\models\Purchase;
+use common\models\PurchaseEarning;
 ?>
 
 <?php
@@ -30,6 +32,13 @@ $oil = MetalOil::find()->where(['date_uploaded'=>$start])->all();
 $zn = MetalZn::find()->where(['date_uploaded'=>$start])->all();
 $unrealised = MetalUnrealised::find()->where(['date_uploaded'=>$start])->all();
 $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$start])->one();
+
+$pur_metal = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Metal'])->asArray()->all();
+$pur_nickel = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Nickel'])->asArray()->all();
+
+$custom_metal_sum = 0;
+$company_metal_sum = 0;
+
  ?>
 <style>
     table{
@@ -97,6 +106,9 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$start])->
     width:14%;
     padding:8px;
   }
+  .commentary{
+    text-align: justified;
+  }
 
 
 </style>
@@ -120,6 +132,195 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$start])->
 
 </div>
 
+
+
+<div class="Comment">
+  <h2>COMMENTARY</h2>
+  <h4>Commodities</h4>
+  <p class="commentary">
+    April is a significantly shorter trading month as compared to months, coupled with the volatility in prices, less trades were made this month. The lower than expected performance stems from losses incurred from the long positions in Nickel entered into in March. The sharp fall in Nickel prices was primarily due to developments in the Philippines – namely parliament rejecting to confirm acting environmental minister Gina Lopez. In her 10-months as acting environment minister, Ms. Duterte suspended the licenses of many miners after inspections found that they were violating environmental regulations. In February, 23 mines were ordered closed, mainly nickel producers. The suspensions were estimated to remove about 50% of the country’s nickel output, which amounted to 10% of global supply. Nickel prices, which had already rallied on the possibility of the suspensions climbed to $10,500 after the announcement.
+  </p>
+  <p class="commentary">
+    Generally, the correction in the base metals continues, copper prices have joined nickel in breaking below recent, important, support levels so the question is will the others follow? With oil, iron ore and steel prices, also falling heavily, the path of least resistance is to the downside for now. We are not overly bearish on the outlook for global growth; some metals’ fundamentals have potentially changed, i.e. in nickel with regards to supply from the Philippines, but we generally see this weakness as coming from stale long liquidation following the rally when prices ran ahead of the fundamentals during the Trump reflation trade. We are also pretty sure it will not be a straight-line fall in prices as such we have entered into long positions to capitalise on any short-term rebounds in prices.
+  </p>
+  <h4>Securities</h4>
+  <p class="commentary">
+    After the worst start to a year ever, the stock market surged to new highs in 2016. All the major indexes rebounded to record levels and defied the doomsday forecasts that preceded events like Brexit and President-elect Donald Trump's election. The volatility looks set to conitnue into 2017. As such, our fund is adopting a wait-and-see approach before entering the market.
+  </p>
+</div>
+
+<div class="page-break">
+
+</div>
+
+<div class="breakdown">
+  <h4>Appendix I - Breakdown</h4>
+  <table border="0" class="table-breakdown">
+    <tr>
+      <td class="th-daily" style="width:20%">Date</td>
+      <td class="th-daily" style="width:40%">Beginning Balance</td>
+      <td class="th-daily" style="width:20%"></td>
+      <td class="th-daily" style="width:20%"> </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <b>Future Metal Trading</b>
+      </td>
+      <td></td>
+      <td>
+        <b>0.00</b>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <b>Securities</b>
+      </td>
+      <td></td>
+      <td>
+        <b>0.00</b>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <b>Physical Metal Trading</b>
+      </td>
+      <td></td>
+      <td>
+        <b>0.00</b>
+      </td>
+    </tr>
+
+    <!--Insert Nickel deal loop here-->
+
+      <tr>
+        <td></td>
+        <td><?php echo date('M Y', strtotime($model->date) ). ' Nickel Contract' ?></td>
+        <td></td>
+        <td><?php echo number_format($model->price,2) ?></td>
+      </tr>
+
+
+    <!--End of Nickel deal loop here-->
+
+    <tr>
+      <td style="padding:10px"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td style="padding:10px"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="th-daily" style="width:20%"></td>
+      <td class="th-daily" style="width:40%">Transactions during the month</td>
+      <td class="th-daily" style="width:20%">Debit</td>
+      <td class="th-daily" style="width:20%">Credit </td>
+    </tr>
+
+
+    <tr>
+      <td style="border-bottom:1px solid black"></td>
+      <td style="border-bottom:1px solid black">  <b>Future Metal Trading </b></td>
+      <td style="border-bottom:1px solid black"></td>
+      <td style="border-bottom:1px solid black"> </td>
+    </tr>
+
+
+      <!--lopp for Purchase metal module-->
+    <?php foreach ($pur_metal as $key => $value): ?>
+      <?php $earning = PurchaseEarning::find()->where(['purchase_id'=>$value['id'] ])->all() ?>
+        <?php foreach ($earning as $k => $v): ?>
+          <tr>
+            <td><?php echo date('M Y',strtotime($v['re_date']) ) ?></td>
+            <td>Realised profits from Futures Metal Trading </td>
+            <?php $nums = number_format($v['customer_earn'],2); ?>
+            <td></td>
+            <td><?php echo $nums ?></td>
+            <?php $custom_metal_sum = $custom_metal_sum+$v['customer_earn']; ?>
+          </tr>
+          <tr>
+            <td><?php echo date('M Y',strtotime($v['re_date']) ) ?></td>
+            <td>Commission charged </td>
+            <td><?php echo '('.number_format($v['company_earn'],2).')'; ?></td>
+            <td></td>
+            <?php $company_metal_sum = $company_metal_sum+$v['company_earn']; ?>
+          </tr>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+    <!--End lopp for Purchase metal module-->
+    <!--Footer of Purchase metal---->
+    <tr>
+      <td></td>
+      <td>Realised Profits</td>
+      <td></td>
+      <td style="border-top:1px solid black;border-bottom:1px solid black;"><?php echo number_format($company_metal_sum,2) ?></td>
+    </tr>
+    <!--End Footer of Purchase metal---->
+      <!--edr-->
+
+    <tr>
+      <td style="padding:10px"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+
+    <?php $custom_metal_sum = 0;
+          $company_metal_sum = 0;
+    ?>
+
+    <tr>
+      <td style="border-bottom:1px solid black"></td>
+      <td style="border-bottom:1px solid black">  <b>Physical Metal Trading </b></td>
+      <td style="border-bottom:1px solid black"></td>
+      <td style="border-bottom:1px solid black"> </td>
+    </tr>
+
+
+    <!--lopp for Purchase nickel module-->
+    <?php foreach ($pur_nickel as $key => $value): ?>
+      <?php $n_earn = PurchaseEarning::find()->where(['purchase_id'=>$value['id'] ])->all() ?>
+      <?php foreach ($n_earn as $k => $v): ?>
+        <tr>
+          <td><?php echo date('M Y',strtotime($v['re_date']) ) ?></td>
+          <td>Realised profits from Futures Nickel Deal </td>
+          <?php $nums = number_format($v['customer_earn'],2); ?>
+          <td></td>
+          <td><?php echo "($nums)" ?></td>
+          <?php $custom_metal_sum = $custom_metal_sum+$v['customer_earn']; ?>
+        </tr>
+        <tr>
+          <td><?php echo date('M Y',strtotime($v['re_date']) ) ?></td>
+          <td>Commission charged </td>
+          <td><?php echo number_format($v['company_earn'],2); ?></td>
+          <td></td>
+          <?php $company_metal_sum = $company_metal_sum+$v['company_earn']; ?>
+        </tr>
+      <?php endforeach; ?>
+    <?php endforeach; ?>
+    <!--End lopp for Purchase nickel module-->
+    <!--Footer of Purchase metal---->
+    <tr>
+      <td></td>
+      <td>Realised Profits</td>
+      <td></td>
+      <td style="border-top:1px solid black;border-bottom:1px solid black;"><?php echo number_format($company_metal_sum,2) ?></td>
+    </tr>
+    <!--End Footer of Purchase metal---->
+
+  </table>
+</div>
+
+<div class="page-break">
+
+</div>
 
 <div class="appendice-metals">
   <h2>Appendix II-Metals</h2>
