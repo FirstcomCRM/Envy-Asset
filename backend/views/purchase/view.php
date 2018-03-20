@@ -86,7 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
       $customer_sum = PurchaseEarning::find()->where(['purchase_id'=>$model->id])->sum('customer_earn');
       $company_sum = PurchaseEarning::find()->where(['purchase_id'=>$model->id])->sum('company_earn');
       $staff_sum = PurchaseEarning::find()->where(['purchase_id'=>$model->id])->sum('staff_earn');
-
+      $customer_sum_after =  PurchaseEarning::find()->where(['purchase_id'=>$model->id])->sum('customer_earn_after');
 
      ?>
 
@@ -96,9 +96,10 @@ $this->params['breadcrumbs'][] = $this->title;
       <thead>
         <th>Year-Month</th>
         <th>Metal %</th>
-        <th>Customer Earning</th>
-        <th>Company Earning</th>
-        <th>Staff Earning</th>
+        <th>Investor Return (Before)</th>
+        <th>Investor Return (After)</th>
+        <th>Company Commission</th>
+        <th>Staff Commission</th>
       </thead>
       <tbody>
         <?php foreach ($data as $key => $value): ?>
@@ -106,6 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
               <td><?php echo date('M Y,',strtotime($value['re_date']) ) ?></td>
               <td><?php echo ($value['re_metal_per']*100).'%' ?></td>
               <td><?php echo '$'.$value['customer_earn'] ?></td>
+              <td><?php echo '$'.$value['customer_earn_after'] ?></td>
               <td><?php echo '$'.$value['company_earn'] ?></td>
               <td><?php echo '$'.$value['staff_earn'] ?></td>
             </tr>
@@ -115,6 +117,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <td></td>
         <td></td>
         <td><?php echo '$'.$customer_sum  ?></td>
+        <td><?php echo '$'.$customer_sum_after  ?></td>
         <td><?php echo '$'.$company_sum  ?></td>
         <td><?php echo '$'.$staff_sum  ?></td>
       </tfoot>
