@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 use common\models\InvestStock;
 use common\models\InvestMetal;
-
+use yii\db\Command;
 /**
  * This is the model class for table "product_management".
  *
@@ -67,6 +67,20 @@ class ProductManagement extends \yii\db\ActiveRecord
         ];
     }
 
+
+    public function addProduct($name){
+      $connection = Yii::$app->db;
+      $connection->createCommand()->insert('product_management',[
+        'product_name'=>$name,
+        'description'=>'0',
+        'product_code'=>'0',
+        'product_price'=>0,
+        'product_cost'=>0,
+        'product_type'=>1,
+        'product_cat'=>1,
+      ])->execute();
+    }
+
     public function getCat(){
           return $this->hasOne(ProductCategory::className(),['id' => 'product_cat'] );
     }
@@ -75,21 +89,5 @@ class ProductManagement extends \yii\db\ActiveRecord
           return $this->hasOne(ProductType::className(),['id' => 'product_type'] );
     }
 
-  /*  public function stocks(){
-      $invest = new InvestStock();
-      $invest->product = $this->product_name;
-      $invest->date_created = date('Y-m-d');
-      $this->save();
-      $invest->product_id = $this->id;
-      $invest->save();
-    }
 
-    public function metal(){
-      $metal = new InvestMetal();
-      $metal->product = $this->product_name;
-      $metal->date_created = date('Y-m-d');
-      $this->save();
-      $metal->product_id = $this->id;
-      $metal->save();
-    }*/
 }

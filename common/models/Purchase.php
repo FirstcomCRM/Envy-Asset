@@ -34,11 +34,12 @@ class Purchase extends \yii\db\ActiveRecord
             [['investor', 'product', 'price', 'date'], 'required'],
             [['price','sum_all','company_charge','staff_earn','company_earn','customer_earn'], 'number'],
             [['date'], 'safe'],
+            [['trading_days','prorated_days'],'integer'],
             [['remarks','purchase_no'], 'string'],
         //    [['salesperson'], 'string'],
       //      [['salesperson'], 'integer'],
             [['investor', 'product', 'share'], 'string', 'max' => 75],
-            [['trading_days', 'prorated_days', 'purchase_type','charge_type'], 'string', 'max' => 50],
+            [['purchase_type','charge_type'], 'string', 'max' => 50],
             [['date_adedd','expiry_date','salesperson'],'safe'],
         ];
     }
