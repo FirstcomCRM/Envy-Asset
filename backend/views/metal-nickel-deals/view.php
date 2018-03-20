@@ -35,31 +35,43 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'description',
             'total_deal_size',
-            'contract_period',
+            //'contract_period',
+            [
+              'attribute'=>'contract_period_start',
+              'format' => ['date', 'php:d M Y'],
+            ],
+            [
+              'attribute'=>'contract_period_end',
+              'format' => ['date', 'php:d M Y'],
+            ],
             [
               'attribute'=>'purchase_price_a',
               'value'=>function($model){
                 return '$'.Retrieve::retrieveFormat($model->purchase_price_a);
               },
             ],
+            'pur_curr_a',
+            'pur_curr_rate_a',
             [
               'attribute'=>'insurance_cost_a',
               'value'=>function($model){
                 return '$'.Retrieve::retrieveFormat($model->insurance_cost_a);
               },
             ],
+            'ins_curr_a',
+            'ins_curr_rate_a',
             [
               'attribute'=>'forward_price',
               'value'=>function($model){
                 return '$'.Retrieve::retrieveFormat($model->forward_price);
               },
             ],
-            [
+          /*  [
               'attribute'=>'final_sales_price',
               'value'=>function($model){
                 return '$'.Retrieve::retrieveFormat($model->final_sales_price);
               },
-            ],
+            ],*/
 
             [
               'attribute'=>'total_cost_price',
