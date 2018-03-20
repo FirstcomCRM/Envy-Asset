@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use common\models\MetalNickelDeals;
 use common\models\CountryMetalNickelDealsSearch;
+use common\models\ProductManagement;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -65,8 +66,12 @@ class MetalNickelDealsController extends Controller
     {
         $model = new MetalNickelDeals();
         $model->date_uploaded = date('Y-m-d');
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+            $model->contract_period_start = $this->convertDateFormat($model->contract_period_start,'Y-m-d');
+            $model->contract_period_end = $this->convertDateFormat($model->contract_period_end,'Y-m-d');
+            $prods = new ProductManagement();
+            $prods->addProduct($model->title);
+            $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
         //  print_r($model->getErrors());
@@ -86,8 +91,14 @@ class MetalNickelDealsController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $model->contract_period_start = $this->convertDateFormat($model->contract_period_start,'d M Y');
+        $model->contract_period_end = $this->convertDateFormat($model->contract_period_end,'d M Y');
+        //$model->total_cost_price = number_format()
+        $model->setFormat();
+        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+            $model->contract_period_start = $this->convertDateFormat($model->contract_period_start,'Y-m-d');
+            $model->contract_period_end = $this->convertDateFormat($model->contract_period_end,'Y-m-d');
+            $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -108,6 +119,67 @@ class MetalNickelDealsController extends Controller
 
         return $this->redirect(['index']);
     }
+
+
+
+    public function actionAjaxSum(){
+      if (Yii::$app->request->post() ) {
+          $ins = Yii::$app->request->post()['pur_price'];
+          $pur = Yii::$app->request->post()['ins_price'];
+          $total = $ins + $pur;
+
+          return number_format($total,2);
+
+      }
+
+    }
+
+    public function actionAjaxCommission(){
+      if (Yii::$app->request->post() ) {
+          $ins = Yii::$app->request->post()['pur_price'];
+          $pur = Yii::$app->request->post()['ins_price'];
+          $for = Yii::$app->request->post()['for_price'];
+          $final_percent = Yii::$app->request->post()['final_percent'];
+      //    return number_format($total,2);
+          $total = $ins + $pur;
+          $final_percent = $final_percent/100;
+          $true_percent = 1 - $final_percent;
+
+          $final_sales_price = $for*$true_percent;
+          $before_commission = $final_sales_price - $total; //Realised Profit before Commission
+          $commission  =$before_commission*0.15; //Commission
+          $after_commission = $before_commission-$commission;//Realised Profit after Commission
+          $net_realized = ($after_commission/$total)*100;//Net Realised Percentage Returns
+
+
+        //  return $true_percent;
+        //  die('test');
+        echo json_encode(array(
+          'before_commission'=>number_format($before_commission,2),
+          'commission'=>number_format($commission,2),
+          'after_commission'=>number_format($after_commission,2),
+          'net_realized'=>number_format($net_realized,2),
+        ));
+
+      }
+
+    }
+
+
+    protected function convertDateFormat($dates,$code){
+        $date = new \DateTime($dates);
+        if ($code == 'Y-m-d') {
+          return $date->format('Y-m-d');
+        }else{
+          return $date->format('d M Y');
+        }
+
+    }
+
+  /*  protected function convertToMurica($dates){
+      $date = new \DateTime($dates);
+      return $date->format('Y-m-d');
+    }*/
 
     /**
      * Finds the MetalNickelDeals model based on its primary key value.
