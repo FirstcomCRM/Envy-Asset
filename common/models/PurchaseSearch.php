@@ -96,6 +96,12 @@ class PurchaseSearch extends Purchase
       if (!empty($this->date) ) {
         list($this->start,$this->end) = explode(' - ', $this->date);
       }else{
+    //    $mdate = new \DateTime('now');
+    //    print_r($mdate->format('Y-m-d')) ;
+    //    die();
+        //$mdate->modify('-1month');
+        //$gain->true_date = $mdate->format('Y-m-d');
+
         $this->start = '';
         $this->end = '';
       }
@@ -107,7 +113,8 @@ class PurchaseSearch extends Purchase
       }
 
     //  if (!empty($this->id) || !empty($this->salesperson) || !empty($this->date) ) {
-        $query->andFilterwhere(['between','date',$this->start,$this->end])
+        $query->andFilterwhere(['>=','date',$this->start])
+              ->andFilterwhere(['<=','expiry_date',$this->end])
               ->andFilterWhere(['salesperson'=>$this->salesperson])
               ->andFilterwhere(['id'=>$this->id])
               ->andFilterwhere(['id'=>$this->dummy_id])
