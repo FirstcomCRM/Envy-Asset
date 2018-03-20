@@ -266,7 +266,7 @@ class PurchaseController extends Controller
               $staff_earn = 0;
             }
               //return number_format($namount,2);
-
+            //  print_r($multiplier);die();
               echo json_encode(array(
                 'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
                 'company_earn'=>number_format($company_earn,2,'.',''),
@@ -331,14 +331,32 @@ class PurchaseController extends Controller
       $earning->re_date = $date_re;
       $earning->re_metal_per = $multiplier;
 
+      $compare_start =  date('Y-m-01',strtotime($model['date']) );
+      $compare_end  = date('Y-m-01',strtotime($model['expiry_date']) );
+
       if ($model['charge_type']=='Others' && $model['purchase_type'] =='Metal') {
       //  $customer_amount  = ($new_comm->transact_amount*$multiplier);
       //  $new_comm->commission_comp = ($customer_amount*$model['company_charge']);
-          $earning->customer_earn = $earning->purchase_amount*$multiplier;
-          $earning->company_earn = $earning->customer_earn*$model['company_charge'];
-          $earning->staff_earn = $earning->company_earn/2;
+          if ($date_test == $compare_start || $date_test == $compare_end) {
+            //use trading and prorated days formula
+            $before_return = $earning->purchase_amount*$multiplier;
+            $traded = $before_return/$model['trading_days'];
+            $true_return = $traded*$model['prorated_days'];
+            $earning->customer_earn = $true_return;
+            $earning->company_earn = $earning->customer_earn*$model['company_charge'];
+            $earning->customer_earn_after = $earning->customer_earn - $earning->company_earn;
+            $earning->staff_earn = $earning->company_earn/2;
+          }else{
+            //common formula
+            $earning->customer_earn = $earning->purchase_amount*$multiplier;
+            $earning->company_earn = $earning->customer_earn*$model['company_charge'];
+            $earning->customer_earn_after = $earning->customer_earn - $earning->company_earn;
+            $earning->staff_earn = $earning->company_earn/2;
+          }
+
       }else{
           $earning->customer_earn = 0;
+          $earning->customer_earn_after = 0;
           $earning->company_earn  = 0;
           $earning->staff_earn  = 0;
       //  $new_comm->commission_comp = $new_comm->transact_amount*$multiplier;
@@ -347,43 +365,5 @@ class PurchaseController extends Controller
       $earning->save(false);
     }
 
-    //edr disabled temporarily. if useless, get rid of it
-  /*  protected function commission($date_test,$model){
-  //   echo '<pre>';
-    //  print_r($date_test );die();
-        $comm = MetalUnrealisedGain::find()->where(['true_date'=>$date_test])->one();
-        if (empty($comm) ) {
-          $multiplier = 0;
-          $date_re = null;
-        }else{
-          $multiplier = $comm->re_gain_loss;
-          $date_re = $comm->date_uploaded;
-        }
-      //  print_r($multiplier);die();
-        $new_comm = new Commission();
-        $new_comm->transact_id = $model['id'];
-        $new_comm->transact_no = $model['purchase_no'];
-        $new_comm->re_month = $date_re;
-        $new_comm->transact_type = 'Purchase Investor';
-        $new_comm->transact_amount = $model['price'];
-        $new_comm->transact_date =$model['date'];
-        $new_comm->sales_person = $model['salesperson'];
-        $new_comm->commision_percent = $multiplier;
 
-        if ($model['charge_type']=='Others' && $model['purchase_type'] =='Metal') {
-          $customer_amount  = ($new_comm->transact_amount*$multiplier);
-          $new_comm->commission_comp = ($customer_amount*$model['company_charge']);
-        }else{
-          $new_comm->commission_comp = $new_comm->transact_amount*$multiplier;
-        }
-        $new_comm->commission = $new_comm->commission_comp/2;
-        //$new_comm->commission = ($new_comm->commision_percent * $new_comm->transact_amount);
-        //$new_comm->commission_comp = $new_comm->commission/2;
-
-        $new_comm->date_added = date('Y-m-d h:i:s');
-        $new_comm->date_expire = $model['expiry_date'];
-        $new_comm->save(false);
-    //    echo '<pre>';
-    //    print_r($model);die();
-  }*/
 }
