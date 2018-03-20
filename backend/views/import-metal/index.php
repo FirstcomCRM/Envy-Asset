@@ -46,6 +46,31 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="col-md-10">
 
+
+      <?php
+    //  $mdate = new DateTime('01 Mar 2018');
+    //  $mdate->modify('-1month');
+  //    print_r($mdate->modify('+1month'));
+      //$gain->true_date = $mdate->format('Y-m-d');
+    //  $test = $mdate->modify('+1month')->format('Y-m-d');
+    //  echo $mdate->format('Y-m-d');
+    //  echo '<br>';
+    ////  $test =  $mdate->format('Y-m-d');
+  //    echo $test;
+       ?>
+
+
+       <?php
+        //$start = 0;
+    //    $end = 0;
+    //    $date_test = '21 Nov 2017 - 20 Feb 2018';
+    //    list($start,$end) = explode(' - ', $date_test);
+        ?>
+
+      
+          <?php //echo date('Y-m-d', strtotime($start) )  ?>
+          <?php //echo $end ?>
+
       <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
       <div class="panel panel-default">
