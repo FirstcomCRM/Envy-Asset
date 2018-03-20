@@ -14,6 +14,7 @@ use common\models\MetalUnrealisedGain;
 use common\models\MetalNickelDeals;
 use common\models\PurchaseEarning;
 use common\models\Purchase;
+use common\models\ProductManagement;
 /**
  * This is the model class for table "import_metal".
  *
@@ -105,13 +106,19 @@ class ImportMetal extends \yii\db\ActiveRecord
     $true_date = null;
     $multiplier = null;
     $ammo = 0;
+
+    $mdate = new \DateTime($this->date_file);
+  //  $mdate->modify('-1month');
+    $true_date = $mdate->format('Y-m-d');
+
       for ($row=5; $row<=$highestRow ; $row++) {
         $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
         $node = array_search($rowData[0][0],$metal_un);
         if (!empty($node) && ($node != 're' && $node != 'un')) {
           $metal = new MetalUnrealised();
           $metal->import_metal_id = $this->id;
-          $metal->date_uploaded =date('Y-m-d',strtotime($this->date_file) ) ;
+      //    $metal->date_uploaded =date('Y-m-d',strtotime($this->date_file) ) ;
+          $metal->date_uploaded =$true_date ;
           $metal->commodity = $rowData[0][0];
           $metal->position = $rowData[0][1];
           $metal->entry_date_usd = date($format = "Y-m-d", \PHPExcel_Shared_Date::ExcelToPHP($rowData[0][2]));
@@ -129,12 +136,13 @@ class ImportMetal extends \yii\db\ActiveRecord
           if ($node == 're') {
             $gain = new MetalUnrealisedGain();
             $gain->date_uploaded = $this->date_file;
-
+      //      $gain->true_date = $this->date_file;
             //edr
-            $mdate = new \DateTime($this->date_file);
-            $mdate->modify('-1month');
-            $gain->true_date = $mdate->format('Y-m-d');
-            $true_date = $gain->true_date;
+          //  $mdate = new \DateTime($this->date_file);
+        //    $mdate->modify('-1month');
+        //    $gain->true_date = $mdate->format('Y-m-d');
+        //    $true_date = $gain->true_date;
+            $gain->true_date = $true_date;
 
             $gain->import_metal_id = $this->id;
             $gain->re_description = $rowData[0][0];
@@ -196,12 +204,19 @@ class ImportMetal extends \yii\db\ActiveRecord
       }
 
 
+
       //insert here
       $sheet = $objPHPExcel->getSheet(1);//daily metal prices
       $highestRow = $sheet->getHighestRow();
     //  print_r($highestRow);die();
       $highestColumn = $sheet->getHighestColumn();
       $nrow = 0;
+
+    /*  $mdate = new \DateTime($this->date_file);
+      $mdate->modify('-1month');
+      $gain->true_date = $mdate->format('Y-m-d');
+      $true_date = $gain->true_date;
+      */
 
       for ($row=3; $row < $highestRow; $row++) {
          $rowData = $sheet->rangeToArray('A'.$row.':'.$highestColumn.$row,NULL,TRUE,FALSE);
@@ -212,7 +227,8 @@ class ImportMetal extends \yii\db\ActiveRecord
 
          $al = new MetalAl();
          $al->import_metal_id = $this->id;
-         $al->date_uploaded = $this->date_file;
+      //   $al->date_uploaded = $this->date_file;
+         $al->date_uploaded = $true_date;
          $al->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
          $al->date = str_replace(".", "", $rowData[0][0]);
          $al->al_cash = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
@@ -237,7 +253,8 @@ class ImportMetal extends \yii\db\ActiveRecord
 
         $cu = new MetalCu();
         $cu->import_metal_id = $this->id;
-        $cu->date_uploaded = $this->date_file;
+    //    $cu->date_uploaded = $this->date_file;
+        $cu->date_uploaded = $true_date;
         $cu->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
         $cu->date = str_replace(".", "", $rowData[0][0]);
         $cu->cu_cash = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
@@ -259,7 +276,8 @@ class ImportMetal extends \yii\db\ActiveRecord
 
         $ni = new MetalNi();
         $ni->import_metal_id = $this->id;
-        $ni->date_uploaded = $this->date_file;
+      //  $ni->date_uploaded = $this->date_file;
+        $ni->date_uploaded = $true_date;
         $ni->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
         $ni->date = str_replace(".", "", $rowData[0][0]);
         $ni->ni_cash = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
@@ -283,7 +301,8 @@ class ImportMetal extends \yii\db\ActiveRecord
 
           $zn = new MetalZn();
           $zn->import_metal_id = $this->id;
-          $zn->date_uploaded = $this->date_file;
+        //  $zn->date_uploaded = $this->date_file;
+          $zn->date_uploaded = $true_date;
           $zn->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
           $zn->date = str_replace(".", "", $rowData[0][0]);
           $zn->zn_cash = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
@@ -306,7 +325,8 @@ class ImportMetal extends \yii\db\ActiveRecord
 
         $au = new MetalAu();
         $au->import_metal_id = $this->id;
-        $au->date_uploaded = $this->date_file;
+      //  $au->date_uploaded = $this->date_file;
+        $au->date_uploaded = $true_date;
         $au->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
         $au->date = str_replace(".", "", $rowData[0][0]);
         $au->au_fixing = (float)str_replace(',','.',str_replace('.','',$rowData[0][1]));
@@ -326,7 +346,8 @@ class ImportMetal extends \yii\db\ActiveRecord
 
         $oil = new MetalOil();
         $oil->import_metal_id = $this->id;
-        $oil->date_uploaded = $this->date_file;
+    //    $oil->date_uploaded = $this->date_file;
+        $oil->date_uploaded = $true_date  ;
         $oil->date_filter = date("Y-m-d",strtotime($rowData[0][0]));
         $oil->date = str_replace(",", "", $rowData[0][0]);
         $oil->oil_price = $rowData[0][1];
@@ -372,6 +393,9 @@ class ImportMetal extends \yii\db\ActiveRecord
     }
   //  echo '<pre>';
   //  print_r($testarr);die();
+    $start = 0;
+    $end = 0;
+
     $title = $sheet->getCell('A'.'3')->getCalculatedValue();
     $deals = new MetalNickelDeals();
     $deals->import_metal_id = $this->id;
@@ -391,10 +415,19 @@ class ImportMetal extends \yii\db\ActiveRecord
     $deals->commision =  $testarr[12];
     $deals->unrealised_profit_b = $testarr[13];
     $deals->net_unrealised = $testarr[14];
+
+    list($start,$end) = explode(' - ', $testarr[2]);
+    $date = new \DateTime($start);
+    $deals->contract_period_start = $date->format('Y-m-d');
+    $date = new \DateTime($end);
+    $deals->contract_period_end = $date->format('Y-m-d');
+
     $deals->save(false);
+    $prods = new ProductManagement();
+    $prods->addProduct($this->remarks);
     unset($testarr);
   //  $title = $sheet->getCell('A'.'3')->getCalculatedValue();
-  //  print_r($title);die();
+  //  print_r($title);die(); //edr
 
 
     }
