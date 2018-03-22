@@ -104,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <tbody>
         <?php foreach ($data as $key => $value): ?>
             <tr>
-              <td><?php echo date('M Y,',strtotime($value['re_date']) ) ?></td>
+              <td><?php echo date('M Y',strtotime($value['re_date']) ) ?></td>
               <td><?php echo ($value['re_metal_per']*100).'%' ?></td>
               <td><?php echo '$'.$value['customer_earn'] ?></td>
               <td><?php echo '$'.$value['customer_earn_after'] ?></td>
