@@ -331,6 +331,17 @@ class PurchaseController extends Controller
       $earning->re_date = $date_re;
       $earning->re_metal_per = $multiplier;
 
+
+      if ($multiplier<=0.30) {
+        $earning->tranche = 0.15;
+      }elseif($multiplier>0.30 && $multiplier<=0.40){
+        $earning->tranche = 0.18;
+      }elseif ($multiplier>0.40 && $multiplier <=0.50) {
+        $earning->tranche = 0.20;
+      }else {
+        $earning->tranche = 0.25;
+      }
+
       $compare_start =  date('Y-m-01',strtotime($model['date']) );
       $compare_end  = date('Y-m-01',strtotime($model['expiry_date']) );
 
