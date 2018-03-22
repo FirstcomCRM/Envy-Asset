@@ -36,7 +36,7 @@ class PurchaseEarning extends \yii\db\ActiveRecord
       //      [['purchase_id', 'purchase_date', 'expiry_date', 're_date', 'purchase_amount', 'customer_earn', 'company_earn', 'staff_earn'], 'required'],
             [['purchase_id'], 'integer'],
             [['purchase_date', 'expiry_date', 're_date'], 'safe'],
-            [['purchase_amount', 'customer_earn', 'company_earn', 'staff_earn','re_metal_per','customer_earn_after'], 'number'],
+            [['purchase_amount', 'customer_earn', 'company_earn', 'staff_earn','re_metal_per','customer_earn_after','tranche'], 'number'],
         ];
     }
 
@@ -57,6 +57,7 @@ class PurchaseEarning extends \yii\db\ActiveRecord
             'company_earn' => 'Company Commission',
             'staff_earn' => 'Staff Commission',
             're_metal_per'=>'Metal %',
+            'tranche'=>'Commission Tranche',
         ];
     }
 }
