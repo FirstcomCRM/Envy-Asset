@@ -3,6 +3,9 @@
 namespace common\models;
 
 use Yii;
+use common\models\MetalUnrealisedGain;
+use common\models\PurchaseEarning;
+use common\models\MetalNickelDeals;
 
 /**
  * This is the model class for table "purchase".
@@ -72,4 +75,96 @@ class Purchase extends \yii\db\ActiveRecord
             'staff_earn'=>'Staff Earn',
         ];
     }
+
+    public function earnMetal(){
+
+    }
+
+    public function earnNickel(){
+
+    }
+
+    public function earning($date_test){
+      $namount= 0;
+      $customer_amount = 0;
+      $staff_earn = 0;
+
+      if ($this->purchase_type == 'Metal') {
+
+        $comm = MetalUnrealisedGain::find()->where(['true_date'=>$date_test])->one();
+        if (empty($comm) ) {
+          $multiplier = 0;
+          $date_re = $date_test;
+        }else{
+          $multiplier = $comm->re_gain_loss;
+          $date_re = $comm->true_date;
+        }
+
+      }else{
+
+        $d = new \DateTime($date_test);
+        $end_date = $d->format('Y-m-t');
+        $comm = MetalNickelDeals::find()->where(['contract_period_end'=>$end_date])->one();
+        if (empty($comm) ) {
+          $multiplier = 0;
+          $date_re = $date_test;
+        }else{
+          $multiplier = $comm->unrealised_profit_a;
+          $date_re = $date_test;
+        }
+
+      }
+
+      $earning = new PurchaseEarning();
+      $earning->purchase_id = $this->id;
+      $earning->purchase_date = $this->date;
+      $earning->expiry_date = $this->expiry_date;
+      $earning->purchase_amount = $this->price;
+      $earning->re_date = $date_re;
+      $earning->re_metal_per = $multiplier;
+
+      if ($multiplier<=0.30) {
+        $earning->tranche = 0.15;
+      }elseif($multiplier>0.30 && $multiplier<=0.40){
+        $earning->tranche = 0.18;
+      }elseif ($multiplier>0.40 && $multiplier <=0.50) {
+        $earning->tranche = 0.20;
+      }else {
+        $earning->tranche = 0.25;
+      }
+
+      $compare_start =  date('Y-m-01',strtotime($this->date) );
+      $compare_end  = date('Y-m-01',strtotime($this->expiry_date) );
+
+      if ($this->charge_type == 'Others') {
+
+         if ($date_test == $compare_start || $date_test == $compare_end) {
+            $before_return = $earning->purchase_amount*$multiplier;
+            $traded = $before_return/$this->trading_days;
+            $true_return = $traded*$this->prorated_days;
+            $earning->customer_earn = $true_return;
+            $earning->company_earn = $earning->customer_earn*$this->company_charge;
+            $earning->customer_earn_after = $earning->customer_earn - $earning->company_earn;
+            $earning->staff_earn = $earning->company_earn/2;
+         }else{
+           //common formula
+           $earning->customer_earn = $earning->purchase_amount*$multiplier;
+           $earning->company_earn = $earning->customer_earn*$this->company_charge;
+           $earning->customer_earn_after = $earning->customer_earn - $earning->company_earn;
+           $earning->staff_earn = $earning->company_earn/2;
+         }
+
+      }else{
+        //insert here logic if charge type is tier
+        $earning->customer_earn = 0;
+        $earning->customer_earn_after = 0;
+        $earning->company_earn  = 0;
+        $earning->staff_earn  = 0;
+
+      }
+        $earning->save(false);
+
+      //end of function
+    }
+
 }
