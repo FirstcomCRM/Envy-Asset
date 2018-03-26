@@ -34,9 +34,9 @@ class PurchaseEarning extends \yii\db\ActiveRecord
     {
         return [
       //      [['purchase_id', 'purchase_date', 'expiry_date', 're_date', 'purchase_amount', 'customer_earn', 'company_earn', 'staff_earn'], 'required'],
-            [['purchase_id'], 'integer'],
-            [['purchase_date', 'expiry_date', 're_date'], 'safe'],
-            [['purchase_amount', 'customer_earn', 'company_earn', 'staff_earn','re_metal_per','customer_earn_after','tranche'], 'number'],
+            [['purchase_id','investor'], 'integer'],
+            [['re_date'], 'safe'],
+            [['customer_earn', 'purchase_amount','company_earn', 'staff_earn','re_metal_per','customer_earn_after','tranche'], 'number'],
         ];
     }
 
@@ -48,10 +48,9 @@ class PurchaseEarning extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'purchase_id' => 'Purchase ID',
-            'purchase_date' => 'Purchase Date',
-            'expiry_date' => 'Expiry Date',
+            'Investor'=>'Investor',
             're_date' => 'Re Date',
-            'purchase_amount' => 'Purchase Amount',
+            'purchase_amount'=>'Purchase Amount',
             'customer_earn' => 'Investor Return (Before)',
             'customer_earn_after'=>'Investor Return (After)',
             'company_earn' => 'Company Commission',
