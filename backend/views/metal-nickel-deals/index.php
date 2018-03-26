@@ -70,6 +70,8 @@ $this->params['breadcrumbs'][] = $this->title;
                       ],*/
                       'title',
                       'description',
+                      'contract_period_end',
+                      'unrealised_profit_a',
 
                       ['class' => 'yii\grid\ActionColumn'],
                   ],

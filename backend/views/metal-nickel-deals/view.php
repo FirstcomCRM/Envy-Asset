@@ -82,7 +82,9 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'unrealised_profit_a',
               'value'=>function($model){
-                return '$'.Retrieve::retrieveFormat($model->unrealised_profit_a);
+                  $numbers= $model->unrealised_profit_a*100;
+                  return number_format($numbers,2).'%';
+              //  return '$'.Retrieve::retrieveFormat($model->unrealised_profit_a);
               },
             ],
             [
