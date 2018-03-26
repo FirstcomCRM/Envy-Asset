@@ -69,6 +69,7 @@ class MetalNickelDealsController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             $model->contract_period_start = $this->convertDateFormat($model->contract_period_start,'Y-m-d');
             $model->contract_period_end = $this->convertDateFormat($model->contract_period_end,'Y-m-d');
+            $model->unrealised_profit_a = $model->unrealised_profit_a/100;
             $prods = new ProductManagement();
             $prods->addProduct($model->title);
             $model->save(false);
@@ -93,11 +94,13 @@ class MetalNickelDealsController extends Controller
         $model = $this->findModel($id);
         $model->contract_period_start = $this->convertDateFormat($model->contract_period_start,'d M Y');
         $model->contract_period_end = $this->convertDateFormat($model->contract_period_end,'d M Y');
+        $model->unrealised_profit_a = $model->unrealised_profit_a*100;
         //$model->total_cost_price = number_format()
         $model->setFormat();
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             $model->contract_period_start = $this->convertDateFormat($model->contract_period_start,'Y-m-d');
             $model->contract_period_end = $this->convertDateFormat($model->contract_period_end,'Y-m-d');
+            $model->unrealised_profit_a = $model->unrealised_profit_a/100;
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -147,6 +150,7 @@ class MetalNickelDealsController extends Controller
 
           $final_sales_price = $for*$true_percent;
           $before_commission = $final_sales_price - $total; //Realised Profit before Commission
+          $before_com_per = ($before_commission/$total)*100;//Realised Profit before Commission percentage
           $commission  =$before_commission*0.15; //Commission
           $after_commission = $before_commission-$commission;//Realised Profit after Commission
           $net_realized = ($after_commission/$total)*100;//Net Realised Percentage Returns
@@ -155,7 +159,8 @@ class MetalNickelDealsController extends Controller
         //  return $true_percent;
         //  die('test');
         echo json_encode(array(
-          'before_commission'=>number_format($before_commission,2),
+        //  'before_commission'=>number_format($before_commission,2),
+          'before_commission'=>number_format($before_com_per,4),
           'commission'=>number_format($commission,2),
           'after_commission'=>number_format($after_commission,2),
           'net_realized'=>number_format($net_realized,2),
