@@ -14,6 +14,7 @@ use common\models\Commission;
 use common\models\TierReduction;
 use common\models\MetalUnrealisedGain;
 use common\models\PurchaseEarning;
+use common\models\MetalNickelDeals;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -155,6 +156,7 @@ class PurchaseController extends Controller
               $date_test =  date('Y-m-d', $start);
           //    $this->commission($date_test,$model->getAttributes() );
               $this->earning($date_test,$model->getAttributes() );
+            //  $model->earning($date_test);
               $start = strtotime("+1month", $start);
             }
 
@@ -244,7 +246,7 @@ class PurchaseController extends Controller
 
             //$metal = MetalUnrealisedGain::find()->where(['between','date_uploaded',$purchase,$expire])->sum('re_gain_loss');
             $metal = MetalUnrealisedGain::find()->where(['between','true_date',$purchase,$expire])->sum('re_gain_loss');
-
+            //edr add the nickel logic here to populate the fields via ajax
             if (empty($metal) ) {
               $multiplier = 0.00;
             }else{
@@ -291,22 +293,6 @@ class PurchaseController extends Controller
         }
     }
 
-    /**
-    *Protected function that creates a new comission record based on the loop  in the create function.
-    */
-    protected function comms($xid,$highest,$model){
-        $comm = new Commission();
-        $comm->transact_id = $model->id;
-        $comm->transact_no = $model->purchase_no;
-        $comm->transact_type = 'Purchase';
-        $comm->transact_amount = $model->price; //questionable?
-        $comm->transact_date =$model->date;
-        $comm->sales_person = $xid;
-        $comm->commision_percent = $highest;
-        $comm->commission = $comm->commision_percent * $comm->transact_amount;
-        $comm->date_added = date('Y-m-d h:i:s');
-        $comm->save();
-    }
 
     protected function earning($date_test,$model){
       $namount= 0;
@@ -325,12 +311,10 @@ class PurchaseController extends Controller
     //  print_r($multiplier);die();
       $earning = new PurchaseEarning();
       $earning->purchase_id = $model['id'];
-      $earning->purchase_date = $model['date'];
-      $earning->expiry_date = $model['expiry_date'];
+      $earning->investor = $model['investor'];
       $earning->purchase_amount = $model['price'];
       $earning->re_date = $date_re;
       $earning->re_metal_per = $multiplier;
-
 
       if ($multiplier<=0.30) {
         $earning->tranche = 0.15;
@@ -350,7 +334,7 @@ class PurchaseController extends Controller
       //  $new_comm->commission_comp = ($customer_amount*$model['company_charge']);
           if ($date_test == $compare_start || $date_test == $compare_end) {
             //use trading and prorated days formula
-            $before_return = $earning->purchase_amount*$multiplier;
+            $before_return = $model['price']*$multiplier;
             $traded = $before_return/$model['trading_days'];
             $true_return = $traded*$model['prorated_days'];
             $earning->customer_earn = $true_return;
@@ -359,7 +343,7 @@ class PurchaseController extends Controller
             $earning->staff_earn = $earning->company_earn/2;
           }else{
             //common formula
-            $earning->customer_earn = $earning->purchase_amount*$multiplier;
+            $earning->customer_earn = $model['price']*$multiplier;
             $earning->company_earn = $earning->customer_earn*$model['company_charge'];
             $earning->customer_earn_after = $earning->customer_earn - $earning->company_earn;
             $earning->staff_earn = $earning->company_earn/2;
@@ -372,8 +356,12 @@ class PurchaseController extends Controller
           $earning->staff_earn  = 0;
       //  $new_comm->commission_comp = $new_comm->transact_amount*$multiplier;
       }
+      if ($model['purchase_type'] == 'Nickel') {
+        unset($earning);
+      }else{
+        $earning->save(false);
+      }
 
-      $earning->save(false);
     }
 
 
