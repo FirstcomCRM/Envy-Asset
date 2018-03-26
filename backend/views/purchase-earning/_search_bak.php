@@ -27,6 +27,7 @@ $investor = ArrayHelper::map($data,'company_name','company_name');
         <div class="form-group">
             <?= Html::submitButton('<i class="fa fa-search" aria-hidden="true"></i> Search', ['class' => 'btn btn-primary']) ?>
             <?php echo Html::a('<i class="fa fa-undo" aria-hidden="true"></i> Reset',['index'],['class' => 'btn btn-default']) ?>
+
         </div>
       </div>
       <div class="col-md-4">
