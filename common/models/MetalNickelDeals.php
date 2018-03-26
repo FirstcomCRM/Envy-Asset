@@ -83,7 +83,7 @@ class MetalNickelDeals extends \yii\db\ActiveRecord
             'purchase_price_b' => 'Purchase Price',
             'insurance_cost_b' => 'Insurance Cost',
             'total_cost_price' => 'Total Cost Price',
-            'unrealised_profit_a' => 'Realised Profit Before Commission',
+            'unrealised_profit_a' => 'Realised Profit Before Commission %',
             'commision' => 'Commission',
             'unrealised_profit_b' => 'Realised Profit After Commission',
             'net_unrealised' => 'Net Realised % return',
