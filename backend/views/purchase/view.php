@@ -75,9 +75,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 return number_format($model->company_charge*100,2);
               }
             ],
-            'customer_earn',
-            'company_earn',
-            'staff_earn',
+          
+            [
+              'attribute'=>'customer_earn',
+              'value'=>function($model){
+                return '$'.Retrieve::retrieveFormat($model->customer_earn);
+              },
+            ],
+            [
+              'attribute'=>'company_earn',
+              'value'=>function($model){
+                return '$'.Retrieve::retrieveFormat($model->company_earn);
+              },
+            ],
+            [
+              'attribute'=>'staff_earn',
+              'value'=>function($model){
+                return '$'.Retrieve::retrieveFormat($model->staff_earn);
+              },
+            ],
+
         ],
     ]) ?>
     <?php
@@ -91,37 +108,39 @@ $this->params['breadcrumbs'][] = $this->title;
      ?>
 
 
+     <?php if ($model->purchase_type=='Metal'): ?>
+       <table class="table table-bordered">
+         <thead>
+           <th>Year-Month</th>
+           <th>Metal %</th>
+           <th>Investor Return (Before)</th>
+           <th>Investor Return (After)</th>
+           <th>Company Commission</th>
+           <th>Staff Commission</th>
+         </thead>
+         <tbody>
+           <?php foreach ($data as $key => $value): ?>
+               <tr>
+                 <td><?php echo date('M Y',strtotime($value['re_date']) ) ?></td>
+                 <td><?php echo ($value['re_metal_per']*100).'%' ?></td>
+                 <td><?php echo '$'.$value['customer_earn'] ?></td>
+                 <td><?php echo '$'.$value['customer_earn_after'] ?></td>
+                 <td><?php echo '$'.$value['company_earn'] ?></td>
+                 <td><?php echo '$'.$value['staff_earn'] ?></td>
+               </tr>
+           <?php endforeach; ?>
+         </tbody>
+         <tfoot>
+           <td></td>
+           <td></td>
+           <td><?php echo '$'.$customer_sum  ?></td>
+           <td><?php echo '$'.$customer_sum_after  ?></td>
+           <td><?php echo '$'.$company_sum  ?></td>
+           <td><?php echo '$'.$staff_sum  ?></td>
+         </tfoot>
+       </table>
 
-    <table class="table table-bordered">
-      <thead>
-        <th>Year-Month</th>
-        <th>Metal %</th>
-        <th>Investor Return (Before)</th>
-        <th>Investor Return (After)</th>
-        <th>Company Commission</th>
-        <th>Staff Commission</th>
-      </thead>
-      <tbody>
-        <?php foreach ($data as $key => $value): ?>
-            <tr>
-              <td><?php echo date('M Y',strtotime($value['re_date']) ) ?></td>
-              <td><?php echo ($value['re_metal_per']*100).'%' ?></td>
-              <td><?php echo '$'.$value['customer_earn'] ?></td>
-              <td><?php echo '$'.$value['customer_earn_after'] ?></td>
-              <td><?php echo '$'.$value['company_earn'] ?></td>
-              <td><?php echo '$'.$value['staff_earn'] ?></td>
-            </tr>
-        <?php endforeach; ?>
-      </tbody>
-      <tfoot>
-        <td></td>
-        <td></td>
-        <td><?php echo '$'.$customer_sum  ?></td>
-        <td><?php echo '$'.$customer_sum_after  ?></td>
-        <td><?php echo '$'.$company_sum  ?></td>
-        <td><?php echo '$'.$staff_sum  ?></td>
-      </tfoot>
-    </table>
+     <?php endif; ?>
 
 
 
