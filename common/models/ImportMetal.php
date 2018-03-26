@@ -395,6 +395,9 @@ class ImportMetal extends \yii\db\ActiveRecord
   //  print_r($testarr);die();
     $start = 0;
     $end = 0;
+  //  echo '<pre>';
+  //  print_r($testarr);
+  //  die();
 
     $title = $sheet->getCell('A'.'3')->getCalculatedValue();
     $deals = new MetalNickelDeals();
@@ -411,7 +414,7 @@ class ImportMetal extends \yii\db\ActiveRecord
     $deals->purchase_price_b  = $testarr[8];
     $deals->insurance_cost_b = $testarr[9];
     $deals->total_cost_price = $testarr[10];
-    $deals->unrealised_profit_a = $testarr[11];
+    $deals->unrealised_profit_a = $testarr[11]/$testarr[10];
     $deals->commision =  $testarr[12];
     $deals->unrealised_profit_b = $testarr[13];
     $deals->net_unrealised = $testarr[14];
