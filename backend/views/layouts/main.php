@@ -94,7 +94,8 @@ AppAsset::register($this);
           ['label'=>'Product Type', 'url'=>['/product-type/index']],
           ['label'=>'Product Category', 'url'=>['/product-category/index']],
           ['label'=>'Nationality', 'url'=>['/nationality/index']],
-          ['label'=>'Country', 'url'=>['/country/index']],
+          ['label'=>'Tranche', 'url'=>['/tranche/index']],
+        //  ['label'=>'Country', 'url'=>['/country/index']],
 
 
         ],
