@@ -21,7 +21,7 @@ class PurchaseEarningSearch extends PurchaseEarning
         return [
             [['id', 'purchase_id'], 'integer'],
             [['purchase_date', 'expiry_date', 're_date','investor'], 'safe'],
-            [['re_metal_per', 'purchase_amount', 'customer_earn', 'customer_earn_after', 'company_earn', 'staff_earn'], 'number'],
+            [['re_metal_per', 'customer_earn', 'customer_earn_after', 'company_earn', 'staff_earn'], 'number'],
         ];
     }
 
@@ -46,7 +46,7 @@ class PurchaseEarningSearch extends PurchaseEarning
       //  $query = PurchaseEarning::find();
         $query = new Query();
         $query->select(['pe.re_date','pe.id as ids','pe.purchase_id','pe.re_metal_per','pe.customer_earn','pe.customer_earn_after',
-              'pe.company_earn','pe.tranche','pe.purchase_amount','pur.price','inv.company_name','pur.investor',
+              'pe.company_earn','pe.tranche','pe.purchase_amount','inv.company_name','pur.investor',
             ])
           ->from('purchase_earning as pe')
           ->JOIN('LEFT JOIN', 'purchase pur', 'pur.id=pe.purchase_id')
@@ -62,6 +62,7 @@ class PurchaseEarningSearch extends PurchaseEarning
             'ids',
             'purchase_id',
             'customer_earn',
+        //    'price',
             'purchase_amount',
             're_date',
             're_metal_per',
