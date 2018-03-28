@@ -93,18 +93,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <hr>
-
+    <?php echo $searchModel->investor ?>
     <?php if (!empty($searchModel->investor)): ?>
       <div class="test">
         <?php
-          $inv = Investor::find()->where(['company_name'=>$searchModel->investor])->select(['id'])->one();
-          $files =PurchaseEarning::find()->where(['investor'=>$inv->id])->all();
+        //  $inv = Investor::find()->where(['company_name'=>$searchModel->investor])->select(['id'])->one();
+        //  $files =PurchaseEarning::find()->where(['investor'=>$inv->id])->all();
+
+      //    $inv = Investor::find()->where(['company_name'=>$searchModel->investor])->select(['id'])->one();
+        //  $files =PurchaseEarning::find()->where(['investor'=>$inv->id])->all();
           $metal = 0;
 
         ?>
 
         <?php
-          $date = PurchaseEarning::find()->select(['re_date'])->where(['investor'=>$inv->id])->distinct()->asArray()->all();
+        //  $date = PurchaseEarning::find()->select(['re_date'])->where(['investor'=>$inv->id])->distinct()->asArray()->all();
+          $date = PurchaseEarning::find()->select(['re_date'])->where(['investor'=>$searchModel->investor])->distinct()->asArray()->all();
+
          ?>
          <table class="table table-bordered">
            <thead>
@@ -118,10 +123,10 @@ $this->params['breadcrumbs'][] = $this->title;
            <tbody>
              <?php foreach ($date as $k => $d): ?>
                <?php
-                $inv_earn = PurchaseEarning::find()->where(['investor'=>$inv->id,'re_date'=>$d['re_date'] ])->sum('customer_earn');
-                $metal_per = PurchaseEarning::find()->where(['investor'=>$inv->id,'re_date'=>$d['re_date'] ])->one();
-                $total = PurchaseEarning::find()->where(['investor'=>$inv->id,'re_date'=>$d['re_date'] ])->sum('purchase_amount');
-                $comms = PurchaseEarning::find()->where(['investor'=>$inv->id,'re_date'=>$d['re_date'] ])->sum('company_earn');
+                $inv_earn = PurchaseEarning::find()->where(['investor'=>$searchModel->investor,'re_date'=>$d['re_date'] ])->sum('customer_earn');
+                $metal_per = PurchaseEarning::find()->where(['investor'=>$searchModel->investor,'re_date'=>$d['re_date'] ])->one();
+                $total = PurchaseEarning::find()->where(['investor'=>$searchModel->investor,'re_date'=>$d['re_date'] ])->sum('purchase_amount');
+                $comms = PurchaseEarning::find()->where(['investor'=>$searchModel->investor,'re_date'=>$d['re_date'] ])->sum('company_earn');
                ?>
                <tr>
                  <td><?php echo date('M Y',strtotime($d['re_date'])) ?></td>
