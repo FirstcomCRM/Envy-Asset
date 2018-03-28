@@ -29,6 +29,14 @@ $(document).ready(function(){
     pur_sum();
   });
 
+
+  $('#purchase-product').on('change',function(){
+      //console.log('expire date');
+  //  var product = $('#purchase-product').val();
+  //  console.log(product);
+    nickelDate();
+  });
+
   //End of Purchase Module Area
 
 
@@ -114,4 +122,21 @@ function pur_sum(){
   }
 
 
+}
+
+function nickelDate(){
+  var product = $('#purchase-product').val();
+
+  if (product!='') {
+    $.post("?r=purchase/ajax-nickel",{
+          product:product,
+      },
+      function(data, status){
+          var jsonObj = eval ("(" + data + ")");
+          $('#purchase-nickel_date').empty().val(jsonObj.start);
+          $('#purchase-nickel_expiry').empty().val(jsonObj.end);
+      //    'purchase-nickel_date',
+      //    'purchase-nickel_expiry',
+      });
+  }
 }
