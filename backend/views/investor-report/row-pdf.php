@@ -10,6 +10,7 @@ use common\models\MetalUnrealised;
 use common\models\MetalUnrealisedGain;
 use common\models\Purchase;
 use common\models\PurchaseEarning;
+use common\models\Withdraw;
 ?>
 
 <?php
@@ -35,6 +36,14 @@ $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$start])->
 
 $pur_metal = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Metal'])->asArray()->all();
 $pur_nickel = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Nickel'])->asArray()->all();
+$metals = Withdraw::find()->where(['between','date',$start,$end])->andFilterWhere(['investor'=>$model->investor,'product_type'=>2])->asArray()->all();
+$nickels = Withdraw::find()->where(['between','date',$start,$end])->andFilterWhere(['investor'=>$model->investor,'product_type'=>3])->asArray()->all();
+
+$dates = PurchaseEarning::find()->select(['re_date'])->where(['investor'=>$model->investor])->distinct()->asArray()->all();
+
+
+$withdraw_metal = 0;
+$withdraw_nickel = 0;
 
 $custom_metal_sum = 0;
 $company_metal_sum = 0;
@@ -70,6 +79,11 @@ $company_metal_sum = 0;
     background-color:#002041;
     color: #FFD839;
     padding: 5px;
+  }
+
+  .th-daily-blue{
+    background-color:#002041;
+    color:#C7AF3E;
   }
 
   .td-metal{
@@ -132,6 +146,12 @@ $company_metal_sum = 0;
 
 </div>
 
+
+<div class="test">
+  <pre>
+    <?php print_r($pur_nickel) ?>
+  </pre>
+</div>
 
 
 <div class="Comment">
@@ -227,7 +247,8 @@ $company_metal_sum = 0;
 
     <tr>
       <td style="border-bottom:1px solid black"></td>
-      <td style="border-bottom:1px solid black">  <b>Future Metal Trading </b></td>
+      <!--metal type--->
+      <td style="border-bottom:1px solid black"><b>Future Metal Trading </b></td>
       <td style="border-bottom:1px solid black"></td>
       <td style="border-bottom:1px solid black"> </td>
     </tr>
@@ -264,6 +285,46 @@ $company_metal_sum = 0;
     </tr>
     <!--End Footer of Purchase metal---->
       <!--edr-->
+    <tr>
+      <td style="padding:10px"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+
+    <!--Withdraw metal start--->
+    <tr>
+      <td style="padding:10px"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+
+    <?php foreach ($metals as $key => $value): ?>
+      <tr>
+        <td><?php echo date('M Y', strtotime($value['date'])) ?></td>
+        <td><?php echo $value['description'] ?>l</td>
+        <td>
+          <?php $nums = number_format($value['price'],2);
+            echo '('.$nums.')';
+          ?>
+          <?php
+            $withdraw_metal +=$value['price']
+          ?>
+        </td>
+        <td></td>
+      </tr>
+    <?php endforeach; ?>
+
+    <!----//metal footer commented out due to on being credit side?
+    <tr>
+      <td></td>
+      <td>metal profits</td>
+      <td></td>
+      <td style="border-top:1px solid black;border-bottom:1px solid black;"><?php echo number_format($withdraw_metal,2) ?></td>
+    </tr>
+    --->
+    <!--Withdraw metal end--->
 
     <tr>
       <td style="padding:10px"></td>
@@ -278,7 +339,8 @@ $company_metal_sum = 0;
 
     <tr>
       <td style="border-bottom:1px solid black"></td>
-      <td style="border-bottom:1px solid black">  <b>Physical Metal Trading </b></td>
+        <!--Nickel type--->
+      <td style="border-bottom:1px solid black"><b>Physical Metal Trading </b></td>
       <td style="border-bottom:1px solid black"></td>
       <td style="border-bottom:1px solid black"> </td>
     </tr>
@@ -315,7 +377,78 @@ $company_metal_sum = 0;
     </tr>
     <!--End Footer of Purchase metal---->
 
+    <!--Withdraw metal start--->
+    <tr>
+      <td style="padding:10px"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+
+    <?php foreach ($nickels as $key => $value): ?>
+      <tr>
+        <td><?php echo date('M Y', strtotime($value['date'])) ?></td>
+        <td><?php echo $value['description'] ?>l</td>
+        <td>
+          <?php $nums = number_format($value['price'],2);
+            echo '('.$nums.')';
+          ?>
+          <?php
+            $withdraw_metal +=$value['price']
+          ?>
+        </td>
+        <td></td>
+      </tr>
+    <?php endforeach; ?>
+
+    <!----//metal footer commented out due to on being credit side?
+    <tr>
+      <td></td>
+      <td>metal profits</td>
+      <td></td>
+      <td style="border-top:1px solid black;border-bottom:1px solid black;"><?php echo number_format($withdraw_metal,2) ?></td>
+    </tr>
+    --->
+    <!--Withdraw metal end--->
+
+
   </table>
+
+  <br>
+  <!--edr start 3rd table of appendix 1--->
+  <table border="0" class="table-others">
+    <thead>
+      <tr>
+        <td class="th-daily-blue">Description of Contract Entered</td>
+        <td class="th-daily-blue">SGD</td>
+        <td class="th-daily-blue">Maturity of Lock-In Capital</td>
+      </tr>
+      <tbody>
+          <?php foreach ($pur_nickel as $key => $value): ?>
+            <tr>
+              <td>
+                <?php
+                  $date = new \DateTime($value['date']);
+                  echo $date->format('M Y').' Nickel Contract';
+                 ?>
+              </td>
+              <td><?php echo number_format($value['price'],2) ?></td>
+              <td>
+                <?php
+                  $date = new \DateTime($value['date']);
+                  $start = $date->format('d M Y');
+                  $date = new \DateTime($value['expiry_date']);
+                  $end = $date->format('d M Y');
+                  echo $start.' - '.$end;
+                 ?>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+      </tbody>
+    </thead>
+  </table>
+  <!--edr end 3rd table of appendix 1--->
+  
 </div>
 
 <div class="page-break">
@@ -412,6 +545,57 @@ $company_metal_sum = 0;
     </tr>
   </table>
 </div>
+
+<div class="page-break">
+
+</div>
+  <!--edr work-->
+<div class="appendice-metal-figures">
+  <h2>Appendix V - Commission Metals Future </h2>
+  <hr>
+  <table border="1"  class="metal-figures">
+    <thead>
+      <tr>
+        <th class="th-daily">Year Month</th>
+        <th class="th-daily">Monthly Returns</th>
+        <th class="th-daily">Cumulative Return</th>
+        <th class="th-daily">Balance</th>
+        <th class="th-daily">Month Commission</th>
+        <th class="th-daily">Tranche</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($dates as $key => $d): ?>
+          <?php
+            $inv_earn = PurchaseEarning::find()->where(['investor'=>$model->investor,'re_date'=>$d['re_date'] ])->sum('customer_earn');
+            $metal_per = PurchaseEarning::find()->where(['investor'=>$model->investor,'re_date'=>$d['re_date'] ])->one();
+            $total = PurchaseEarning::find()->where(['investor'=>$model->investor,'re_date'=>$d['re_date'] ])->sum('purchase_amount');
+            $comms = PurchaseEarning::find()->where(['investor'=>$model->investor,'re_date'=>$d['re_date'] ])->sum('company_earn');
+          ?>
+        <tr>
+          <td><?php echo date('M Y',strtotime($d['re_date'])) ?></td>
+          <td><?php echo '$'.number_format($inv_earn,2) ?></td>
+          <td>
+            <?php
+             $metal = $metal_per->re_metal_per *100;
+             echo number_format($metal,2).'%';
+            ?>
+          </td>
+          <td><?php echo '$'.number_format($total,2) ?></td>
+          <td><?php echo '$'.number_format($comms,2) ?></td>
+          <td>
+            <?php
+                 $tranche = 100*$metal_per->tranche;
+                 echo number_format($tranche,2).'%';
+            ?>
+          </td>
+
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>
+
 
 <div class="page-break">
 
