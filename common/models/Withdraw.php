@@ -31,10 +31,10 @@ class Withdraw extends \yii\db\ActiveRecord
     {
         return [
             [['investor', 'price', 'product', 'date'], 'required'],
-            [['investor'], 'integer'],
+            [['investor','product_type'], 'integer'],
             [['price'], 'number'],
             [['date'], 'safe'],
-            [['remarks'], 'string'],
+            [['remarks','description'], 'string'],
             [['date_adedd'],'safe'],
           //  [['category'], 'string', 'max' => 75],
         ];
@@ -52,6 +52,8 @@ class Withdraw extends \yii\db\ActiveRecord
             'product' => 'Product',
             'date' => 'Date',
             'remarks' => 'Remarks',
+            'product_type'=>'Product Type',
+            'description'=>'Description',
         ];
     }
 }
