@@ -47,6 +47,7 @@ class ProductManagement extends \yii\db\ActiveRecord
             [['product_price', 'product_cost'], 'number'],
             [['product_name', 'product_code', 'product_type', 'product_cat'], 'string', 'max' => 100],
             [['date_adedd'],'safe'],
+            [['invest_type'],'integer'],
         ];
     }
 
@@ -62,13 +63,14 @@ class ProductManagement extends \yii\db\ActiveRecord
             'product_code' => 'Code',
             'product_price' => 'Price',
             'product_cost' => 'Cost',
-            'product_type' => 'Type',
+            'product_type' => 'Product Type',
             'product_cat' => 'Category',
+            'invest_type'=>'Type',
         ];
     }
 
 
-    public function addProduct($name){
+    public function addProduct($name,$ids){
       $connection = Yii::$app->db;
       $connection->createCommand()->insert('product_management',[
         'product_name'=>$name,
@@ -77,6 +79,7 @@ class ProductManagement extends \yii\db\ActiveRecord
         'product_price'=>0,
         'product_cost'=>0,
         'product_type'=>1,
+        'invest_type'=>$ids,
         'product_cat'=>1,
       ])->execute();
     }
