@@ -55,8 +55,8 @@ class MetalNickelDeals extends \yii\db\ActiveRecord
 
             [['title', 'contract_period'], 'string', 'max' => 75],
             [['description'], 'string', 'max' => 100],
-            [['ins_curr_a','pur_curr_a'], 'string', 'max'=>25],
-            [['ins_curr_rate_a','pur_curr_rate_a','final_sales_price_per','purchase_price_a', 'insurance_cost_a', 'forward_price', 'final_sales_price'], 'number'],
+            [['ins_curr_a','pur_curr_a','forward_currency'], 'string', 'max'=>25],
+            [['ins_curr_rate_a','pur_curr_rate_a','final_sales_price_per','purchase_price_a', 'insurance_cost_a', 'forward_price', 'final_sales_price','forward_currency_rate','commission_per'], 'number'],
             [['total_deal_size'], 'string', 'max' => 50],
         ];
     }
@@ -77,21 +77,24 @@ class MetalNickelDeals extends \yii\db\ActiveRecord
             'contract_period_start'=>'Contract Period Start',
             'contract_period_end'=>'Contract Period End',
             'purchase_price_a' => 'Purchase Price',
-            'insurance_cost_a' => 'Insurance Cost',
+            'insurance_cost_a' => 'Insurance & Shipping Cost',
             'forward_price' => 'Forward Price',
+            'forward_currency_rate'=>'Forward Price Currency Rate',
+            'forward_currency'=>'Forward Price Currency',
             'final_sales_price' => 'Final Sales Price',
             'purchase_price_b' => 'Purchase Price',
-            'insurance_cost_b' => 'Insurance Cost',
+            'insurance_cost_b' => 'Insurance & Shipping Cost',
             'total_cost_price' => 'Total Cost Price',
             'unrealised_profit_a' => 'Realised Profit Before Commission %',
             'commision' => 'Commission',
+            'commission_per'=>'Commission Percentage',
             'unrealised_profit_b' => 'Realised Profit After Commission',
             'net_unrealised' => 'Net Realised % return',
             'pur_curr_a'=>'Purchase Currency',
             'pur_curr_rate_a'=>'Purchase Currency Rate',
-            'ins_curr_a'=>'Insurance Curerncy',
-            'ins_curr_rate_a'=>'Insurance Curerncy Rate',
-            'final_sales_price_per'=>'Final Sales Price Percent',
+            'ins_curr_a'=>'Insurance & Shipping Curerncy',
+            'ins_curr_rate_a'=>'Insurance & Shipping Curerncy Rate',
+            'final_sales_price_per'=>'Broker Fee',
         ];
     }
 
