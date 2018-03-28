@@ -135,7 +135,7 @@ class StocksController extends Controller
             $model->date_added = date('Y-m-d h:i:s');
             $model->added_by = Yii::$app->user->getId();
             $prods = new ProductManagement();
-            $prods->addProduct($model->stock);
+            $prods->addProduct($model->stock,1);
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -158,7 +158,7 @@ class StocksController extends Controller
         $model->sold_date = date('d M Y', strtotime($model->sold_date) );
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             $model->date = date('Y-m-d', strtotime($model->date) );
-              $model->sold_date = date('Y-m-d', strtotime($model->sold_date) );
+            $model->sold_date = date('Y-m-d', strtotime($model->sold_date) );
             $model->date_edited = date('Y-m-d h:i:s');
             $model->edited_by = Yii::$app->user->getId();
             $model->save(false);
