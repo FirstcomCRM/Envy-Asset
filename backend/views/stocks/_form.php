@@ -46,7 +46,7 @@ use kartik\widgets\DatePicker;
 
 
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <?= $form->field($model, 'add_in')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'buy_in_price')->textInput(['maxlength' => true]) ?>
@@ -58,10 +58,9 @@ use kartik\widgets\DatePicker;
         <?= $form->field($model, 'unrealized')->textInput(['maxlength' => true]) ?>
 
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
 
         <?=$form->field($model, 'add_in_rate')->textInput(['maxlength' => true]) ?>
-
 
         <?php $form->field($model, 'add_in_rate',
          [
@@ -75,7 +74,6 @@ use kartik\widgets\DatePicker;
 								{hint}
 								{error}'])->textInput(['maxlength' => true]) ?>
 
-
         <?= $form->field($model, 'buy_in_rate')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'sold_price_rate')->textInput(['maxlength' => true]) ?>
@@ -84,6 +82,17 @@ use kartik\widgets\DatePicker;
 
         <?= $form->field($model, 'unrealized_rate')->textInput(['maxlength' => true]) ?>
 
+      </div>
+      <div class="col-md-4">
+        <?=$form->field($model, 'add_in_curr')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'buy_in_curr')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'sold_price_curr')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'month_end_curr')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'unrealized_curr')->textInput(['maxlength' => true]) ?>
       </div>
     </div>
 
