@@ -2,11 +2,13 @@ $(document).ready(function(){
 
 
   $('#metalnickeldeals-purchase_price_a').on('change',function(){
-    sums();
+  //  sums();
+    commissions();
   });
 
   $('#metalnickeldeals-insurance_cost_a').on('change',function(){
-    sums();
+//    sums();
+    commissions();
   });
 
   $('#metalnickeldeals-forward_price').on('change',function(){
@@ -17,6 +19,11 @@ $(document).ready(function(){
   $('#metalnickeldeals-final_sales_price_per').on('change',function(){
     commissions();
   });
+
+  $('#metalnickeldeals-commission_per').on('change',function(){
+    commissions();
+  });
+
 
 });
 
@@ -42,17 +49,19 @@ function commissions(){
   var ins_price = $('#metalnickeldeals-insurance_cost_a').val();
   var for_price = $('#metalnickeldeals-forward_price').val();
   var final_percent = $('#metalnickeldeals-final_sales_price_per').val();
+  var com_per = $('#metalnickeldeals-commission_per').val();
 //console.log('coms');
 
-  if (pur_price != '' && ins_price != '') {
+  if (pur_price != '' && ins_price != '' && for_price !='' &&final_percent!='' && com_per != '') {
     $.post("?r=metal-nickel-deals/ajax-commission",{
           pur_price:pur_price,
           ins_price:ins_price,
           for_price:for_price,
           final_percent:final_percent,
+          com_per:com_per,
       },
       function(data,status){
-        console.log(data);
+      //  console.log(data);
           var jsonObj = eval ("(" + data + ")");
           $('#metalnickeldeals-unrealised_profit_a').empty().val(jsonObj.before_commission);
           $('#metalnickeldeals-commision').empty().val(jsonObj.commission);
