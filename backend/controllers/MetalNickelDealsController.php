@@ -38,7 +38,7 @@ class MetalNickelDealsController extends Controller
     {
         $searchModel = new CountryMetalNickelDealsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -70,8 +70,9 @@ class MetalNickelDealsController extends Controller
             $model->contract_period_start = $this->convertDateFormat($model->contract_period_start,'Y-m-d');
             $model->contract_period_end = $this->convertDateFormat($model->contract_period_end,'Y-m-d');
             $model->unrealised_profit_a = $model->unrealised_profit_a/100;
+            $model->commission_per = $model->commission_per/100;
             $prods = new ProductManagement();
-            $prods->addProduct($model->title);
+            $prods->addProduct($model->title,3);
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -95,12 +96,14 @@ class MetalNickelDealsController extends Controller
         $model->contract_period_start = $this->convertDateFormat($model->contract_period_start,'d M Y');
         $model->contract_period_end = $this->convertDateFormat($model->contract_period_end,'d M Y');
         $model->unrealised_profit_a = $model->unrealised_profit_a*100;
+        $model->commission_per = $model->commission_per*100;
         //$model->total_cost_price = number_format()
         $model->setFormat();
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             $model->contract_period_start = $this->convertDateFormat($model->contract_period_start,'Y-m-d');
             $model->contract_period_end = $this->convertDateFormat($model->contract_period_end,'Y-m-d');
             $model->unrealised_profit_a = $model->unrealised_profit_a/100;
+            $model->commission_per = $model->commission_per/100;
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -143,15 +146,18 @@ class MetalNickelDealsController extends Controller
           $pur = Yii::$app->request->post()['ins_price'];
           $for = Yii::$app->request->post()['for_price'];
           $final_percent = Yii::$app->request->post()['final_percent'];
+          $com_per = Yii::$app->request->post()['com_per'];
       //    return number_format($total,2);
           $total = $ins + $pur;
           $final_percent = $final_percent/100;
           $true_percent = 1 - $final_percent;
+          $com_per = $com_per/100;
 
           $final_sales_price = $for*$true_percent;
           $before_commission = $final_sales_price - $total; //Realised Profit before Commission
           $before_com_per = ($before_commission/$total)*100;//Realised Profit before Commission percentage
-          $commission  =$before_commission*0.15; //Commission
+        //  $commission  =$before_commission*0.15; //Commission
+          $commission  =$before_commission*$com_per; //Commission
           $after_commission = $before_commission-$commission;//Realised Profit after Commission
           $net_realized = ($after_commission/$total)*100;//Net Realised Percentage Returns
 
