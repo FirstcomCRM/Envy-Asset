@@ -15,6 +15,7 @@ use common\models\TierReduction;
 use common\models\MetalUnrealisedGain;
 use common\models\PurchaseEarning;
 use common\models\MetalNickelDeals;
+use common\models\ProductManagement;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -275,6 +276,36 @@ class PurchaseController extends Controller
                 'staff_earn'=>number_format($staff_earn,2,'.',''),
               ));
        }
+   }
+
+   public function actionAjaxNickel(){
+     $start = 0;
+     $end = 0;
+     if ( Yii::$app->request->post() ) {
+          $product_id = Yii::$app->request->post()['product'];
+
+          $products =  ProductManagement::find()->where(['id'=>$product_id])->one();
+        //  print_r($products);die();
+          $nickel = MetalNickelDeals::find()->where(['title'=>$products->product_name])->one();
+          if (!empty($nickel)) {
+            $dates = new \DateTime($nickel->contract_period_start);
+            $start = $dates->format('d M Y');
+            $dates = new \  DateTime($nickel->contract_period_end);
+            $end = $dates->format('d M Y');
+
+            echo json_encode(array(
+              'start'=>$start,
+              'end'=>$end,
+            ));
+          //  $start = $nickel->contract_period_start;
+          //  $expire =$nickel->contract_period_end;
+          }else{
+            echo json_encode(array(
+              'start'=>'',
+              'end'=>'',
+            ));
+          }
+     }
    }
 
     /**
