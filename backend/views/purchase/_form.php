@@ -111,10 +111,16 @@ if (empty($salesperson)) {
 
       <div class="col-md-6">
 
-      
+
         <?php echo $form->field($model, 'trading_days') ?>
         <?php echo $form->field($model, 'prorated_days') ?>
         <?php echo $form->field($model, 'purchase_type')->radioList($pur_type,['id'=>'purchase_type', 'class'=>'purchase_type']); ?>
+
+        <div class="test">
+          <?php echo $form->field($model, 'nickel_date')->textInput(['readOnly'=>true]) ?>
+          <?php echo $form->field($model, 'nickel_expiry')->textInput(['readOnly'=>true]) ?>
+        </div>
+
         <?php echo  $form->field($model, 'charge_type')->dropDownList($ch_type,['id'=>'charge_type'])?>
         <?php echo $form->field($model, 'company_charge')->textInput(['id'=>'company_charge']) ?>
 
