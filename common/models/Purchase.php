@@ -43,7 +43,7 @@ class Purchase extends \yii\db\ActiveRecord
       //      [['salesperson'], 'integer'],
             [['investor', 'product', 'share'], 'string', 'max' => 75],
             [['purchase_type','charge_type'], 'string', 'max' => 50],
-            [['date_adedd','expiry_date','salesperson'],'safe'],
+            [['date_adedd','expiry_date','salesperson','nickel_date','nickel_expiry'],'safe'],
         ];
     }
 
@@ -64,15 +64,17 @@ class Purchase extends \yii\db\ActiveRecord
             'date' => 'Date',
             'salesperson'=>'Sales Person',
             'remarks' => 'Remarks',
+            'nickel_date'=>'Nickel Date',
+            'nickel_expiry'=>'Nickel Expiry Date',
             'expiry_date'=>'Expiry Date',
             'trading_days'=>'Trading days in Month',
             'prorated_days'=>'Pro-rated days in Month',
             'purchase_type'=>'Purchase Type',
             'charge_type'=>'Charge Type',
             'company_charge'=>'Company Charge %',
-            'customer_earn'=>'Customer Earn',
-            'company_earn'=>'Company Earn',
-            'staff_earn'=>'Staff Earn',
+            'customer_earn'=>'Investor Return',
+            'company_earn'=>'Company Commission',
+            'staff_earn'=>'Staff Commission',
         ];
     }
 
