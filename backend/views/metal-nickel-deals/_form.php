@@ -55,16 +55,19 @@ use kartik\widgets\DatePicker;
           <?= $form->field($model, 'ins_curr_rate_a')->textInput(['maxlength' => true]) ?>
 
           <?= $form->field($model, 'forward_price')->textInput(['maxlength' => true]) ?>
+          <?= $form->field($model, 'forward_currency')->textInput(['maxlength' => true]) ?>
+          <?= $form->field($model, 'forward_currency_rate')->textInput(['maxlength' => true]) ?>
 
           <?php $form->field($model, 'final_sales_price')->textInput(['maxlength' => true]) ?>
 
           <?= $form->field($model, 'final_sales_price_per')->textInput(['maxlength' => true]) ?>
+          <?= $form->field($model, 'commission_per')->textInput(['maxlength' => true]) ?>
 
       </div>
 
       <div class="col-md-6">
-        <?= $form->field($model, 'total_cost_price')->textInput(['maxlength' => true, 'readonly'=>'true']) ?>
-
+        <?php $form->field($model, 'total_cost_price')->textInput(['maxlength' => true, 'readonly'=>'true']) ?>
+        <?php echo $form->field($model, 'total_cost_price')->hiddenInput(['maxlength' => true, 'readonly'=>'true'])->label(false) ?>
         <?= $form->field($model, 'unrealised_profit_a')->textInput(['maxlength' => true, 'readonly'=>'true', 'onchange'=>'commission()']) ?>
 
         <?= $form->field($model, 'commision')->textInput(['maxlength' => true, 'readonly'=>'true']) ?>
