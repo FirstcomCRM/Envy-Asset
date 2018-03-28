@@ -8,6 +8,7 @@ use common\models\WithdrawSearch;
 use common\models\UserPermission;
 use common\models\User;
 use common\models\UserGroup;
+use common\models\ProductManagement;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -131,6 +132,8 @@ class WithdrawController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
             $model->date = date('Y-m-d', strtotime($model->date) );
             $model->date_added = date('Y-m-d h:i:s');
+            $prod = ProductManagement::find()->where(['id'=>$model->product])->one();
+            $model->product_type = $prod->invest_type;
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -152,6 +155,8 @@ class WithdrawController extends Controller
         $model->date = date('d M Y', strtotime($model->date) );
         if ($model->load(Yii::$app->request->post()) && $model->validate  () ) {
             $model->date = date('Y-m-d', strtotime($model->date) );
+            $prod = ProductManagement::find()->where(['id'=>$model->product])->one();
+            $model->product_type = $prod->invest_type;
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
