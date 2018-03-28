@@ -427,7 +427,7 @@ class ImportMetal extends \yii\db\ActiveRecord
 
     $deals->save(false);
     $prods = new ProductManagement();
-    $prods->addProduct($this->remarks);
+    $prods->addProduct($this->remarks,3);
     unset($testarr);
   //  $title = $sheet->getCell('A'.'3')->getCalculatedValue();
   //  print_r($title);die(); //edr
