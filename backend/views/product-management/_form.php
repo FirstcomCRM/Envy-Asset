@@ -13,6 +13,11 @@ use common\models\ProductType;
 /* @var $model common\models\ProductManagement */
 /* @var $form yii\widgets\ActiveForm */
 
+$investment = [
+  1=>'Stocks',
+  2=>'Metal',
+  3=>'Nickel',
+];
 
 $data = ProductCategory::find()->select(['id','category'])->orderBy(['category'=>SORT_ASC])->all();
 $cat = ArrayHelper::map($data,'id','category');
@@ -54,6 +59,16 @@ $type = ArrayHelper::map($data,'id','type');
               'allowClear' => true
             ],
           ]) ?>
+
+          <?php echo $form->field($model,'invest_type')->widget(Select2::className(),[
+              'data'=>$investment,
+              'options'=>['placeholder'=>'Category '],
+              'theme'=> Select2::THEME_BOOTSTRAP,
+              'size'=> Select2::MEDIUM,
+              'pluginOptions' => [
+                'allowClear' => true
+              ],
+            ]) ?>
 
         <?= $form->field($model, 'product_price')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'product_cost')->textInput(['maxlength' => true]) ?>
