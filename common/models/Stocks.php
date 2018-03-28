@@ -45,6 +45,7 @@ class Stocks extends \yii\db\ActiveRecord
             [['stock'], 'string', 'max' => 75],
             [['sold_units','buy_units'], 'string', 'max' => 50],
             [['add_in'], 'string', 'max' => 100],
+            [['add_in_curr','buy_in_curr','sold_price_curr','month_end_curr','unrealized_curr'], 'string', 'max' => 25],
         ];
     }
 
@@ -69,6 +70,12 @@ class Stocks extends \yii\db\ActiveRecord
             'sold_price_rate'=>'Sold Price Rate',
             'month_end_rate'=>'Month End Price Rate',
             'unrealized_rate'=>'Unrealized Rate',
+            'add_in_curr'=>'Add in Currency',  
+            'buy_in_curr'=>'Buy in Currency',
+            'sold_price_curr'=>'Sold Price Currency',
+            'month_end_curr'=>'Month end Currency',
+            'unrealized_curr'=>'Unrealized Currency',
+
             'sold_date'=>'Sold Date',
             'sold_units'=>'Sold Units',
             'buy_units'=>'Buy Units',
