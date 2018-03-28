@@ -56,6 +56,8 @@ $data = null;
                 'format' => 'php:d M Y',
             ]
           ]); ?>
+
+            <?= $form->field($model, 'description')->textarea(['rows' => 3]) ?>
         </div>
         <div class="col-md-6">
           <?= $form->field($model, 'remarks')->textarea(['rows' => 6]) ?>
