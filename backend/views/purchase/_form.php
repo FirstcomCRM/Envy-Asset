@@ -31,12 +31,8 @@ $ch_type = [
 
 $data = null;
 
-$salesperson = Usermanagement::find()->where(['id'=>$model->salesperson])->one();
-if (empty($salesperson)) {
-    $x = [];
-}else{
-  $x = [$salesperson->id => $salesperson->name];
-}
+$salesperson  =UserManagement::find()->all();
+$x = ArrayHelper::map($salesperson,'id','name');
 
 ?>
 
@@ -53,7 +49,7 @@ if (empty($salesperson)) {
             'onchange'=>'$.post("'.url::to(['purchase/get-sales','id'=>'']).
               '"+$(this).val(),function( data )
                 {
-                  $("#salesperson").html( data );
+                  $("#salesperson").html(data);
                 });'
 
             ],
