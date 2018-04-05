@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 return number_format($model->company_charge*100,2);
               }
             ],
-          
+
             [
               'attribute'=>'customer_earn',
               'value'=>function($model){
@@ -123,20 +123,20 @@ $this->params['breadcrumbs'][] = $this->title;
                <tr>
                  <td><?php echo date('M Y',strtotime($value['re_date']) ) ?></td>
                  <td><?php echo ($value['re_metal_per']*100).'%' ?></td>
-                 <td><?php echo '$'.$value['customer_earn'] ?></td>
-                 <td><?php echo '$'.$value['customer_earn_after'] ?></td>
-                 <td><?php echo '$'.$value['company_earn'] ?></td>
-                 <td><?php echo '$'.$value['staff_earn'] ?></td>
+                 <td><?php echo '$'.number_format($value['customer_earn'],2) ?></td>
+                 <td><?php echo '$'.number_format($value['customer_earn_after'],2) ?></td>
+                 <td><?php echo '$'.number_format($value['company_earn'],2)  ?></td>
+                 <td><?php echo '$'.number_format($value['staff_earn'],2) ?></td>
                </tr>
            <?php endforeach; ?>
          </tbody>
          <tfoot>
            <td></td>
            <td></td>
-           <td><?php echo '$'.$customer_sum  ?></td>
-           <td><?php echo '$'.$customer_sum_after  ?></td>
-           <td><?php echo '$'.$company_sum  ?></td>
-           <td><?php echo '$'.$staff_sum  ?></td>
+           <td><?php echo '$'.number_format($customer_sum,2)  ?></td>
+           <td><?php echo '$'.number_format($customer_sum_after,2)  ?></td>
+           <td><?php echo '$'.number_format($company_sum,2)  ?></td>
+           <td><?php echo '$'.number_format($staff_sum,2)  ?></td>
          </tfoot>
        </table>
 
