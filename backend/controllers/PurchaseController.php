@@ -212,17 +212,29 @@ class PurchaseController extends Controller
     }
 
     public function actionGetSales($id){
-      // $data = Investor::find()->where(['id'=>$id])->one();
-      //die($id);
-        //die($id);
-       $find = Investor::find()->where(['id'=>$id])->one();
-       $sales = UserManagement::find()->where(['id'=>$find->salesperson])->one();
-       //echo $sales->name;
-       if (!empty($sales)) {
-          echo "<option value='".$sales->id."'>".$sales->name."</option>";
+
+        $sales= null;
+        $find = Investor::find()->where(['id'=>$id])->one();
+
+       if (!empty($find->salesperson)) {
+         $sales = UserManagement::find()->all();
+          //$sales = UserManagement::find()->where(['id'=>$find->salesperson])->one();
+          foreach ($sales as $key => $value) {
+              if ($value->id == $find->salesperson) {
+                  echo "<option value='".$value->id."' selected>".$value->name."</option>";
+              }else{
+                echo "<option value='".$value->id."'>".$value->name."</option>";
+              }
+            }
+
 
        }else{
-           echo "<option>N/A</option>";
+           $sales = UserManagement::find()->all();
+        //   print_r($sales);die();
+           foreach ($sales as $key => $value) {
+             echo "<option value='".$value->id."'>".$value->name."</option>";
+           }
+        //   echo "<option>N/A</option>";
        }
    }
 
