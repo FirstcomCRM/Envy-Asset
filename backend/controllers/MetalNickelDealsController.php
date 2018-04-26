@@ -38,7 +38,7 @@ class MetalNickelDealsController extends Controller
     {
         $searchModel = new CountryMetalNickelDealsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -72,7 +72,8 @@ class MetalNickelDealsController extends Controller
             $model->unrealised_profit_a = $model->unrealised_profit_a/100;
             $model->commission_per = $model->commission_per/100;
             $prods = new ProductManagement();
-            $prods->addProduct($model->title,3);
+            $product_id =  $prods->addProduct($model->title,3);
+            $model->product_id =  $product_id;
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -164,7 +165,7 @@ class MetalNickelDealsController extends Controller
 
         //  return $true_percent;
         //  die('test');
-        echo json_encode(array(
+        return json_encode(array(
         //  'before_commission'=>number_format($before_commission,2),
           'before_commission'=>number_format($before_com_per,4),
           'commission'=>number_format($commission,2),
