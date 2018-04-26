@@ -45,7 +45,7 @@ class MetalNickelDeals extends \yii\db\ActiveRecord
     {
         return [
             [['unrealised_profit_a', 'commision', 'unrealised_profit_b', 'net_unrealised'], 'required'],
-            [['import_metal_id'], 'integer'],
+            [['import_metal_id','product_id'], 'integer'],
             [['date_uploaded','contract_period_start','contract_period_end'], 'safe'],
           //  [['purchase_price_a', 'insurance_cost_a', 'forward_price', 'final_sales_price', 'purchase_price_b', 'insurance_cost_b', 'total_cost_price', 'unrealised_profit_a', 'commision', 'unrealised_profit_b', 'net_unrealised'], 'number'],
 
