@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "stocks".
@@ -32,20 +34,36 @@ class Stocks extends \yii\db\ActiveRecord
         return 'stocks';
     }
 
+    public function behaviors(){
+       return [
+           [
+               'class' => BlameableBehavior::className(),
+               'createdByAttribute' => 'added_by',
+               'updatedByAttribute' => 'edited_by',
+           ],
+           [
+             'class' => TimestampBehavior::className(),
+             'createdAtAttribute' => 'date_added',
+             'updatedAtAttribute' => 'date_edited',
+           //  'value' => new Expression('NOW()'),
+               'value' => date('Y-m-d H:i:s'),
+           ],
+       ];
+    }
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['stock', 'date', 'price', 'add_in', 'buy_in_price', 'sold_price', 'month_end_price', 'unrealized'], 'required'],
-            [['date', 'date_created', 'date_edited', 'date_added','sold_date'], 'safe'],
-            [['price', 'buy_in_price', 'sold_price', 'month_end_price', 'unrealized','add_in_rate','buy_in_rate','sold_price_rate','month_end_rate','unrealized_rate',], 'number'],
-            [['added_by', 'edited_by'], 'integer'],
+            [['stock', 'date', 'buy_in_price'], 'required'],
+            [['date', 'date_created', 'date_edited', 'date_added','sold_date','buy_in_price', 'buy_in_rate','buy_in_local'], 'safe'],
+          //  [[], 'number','numberPattern' => '/^\s*[-+]?[0-9\,]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/'],
+            [['added_by', 'edited_by','forex','product_id','sold_units'], 'integer'],
             [['stock'], 'string', 'max' => 75],
-            [['sold_units','buy_units'], 'string', 'max' => 50],
-            [['add_in'], 'string', 'max' => 100],
-            [['add_in_curr','buy_in_curr','sold_price_curr','month_end_curr','unrealized_curr'], 'string', 'max' => 25],
+            [['buy_units'], 'string', 'max' => 50],
+
         ];
     }
 
@@ -58,33 +76,37 @@ class Stocks extends \yii\db\ActiveRecord
             'id' => 'ID',
             'stock' => 'Stock',
             'date' => 'Date',
-            'price' => 'Price',
-            'add_in' => 'Add In',
             'buy_in_price' => 'Buy In Price',
-            'sold_price' => 'Sold Price',
-            'month_end_price' => 'Month End Price',
-            'unrealized' => 'Unrealized',
-
-            'add_in_rate'=>'Add in Rate',
             'buy_in_rate'=>'Buy in Price Rate',
-            'sold_price_rate'=>'Sold Price Rate',
-            'month_end_rate'=>'Month End Price Rate',
-            'unrealized_rate'=>'Unrealized Rate',
-            'add_in_curr'=>'Add in Currency',  
-            'buy_in_curr'=>'Buy in Currency',
-            'sold_price_curr'=>'Sold Price Currency',
-            'month_end_curr'=>'Month end Currency',
-            'unrealized_curr'=>'Unrealized Currency',
-
+            'buy_in_local'=>'Local(SGD)',
             'sold_date'=>'Sold Date',
             'sold_units'=>'Sold Units',
             'buy_units'=>'Buy Units',
-
             'date_created' => 'Date Created',
             'date_edited' => 'Date Edited',
             'added_by' => 'Added By',
             'edited_by' => 'Edited By',
             'date_added' => 'Date Added',
+            'forex'=>'Forex',
         ];
+    }
+
+    public function beforeSave($insert) {
+        if (parent::beforeSave($insert)) {
+          //  $this->final_sales_price = str_replace(",", "", $this->final_sales_price);
+            $this->date = date('Y-m-d',strtotime($this->date));
+            $this->sold_date = date('Y-m-d',strtotime($this->sold_date));
+
+
+            /*
+            $model->date = date('Y-m-d', strtotime($model->date) );
+          //    print_r($model->sold_date);die();
+            $model->sold_date = date('Y-m-d', strtotime($model->sold_date) );
+            */
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }
