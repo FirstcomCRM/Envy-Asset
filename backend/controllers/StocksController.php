@@ -9,6 +9,10 @@ use common\models\UserGroup;
 use common\models\UserPermission;
 use common\models\User;
 use common\models\ProductManagement;
+use common\models\StocksLine;
+use common\models\StocksLineSearch;
+use common\models\PurchaseSearch;
+use common\models\Model;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -114,8 +118,21 @@ class StocksController extends Controller
      */
     public function actionView($id)
     {
+          $model = $this->findModel($id);
+//$modelLine = StocksLine::find()->where(['stocks_id'=>$id])->all();
+        $searchLine = new StocksLineSearch();
+        $searchLine->stocks_id = $id;
+        $modelLine = $searchLine->search(Yii::$app->request->queryParams);
+
+        $purchase = new PurchaseSearch();
+        $purchase->product =$model->product_id;
+        $purchase->purchase_type = 'Stocks';
+        $purchaseData = $purchase->search(Yii::$app->request->queryParams);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'modelLine'=>$modelLine,
+            'purchaseData'=>$purchaseData,
         ]);
     }
 
@@ -127,20 +144,57 @@ class StocksController extends Controller
     public function actionCreate()
     {
         $model = new Stocks();
+        $modelLine = [new StocksLine];
+        if ($model->load(Yii::$app->request->post()) ) {
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
-            $model->date = date('Y-m-d', strtotime($model->date) );
-            $model->sold_date = date('Y-m-d', strtotime($model->sold_date) );
-            $model->date_created = date('Y-m-d');
-            $model->date_added = date('Y-m-d h:i:s');
-            $model->added_by = Yii::$app->user->getId();
-            $prods = new ProductManagement();
-            $prods->addProduct($model->stock,1);
-            $model->save(false);
+
+            $modelLine = Model::createMultiple(StocksLine::classname());
+            Model::loadMultiple($modelLine, Yii::$app->request->post());
+
+            $valid = $model->validate();
+
+            $valid = Model::validateMultiple($modelLine) && $valid;
+            //echo '<pre>';
+              //var_dump($valid);die();
+
+            if ($valid) {
+                $prods = new ProductManagement();
+                $product_id =   $prods->addProduct($model->stock,1);
+                $model->product_id = $product_id;
+              //  var_dump($product_id);die();
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+
+                    if ($flag = $model->save(false)) {
+                        foreach ($modelLine as $line)
+                        {
+                            $line->stocks_id = $model->id;
+                            if (! ($flag = $line->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $transaction->commit();
+                        Yii::$app->session->setFlash('success', "Stock created");
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }else{
+              echo '<pre>';
+              print_r($model);
+              die();
+            }
+
+            //$model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'modelLine'=> (empty($modelLine)) ? [new StocksLine] : $modelLine,
             ]);
         }
     }
@@ -154,20 +208,75 @@ class StocksController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $modelLine = StocksLine::find()->where(['stocks_id' => $id])->all();
         $model->date = date('d M Y', strtotime($model->date) );
         $model->sold_date = date('d M Y', strtotime($model->sold_date) );
-        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
-            $model->date = date('Y-m-d', strtotime($model->date) );
-            $model->sold_date = date('Y-m-d', strtotime($model->sold_date) );
-            $model->date_edited = date('Y-m-d h:i:s');
-            $model->edited_by = Yii::$app->user->getId();
-            $model->save(false);
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())  ) {
+
+            $oldIDs = ArrayHelper::map($modelLine, 'id', 'id');
+            $stockline = Model::createMultiple(StocksLine::classname(), $modelLine);
+            Model::loadMultiple($stockline, Yii::$app->request->post());
+            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($stockline, 'id', 'id')));
+
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($stockline) && $valid;
+
+            //var_dump($valid);die();
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                  try {
+
+                        if ($flag = $model->save(false)) {
+                            if (! empty($deletedIDs)) {
+                              StocksLine::deleteAll(['id' => $deletedIDs]);
+                            }
+
+                        foreach ($stockline as $line) {
+                            $line->stocks_id = $model->id;
+                            if (! ($flag = $line->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                              }
+                            }
+                        }
+                        if ($flag) {
+                            $transaction->commit();
+                            Yii::$app->session->setFlash('success', "Stock updated");
+                            return $this->redirect(['view', 'id' => $model->id]);
+                        }
+
+                  } catch (Exception $e) {
+                      $transaction->rollBack();
+                  }
+          }else{
+            echo '<pre>';
+            print_r($model);
+
+            die();
+          }
+
+            //$model->save(false);
+          //  return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'modelLine'=> (empty($modelLine)) ? [new StocksLine] : $modelLine,
             ]);
         }
+    }
+
+    public function actionAjaxLocal(){
+      $prods = 0;
+      if ( Yii::$app->request->post() ) {
+        $price = Yii::$app->request->post()['price'];
+        $rate = Yii::$app->request->post()['rate'];
+      //  $this->total_cost_price = str_replace(",", "", $this->total_cost_price)
+        $price = str_replace(",", "", $price);
+        $rate = str_replace(",", "", $rate);
+        $prods = $rate * $price;
+        return $prods;
+      }
+
     }
 
     /**
