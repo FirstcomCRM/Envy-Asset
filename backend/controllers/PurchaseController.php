@@ -243,8 +243,10 @@ class PurchaseController extends Controller
       $namount= 0;
       $customer_amount = 0;
       $staff_earn = 0;
+      $sold_price_amount = 0;
        if ( Yii::$app->request->post() ) {
             $amount = Yii::$app->request->post()['price'];
+            $sold_price = Yii::$app->request->post()['sold_price'];
             $expiry_date = Yii::$app->request->post()['expiry_date'];
             $data = new \DateTime($expiry_date);
             $expire = $data->format('Y-m-d');
@@ -282,7 +284,7 @@ class PurchaseController extends Controller
             }
               //return number_format($namount,2);
             //  print_r($multiplier);die();
-              echo json_encode(array(
+              return json_encode(array(
                 'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
                 'company_earn'=>number_format($company_earn,2,'.',''),
                 'staff_earn'=>number_format($staff_earn,2,'.',''),
@@ -305,14 +307,14 @@ class PurchaseController extends Controller
             $dates = new \  DateTime($nickel->contract_period_end);
             $end = $dates->format('d M Y');
 
-            echo json_encode(array(
+            return json_encode(array(
               'start'=>$start,
               'end'=>$end,
             ));
           //  $start = $nickel->contract_period_start;
           //  $expire =$nickel->contract_period_end;
           }else{
-            echo json_encode(array(
+            return json_encode(array(
               'start'=>'',
               'end'=>'',
             ));
