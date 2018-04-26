@@ -127,7 +127,7 @@ class InvestorController extends Controller
         $search_dep = new DepositSearch();
         $search_dep->investor = $id;
         $deposit = $search_dep->search(Yii::$app->request->queryParams);
-
+        
         $search_with = new WithdrawSearch();
         $search_with->investor = $id;
         $withdraw = $search_with->search(Yii::$app->request->queryParams);
