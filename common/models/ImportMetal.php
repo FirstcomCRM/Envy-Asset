@@ -183,6 +183,7 @@ class ImportMetal extends \yii\db\ActiveRecord
       if (!empty($data) ) {
         foreach ($data as $key => $value) {
           $purs = Purchase::find()->where(['id'=>$value->purchase_id])->one();
+          
           if ($purs->charge_type == 'Others' && $purs->purchase_type == 'Metal') {
 
               $compare_start =  date('Y-m-01',strtotime($purs->date) );
@@ -441,9 +442,13 @@ class ImportMetal extends \yii\db\ActiveRecord
     $date = new \DateTime($end);
     $deals->contract_period_end = $date->format('Y-m-d');
 
-    $deals->save(false);
     $prods = new ProductManagement();
-    $prods->addProduct($this->remarks,3);
+    //$prods->addProduct($this->remarks,3);
+    $product_id = $prods->addProduct($this->remarks,3);
+    $deals->product_id = $product_id;
+
+    $deals->save(false);
+
     unset($testarr);
   //  $title = $sheet->getCell('A'.'3')->getCalculatedValue();
   //  print_r($title);die(); //edr
