@@ -88,13 +88,14 @@ AppAsset::register($this);
           ],
         ],
 
-          ['label'=>'Misc', 'class'=>'navbars', 'items'=>[
+          ['label'=>'Setting', 'class'=>'navbars', 'items'=>[
           ['label'=>'User group', 'url'=>['/user-group/index']],
           ['label'=>'Department', 'url'=>['/department/index']],
           ['label'=>'Product Type', 'url'=>['/product-type/index']],
           ['label'=>'Product Category', 'url'=>['/product-category/index']],
           ['label'=>'Nationality', 'url'=>['/nationality/index']],
           ['label'=>'Tranche', 'url'=>['/tranche/index']],
+          ['label'=>'Forex', 'url'=>['/forex/index']],
         //  ['label'=>'Country', 'url'=>['/country/index']],
 
 
