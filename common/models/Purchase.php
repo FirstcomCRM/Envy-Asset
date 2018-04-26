@@ -34,10 +34,10 @@ class Purchase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['investor', 'product', 'price', 'date'], 'required'],
-            [['price','sum_all','company_charge','staff_earn','company_earn','customer_earn'], 'number'],
+            [['investor', 'product', 'price', 'date','trading_days','prorated_days','company_charge'], 'required'],
+            [['price','sum_all','company_charge','staff_earn','company_earn','customer_earn','sold_price','sold_price_rate'], 'number'],
             [['date'], 'safe'],
-            [['trading_days','prorated_days'],'integer'],
+            [['trading_days','prorated_days','sold_currency'],'integer'],
             [['remarks','purchase_no'], 'string'],
         //    [['salesperson'], 'string'],
       //      [['salesperson'], 'integer'],
