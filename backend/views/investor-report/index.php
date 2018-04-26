@@ -18,12 +18,14 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="panel-body">
         <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
-        <?= Html::checkbox('confirm', false, ['label' => 'Confirm Report' ,'class'=>'email-checkbox']); ?>
+        <!---
         <div id="email-div">
-          <?php echo Html::a('<i class="fa fa-envelope-open" aria-hidden="true"></i> Send to all Investor',
+        <?php Html::checkbox('confirm', false, ['label' => 'Confirm Report' ,'class'=>'email-checkbox']); ?>
+
+          <?php  Html::a('<i class="fa fa-envelope-open" aria-hidden="true"></i> Send to all Investor',
           ['compose-email'],['class' => 'btn btn-warning send-email', 'id'=>'email-button']) ?>
         </div>
-
+        --->
 
     </div>
   </div>
@@ -92,7 +94,8 @@ $this->params['breadcrumbs'][] = $this->title;
               [
                 'header'=>'Action',
                 'class'=>'yii\grid\ActionColumn',
-                'template'=>'{view}{update}{download-pdf}{email}',
+            //    'template'=>'{view}{update}{download-pdf}{email}',
+                'template'=>'{view}{update}{download-pdf}',
                 'options'=>['style'=>'padding:5px'],
                 'buttons'=>[
                   'view'=>function($url,$model,$key){

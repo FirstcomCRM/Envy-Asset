@@ -87,7 +87,8 @@ $this->params['breadcrumbs'][] = $this->title;
               [
                 'header'=>'Action',
                 'class'=>'yii\grid\ActionColumn',
-                'template'=>'{view}{update}{download-pdf}{email}',
+                //'template'=>'{view}{update}{download-pdf}{email}',
+                'template'=>'{view}{update}{download-pdf}',
                 'options'=>['style'=>'padding:5px'],
                 'buttons'=>[
                   'view'=>function($url,$model,$key){
