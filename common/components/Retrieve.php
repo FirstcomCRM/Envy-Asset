@@ -85,6 +85,10 @@ Class Retrieve{
     return date('m-d-Y',strtotime($date));
   }
 
+  public static function retrieveDate_dmy($date){
+    return date('d M Y',strtotime($date));
+  }
+
   public static function retrieveGroup($id){
     $group = UserGroup::find()->where(['id'=>$id])->one();
     if (!empty($group) ) {
