@@ -23,8 +23,8 @@ class StocksSearch extends Stocks
     {
         return [
             [['id', 'added_by', 'edited_by'], 'integer'],
-            [['stock','date', 'add_in', 'buy_in_price', 'month_end_price', 'unrealized', 'date_created', 'date_edited', 'date_added','start','end'], 'safe'],
-            [['price'], 'number'],
+            [['stock','date', 'buy_in_price',  'date_created', 'date_edited', 'date_added','start','end'], 'safe'],
+
         ];
     }
 
@@ -71,7 +71,7 @@ class StocksSearch extends Stocks
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'price' => $this->price,
+
             'date_created' => $this->date_created,
             'date_edited' => $this->date_edited,
             'added_by' => $this->added_by,
@@ -80,10 +80,9 @@ class StocksSearch extends Stocks
         ]);
 
         $query->andFilterWhere(['like', 'stock', $this->stock])
-            ->andFilterWhere(['like', 'add_in', $this->add_in])
+          
             ->andFilterWhere(['like', 'buy_in_price', $this->buy_in_price])
-            ->andFilterWhere(['like', 'month_end_price', $this->month_end_price])
-            ->andFilterWhere(['like', 'unrealized', $this->unrealized])
+
             ->andFilterWhere(['between', 'date', $this->start,$this->end]);
 
         return $dataProvider;
