@@ -7,6 +7,7 @@ use yii\widgets\ActiveForm;
 use common\models\Investor;
 use common\models\ProductManagement;
 use common\models\UserManagement;
+use common\models\Forex;
 use kartik\widgets\Select2;
 use kartik\widgets\DatePicker;
 /* @var $this yii\web\View */
@@ -19,9 +20,13 @@ $invest = ArrayHelper::map($data,'id','nric_comp');
 $data = ProductManagement::find()->orderBy(['product_name'=>SORT_ASC])->select(['id','product_name'])->all();
 $prod = ArrayHelper::map($data,'id','product_name');
 
+$data = Forex::find()->all();
+$forex = ArrayHelper::map($data,'id','currency_code');
+
 $pur_type = [
   'Metal'=>'Metal',
   'Nickel'=>'Nickel',
+  'Stocks'=>'Stocks',
 ];
 
 $ch_type = [
@@ -112,9 +117,15 @@ $x = ArrayHelper::map($salesperson,'id','name');
         <?php echo $form->field($model, 'prorated_days') ?>
         <?php echo $form->field($model, 'purchase_type')->radioList($pur_type,['id'=>'purchase_type', 'class'=>'purchase_type']); ?>
 
-        <div class="test">
+        <div id="nickels-test">
           <?php echo $form->field($model, 'nickel_date')->textInput(['readOnly'=>true]) ?>
           <?php echo $form->field($model, 'nickel_expiry')->textInput(['readOnly'=>true]) ?>
+        </div>
+        <div id="stocks-test">
+          <?php echo $form->field($model, 'sold_currency')->dropDownList($forex,['prompt'=>'Select Currency']) ?>
+          <?php echo $form->field($model, 'sold_price')->textInput() ?>
+          <?php echo $form->field($model, 'sold_price_rate')->textInput() ?>
+
         </div>
 
         <?php echo  $form->field($model, 'charge_type')->dropDownList($ch_type,['id'=>'charge_type'])?>

@@ -61,6 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
               },
             ],
+            'invest_type',
 
         ],
     ]) ?>
