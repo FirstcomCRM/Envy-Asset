@@ -12,7 +12,11 @@ use common\models\Purchase;
 use common\models\PurchaseEarning;
 use common\models\Withdraw;
 use common\models\Stocks;
+use common\models\StocksLine;
 use common\models\Investor;
+use common\models\ProductManagement;
+use common\models\Forex;
+
 ?>
 
 <?php
@@ -26,13 +30,23 @@ if (!empty($searchModel->start)) {
 $start = date('Y-m-01',strtotime($model->date) );
 $end = date('Y-m-t',strtotime($model->date));
 
+$start_search = date('Y-m-01',strtotime($searchModel->start) );
+$start_end = date('Y-m-t',strtotime($searchModel->end));
+
 //echo $searchModel->start;
-$al = MetalAl::find()->where(['date_uploaded'=>$start])->all();
-$cu = MetalCu::find()->where(['date_uploaded'=>$start])->all();
-$au = MetalAu::find()->where(['date_uploaded'=>$start])->all();
-$ni = MetalNi::find()->where(['date_uploaded'=>$start])->all();
-$oil = MetalOil::find()->where(['date_uploaded'=>$start])->all();
-$zn = MetalZn::find()->where(['date_uploaded'=>$start])->all();
+//$al = MetalAl::find()->where(['date_uploaded'=>$start])->all();
+//$cu = MetalCu::find()->where(['date_uploaded'=>$start])->all();
+//$au = MetalAu::find()->where(['date_uploaded'=>$start])->all();
+//$ni = MetalNi::find()->where(['date_uploaded'=>$start])->all();
+//$oil = MetalOil::find()->where(['date_uploaded'=>$start])->all();
+//$zn = MetalZn::find()->where(['date_uploaded'=>$start])->all();
+
+$al = MetalAl::find()->where(['date_uploaded'=>$start_search])->all();
+$cu = MetalCu::find()->where(['date_uploaded'=>$start_search])->all();
+$au = MetalAu::find()->where(['date_uploaded'=>$start_search])->all();
+$ni = MetalNi::find()->where(['date_uploaded'=>$start_search])->all();
+$oil = MetalOil::find()->where(['date_uploaded'=>$start_search])->all();
+$zn = MetalZn::find()->where(['date_uploaded'=>$start_search])->all();
 
 //$al = MetalAl::find()->where(['between','date_filter',$start,$end])->all();
 //$cu = MetalCu::find()->where(['date_uploaded'=>$start])->all();
@@ -45,15 +59,32 @@ $unrealised = MetalUnrealised::find()->where(['date_uploaded'=>$start])->all();
 $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$start])->one();
 
 $pur_metal = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Metal'])->asArray()->all();
+//$pur_metal = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Metal'])->andFilterWhere(['between','date',$searchModel->start,$searchModel->end])->asArray()->all();
+
 $pur_nickel = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Nickel'])->asArray()->all();
-$pur_nickel_sum = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Nickel'])->sum('price');
+$pur_nickel_a = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Nickel'])
+        ->andFilterWhere(['<=','date',$start_search])
+        ->andFilterwhere(['>=','expiry_date',$start_end])
+        ->asArray()
+        ->all();
+/*
+$query->andFilterwhere(['<=','date',$this->start])
+      ->andFilterwhere(['>=','expiry_date',$this->end])
+*/
 
-$metals = Withdraw::find()->where(['between','date',$start,$end])->andFilterWhere(['investor'=>$model->investor,'product_type'=>2])->asArray()->all();
-$nickels = Withdraw::find()->where(['between','date',$start,$end])->andFilterWhere(['investor'=>$model->investor,'product_type'=>3])->asArray()->all();
+$pur_nickel_sum = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Nickel'])
+    ->andFilterWhere(['<=','date',$start_search])
+    ->andFilterwhere(['>=','expiry_date',$start_end])
+    ->sum('price');
 
-$stocks = Stocks::find()->where(['between','date',$start,$end])->asArray()->limit(3)->all();
+$metals = Withdraw::find()->where(['between','date',$start_search,$start_end])->andFilterWhere(['investor'=>$model->investor,'product_type'=>2])->asArray()->all();
+$nickels = Withdraw::find()->where(['between','date',$start_search,$start_end ])->andFilterWhere(['investor'=>$model->investor,'product_type'=>3])->asArray()->all();
+
+//$stocks = Stocks::find()->where(['between','date',$start_search,$start_end])->asArray()->limit(3)->all();
+$stocks = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Stocks'])->asArray()->limit(3)->all();
+//$pur_nickel = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'=>'Nickel'])->asArray()->all();
+
 $inv = Investor::find()->where(['id'=>$model->investor])->one();
-
 
 $dates = PurchaseEarning::find()->select(['re_date'])->where(['investor'=>$model->investor])->distinct()->asArray()->all();
 
@@ -64,6 +95,9 @@ $withdraw_nickel = 0;
 $custom_metal_sum = 0;
 $company_metal_sum = 0;
 
+$fmt = 0;
+$fmt_diff = 0;
+$pmt = 0;
  ?>
 <style>
     table{
@@ -141,6 +175,9 @@ $company_metal_sum = 0;
     text-align: justified;
   }
 
+  .rights{
+    text-align: right;
+  }
 
 </style>
 
@@ -154,7 +191,7 @@ $company_metal_sum = 0;
   <img src="<?php echo $front ?>" alt="Front" class="front-page">
   <div class="cover-description">
     <h1><strong>Investor Report</strong></h1>
-    <h3>As of <?php echo $end ?></h3>
+    <h3>As of <?php echo date('d M Y' ,strtotime($start_end) ) ?></h3>
     <h3>Prepared by Envy Asset Management Pte Ltd</h3>
   </div>
 </div>
@@ -165,7 +202,7 @@ $company_metal_sum = 0;
 
 
 <div class="test">
-  
+
 </div>
 
 
@@ -203,7 +240,7 @@ $company_metal_sum = 0;
         <b>Future Metal Trading</b>
       </td>
       <td></td>
-      <td>
+      <td class="rights">
         <b>0.00</b>
       </td>
     </tr>
@@ -213,7 +250,7 @@ $company_metal_sum = 0;
         <b>Securities</b>
       </td>
       <td></td>
-      <td>
+      <td class="rights">
         <b>0.00</b>
       </td>
     </tr>
@@ -223,7 +260,7 @@ $company_metal_sum = 0;
         <b>Physical Metal Trading</b>
       </td>
       <td></td>
-      <td>
+      <td class="rights">
         <b>0.00</b>
       </td>
     </tr>
@@ -232,9 +269,9 @@ $company_metal_sum = 0;
 
       <tr>
         <td></td>
-        <td><?php echo date('M Y', strtotime($model->date) ). ' Nickel Contract' ?></td>
+        <td><?php echo date('M Y', strtotime($start_search) ). ' Nickel Contract' ?></td>
         <td></td>
-        <td><?php echo number_format($model->price,2) ?></td>
+        <td class="rights"><?php echo number_format($model->price,2) ?></td>
       </tr>
 
 
@@ -255,8 +292,8 @@ $company_metal_sum = 0;
     <tr>
       <td class="th-daily" style="width:20%"></td>
       <td class="th-daily" style="width:40%">Transactions during the month</td>
-      <td class="th-daily" style="width:20%">Debit</td>
-      <td class="th-daily" style="width:20%">Credit </td>
+      <td class="th-daily rights"  style="width:20%">Debit</td>
+      <td class="th-daily rights"  style="width:20%">Credit </td>
     </tr>
 
 
@@ -271,22 +308,23 @@ $company_metal_sum = 0;
 
       <!--lopp for Purchase metal module-->
     <?php foreach ($pur_metal as $key => $value): ?>
-      <?php $earning = PurchaseEarning::find()->where(['purchase_id'=>$value['id'] ])->all() ?>
+      <?php $earning = PurchaseEarning::find()->where(['purchase_id'=>$value['id'],'re_date'=>$start_search ])->all() ?>
         <?php foreach ($earning as $k => $v): ?>
           <tr>
-            <td><?php echo date('M Y',strtotime($v['re_date']) ) ?></td>
+            <td><?php echo date('d M Y',strtotime($v['re_date']) ) ?></td>
             <td>Realised profits from Futures Metal Trading </td>
             <?php $nums = number_format($v['customer_earn'],2); ?>
             <td></td>
-            <td><?php echo $nums ?></td>
+            <td class="rights"><?php echo $nums ?></td>
             <?php $custom_metal_sum = $custom_metal_sum+$v['customer_earn']; ?>
           </tr>
           <tr>
-            <td><?php echo date('M Y',strtotime($v['re_date']) ) ?></td>
+            <td><?php echo date('d M Y',strtotime($v['re_date']) ) ?></td>
             <td>Commission charged </td>
-            <td><?php echo '('.number_format($v['company_earn'],2).')'; ?></td>
+            <td class="rights"><?php echo '('.number_format($v['company_earn'],2).')'; ?></td>
             <td></td>
             <?php $company_metal_sum = $company_metal_sum+$v['company_earn']; ?>
+            <?php $fmt =  $custom_metal_sum - $company_metal_sum?>
           </tr>
         <?php endforeach; ?>
     <?php endforeach; ?>
@@ -295,8 +333,8 @@ $company_metal_sum = 0;
     <tr>
       <td></td>
       <td>Realised Profits</td>
-      <td></td>
-      <td style="border-top:1px solid black;border-bottom:1px solid black;"><?php echo number_format($company_metal_sum,2) ?></td>
+      <td> </td>
+      <td class="rights" style="border-top:1px solid black;border-bottom:1px solid black;"><strong> <?php echo number_format($fmt,2) ?></strong></td>
     </tr>
     <!--End Footer of Purchase metal---->
       <!--edr-->
@@ -317,9 +355,9 @@ $company_metal_sum = 0;
 
     <?php foreach ($metals as $key => $value): ?>
       <tr>
-        <td><?php echo date('M Y', strtotime($value['date'])) ?></td>
-        <td><?php echo $value['description'] ?>l</td>
-        <td>
+        <td><?php echo date('d M Y', strtotime($value['date'])) ?></td>
+        <td><?php echo $value['description'] ?> </td>
+        <td class="rights">
           <?php $nums = number_format($value['price'],2);
             echo '('.$nums.')';
           ?>
@@ -331,14 +369,21 @@ $company_metal_sum = 0;
       </tr>
     <?php endforeach; ?>
 
-    <!----//metal footer commented out due to on being credit side?
+    <!---//metal footer commented out due to on being credit side?--->
     <tr>
       <td></td>
-      <td>metal profits</td>
       <td></td>
-      <td style="border-top:1px solid black;border-bottom:1px solid black;"><?php echo number_format($withdraw_metal,2) ?></td>
+      <td></td>
+      <td class="rights" style="border-top:1px solid black;border-bottom:1px solid black;">
+        <strong>
+          <?php
+            $fmt_diff = $fmt-$withdraw_metal;
+            echo number_format($fmt_diff,2)
+          ?>
+        </strong>
+      </td>
     </tr>
-    --->
+
     <!--Withdraw metal end--->
 
     <tr>
@@ -349,7 +394,7 @@ $company_metal_sum = 0;
     </tr>
 
     <?php $custom_metal_sum = 0;
-          $company_metal_sum = 0;
+        $company_metal_sum = 0;
     ?>
 
     <tr>
@@ -363,22 +408,23 @@ $company_metal_sum = 0;
 
     <!--lopp for Purchase nickel module-->
     <?php foreach ($pur_nickel as $key => $value): ?>
-      <?php $n_earn = PurchaseEarning::find()->where(['purchase_id'=>$value['id'] ])->asArray()->all() ?>
+      <?php $n_earn = PurchaseEarning::find()->where(['purchase_id'=>$value['id'],'re_date'=>$start_search ])->asArray()->all() ?>
       <?php foreach ($n_earn as $k => $v): ?>
         <tr>
-          <td><?php echo date('M Y',strtotime($v['re_date']) ) ?></td>
+          <td><?php echo date('d M Y',strtotime($v['re_date']) ) ?></td>
           <td>Realised profits from Futures Nickel Deal </td>
           <?php $nums = number_format($v['customer_earn'],2); ?>
           <td></td>
-          <td><?php echo "($nums)" ?></td>
+          <td class="rights"><?php echo "($nums)" ?></td>
           <?php $custom_metal_sum = $custom_metal_sum+$v['customer_earn']; ?>
         </tr>
         <tr>
-          <td><?php echo date('M Y',strtotime($v['re_date']) ) ?></td>
+          <td><?php echo date('d M Y',strtotime($v['re_date']) ) ?></td>
           <td>Commission charged </td>
-          <td><?php echo number_format($v['company_earn'],2); ?></td>
+          <td class="rights"><?php echo number_format($v['company_earn'],2); ?></td>
           <td></td>
           <?php $company_metal_sum = $company_metal_sum+$v['company_earn']; ?>
+          <?php $pmt = $custom_metal_sum -  $company_metal_sum?>
         </tr>
       <?php endforeach; ?>
     <?php endforeach; ?>
@@ -388,7 +434,7 @@ $company_metal_sum = 0;
       <td></td>
       <td>Realised Profits</td>
       <td></td>
-      <td style="border-top:1px solid black;border-bottom:1px solid black;"><?php echo number_format($company_metal_sum,2) ?></td>
+      <td class="rights" style="border-top:1px solid black;border-bottom:1px solid black;"><strong> <?php echo number_format($pmt,2) ?></strong></td>
     </tr>
     <!--End Footer of Purchase metal---->
 
@@ -402,28 +448,28 @@ $company_metal_sum = 0;
 
     <?php foreach ($nickels as $key => $value): ?>
       <tr>
-        <td><?php echo date('M Y', strtotime($value['date'])) ?></td>
+        <td><?php echo date('d M Y', strtotime($value['date'])) ?></td>
         <td><?php echo $value['description'] ?>l</td>
-        <td>
+        <td class="rights">
           <?php $nums = number_format($value['price'],2);
             echo '('.$nums.')';
           ?>
           <?php
-            $withdraw_metal +=$value['price']
+            $withdraw_nickel +=$value['price']
           ?>
         </td>
         <td></td>
       </tr>
     <?php endforeach; ?>
 
-    <!----//metal footer commented out due to on being credit side?
+    <!----//metal footer commented out due to on being credit side?--->
     <tr>
       <td></td>
-      <td>metal profits</td>
       <td></td>
-      <td style="border-top:1px solid black;border-bottom:1px solid black;"><?php echo number_format($withdraw_metal,2) ?></td>
+      <td></td>
+      <td class="rights" style="border-top:1px solid black;border-bottom:1px solid black;"><strong><?php echo number_format($withdraw_nickel,2) ?></strong> </td>
     </tr>
-    --->
+
     <!--Withdraw metal end--->
 
 
@@ -449,25 +495,25 @@ $company_metal_sum = 0;
       <td></td>
     </tr>
     <tr>
-      <td style="border-bottom:1px solid black;"></td>
+      <td style="border-bottom:1px solid black;"></td><!--here-->
       <td style="border-bottom:1px solid black;"><strong>Physical Metal Trading</strong> </td>
       <td style="border-bottom:1px solid black;"></td>
-      <td style="border-bottom:1px solid black;"><strong><?php echo number_format($pur_nickel_sum,2)  ?></strong> </td><!---ssss--->
+      <td class="rights" style="border-bottom:1px solid black;"><strong><?php echo number_format($pur_nickel_sum,2)  ?></strong> </td><!---ssss--->
       <td style="border-bottom:1px solid black;"></td>
     </tr>
     <tbody>
-
-        <?php foreach ($pur_nickel as $key => $value): ?>
+      <!---edr loc--->
+        <?php foreach ($pur_nickel_a as $key => $value): ?>
           <tr>
             <td></td>
             <td>
               <?php
                 $date = new \DateTime($value['date']);
-                echo $date->format('M Y').' Nickel Contract';
+                echo $date->format('d M Y').' Nickel Contract';
                ?>
             </td>
-            <td></td>
-            <td><?php echo number_format($value['price'],2) ?></td>
+            <td> <?php echo $value['date'] ?></td>
+            <td class="rights"><?php echo number_format($value['price'],2) ?></td>
             <td></td>
           </tr>
 
@@ -486,15 +532,15 @@ $company_metal_sum = 0;
       </tr>
     </thead>
       <tbody>
-          <?php foreach ($pur_nickel as $key => $value): ?>
+          <?php foreach ($pur_nickel_a as $key => $value): ?>
             <tr>
               <td>
                 <?php
                   $date = new \DateTime($value['date']);
-                  echo $date->format('M Y').' Nickel Contract';
+                  echo $date->format('d M Y').' Nickel Contract';
                  ?>
               </td>
-              <td><?php echo number_format($value['price'],2) ?></td>
+              <td class="rights"><?php echo number_format($value['price'],2) ?></td>
               <td>
                 <?php
                   $date = new \DateTime($value['date']);
@@ -573,9 +619,9 @@ $company_metal_sum = 0;
   <table border=1 class="table-metal-sum">
     <tr>
       <td colspan = "4" class="td-metal-sum">Realised Gain/(Loss)</td>
-      <td colspan = "2" class="td-metal-sum"><?php echo Retrieve::retrieveFormat($unrealisedgain->re_usd)?></td>
+      <td colspan = "2" class="td-metal-sum rights"><?php echo Retrieve::retrieveFormat($unrealisedgain->re_usd)?></td>
       <td colspan = "2" class="td-metal-sum">USD</td>
-      <td colspan = "2" class="td-metal-sum"><?php echo Retrieve::retrieveFormat($unrealisedgain->re_usd) ?></td>
+      <td colspan = "2" class="td-metal-sum rights"><?php echo Retrieve::retrieveFormat($unrealisedgain->re_usd) ?></td>
       <td colspan = "2" class="td-metal-sum">SGD</td>
     </tr>
     <tr>
@@ -590,9 +636,9 @@ $company_metal_sum = 0;
     </tr>
     <tr>
       <td colspan = "4" class="td-metal-sum">Unrealised Gain/(Loss)</td>
-      <td colspan = "2" class="td-metal-sum"><?php echo Retrieve::retrieveFormat($unrealisedgain->usd) ?></td>
+      <td colspan = "2" class="td-metal-sum rights"><?php echo Retrieve::retrieveFormat($unrealisedgain->usd) ?></td>
       <td colspan = "2" class="td-metal-sum">USD</td>
-      <td colspan = "2" class="td-metal-sum"><?php echo Retrieve::retrieveFormat($unrealisedgain->sgd) ?></td>
+      <td colspan = "2" class="td-metal-sum rights"><?php echo Retrieve::retrieveFormat($unrealisedgain->sgd) ?></td>
       <td colspan = "2" class="td-metal-sum">SGD</td>
     </tr>
     <tr>
@@ -620,248 +666,399 @@ $company_metal_sum = 0;
       <thead>
         <tr>
           <th  style="width:20%" class="th-daily-blue"><?php echo $inv->company_name ?></th>
-          <?php foreach ($stocks as $k => $s): ?>
-            <th class="th-daily"><?php echo $s['stock'] ?></th>
-          <?php endforeach; ?>
+          <?php if (!empty($stocks)): ?>
+            <?php foreach ($stocks as $k => $s): ?>
+              <th class="th-daily">
+                <?php
+                  $data = ProductManagement::findOne($s['product']);
+                  echo $data->product_name;
+                ?>
+              </th>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <th class="th-daily"> <h4>-</h4></th>
+          <?php endif; ?>
         </tr>
       </thead>
       <tbody>
-
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Ticker</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php //echo $s['stock'] echo ''?>
+                  <?php echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Exchange</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php //echo $s['stock'] echo ''?>
+                  <?php echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Currency</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php
+                    $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
+                    $forex = Forex::findOne($data->forex);
+                    echo $forex->currency_code.' '.number_format($data->buy_in_rate,2) ;
+                   ?>
+                  <?php $s['forex'].$s['buy_in_price'] ?>
+                  <?php //echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
 
         <!--empty space-->
         <tr>
           <td style="width:20%;padding:10px;" class="th-daily-blue"></td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-            </td>
-          <?php endforeach; ?>
+          <?php if (!empty($stocks)): ?>
+            <?php foreach ($stocks as $k => $s): ?>
+              <td style="text-align:center">
+                <?php //echo $s['stock'] echo ''?>
+                <?php echo '-' ?>
+              </td>
+            <?php endforeach; ?>
+          <?php else: ?>
+              <td style="text-align:center"></td>
+          <?php endif; ?>
         </tr>
         <!--empty space-->
 
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Initial Existing Shareholdings</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+
+                  <?php echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Purchase Date</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php
+                    $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
+                    echo date('d M Y', strtotime($data->date));
+                  ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Unit Purchase Price</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php
+                    $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
+                    echo number_format($data->buy_in_price,2);
+                  ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Units</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php
+                    $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
+                    echo number_format($data->buy_units,2);
+                  ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Total Purchase Price</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php
+                    $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
+                    $total = $data->buy_units*$data->buy_in_price;
+                    echo number_format($total,2);
+                  ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
 
         <!--empty space-->
         <tr>
           <td style="width:20%;padding:10px;" class="th-daily-blue"></td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php //echo $s['stock'] echo ''?>
+                  <?php echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"></td>
+            <?php endif; ?>
         </tr>
         <!--empty space-->
 
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Sale Date</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php
+                    $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
+                    echo date('d M Y',strtotime($data->sold_date) );
+                  ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Unit Price on Date of Sale</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php echo number_format($s['sold_price'],2) ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Units sold</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php //echo $s['stock'] echo ''?>
+                  <?php echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Shareholdings Sold</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php //echo $s['stock'] echo ''?>
+                  <?php echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
 
         <!--empty space-->
         <tr>
           <td style="width:20%;padding:10px;" class="th-daily-blue"></td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php //echo $s['stock'] echo ''?>
+                  <?php echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <td style="text-align:center"> <h4></h4></td>
+            <?php endif; ?>
         </tr>
         <!--empty space-->
 
+        <!--edrloc--->
         <tr>
-          <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Unit Price @ <?php echo $end ?></td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+          <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Unit Price @ <?php echo date('d M Y', strtotime($start_end) ) ?></td>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php
+                    $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
+
+                    $stockline = StocksLine::find()->where(['stocks_id'=>$data->id,'month'=>$start_end])->one();
+                    echo number_format($stockline->month_price,2);
+                  ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Units</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php //echo $s['stock'] echo ''?>
+                  <?php echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td style="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Current Existing Shareholdings</td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-              <?php echo '-' ?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php //echo $s['stock'] echo ''?>
+                  <?php echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+                <td tyle="text-align:center"> <h4>-</h4></td>
+            <?php endif; ?>
         </tr>
 
+        <!--Empty Space--->
         <tr>
           <td style="width:20%;padding:10px;" class="th-daily-blue"></td>
-          <?php foreach ($stocks as $k => $s): ?>
-            <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
-            </td>
-          <?php endforeach; ?>
+            <?php if (!empty($stocks)): ?>
+              <?php foreach ($stocks as $k => $s): ?>
+                <td style="text-align:center">
+                  <?php //echo $s['stock'] echo ''?>
+                  <?php echo '-' ?>
+                </td>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <td style="text-align:center"> </td>
+            <?php endif; ?>
         </tr>
+        <!--Empty Space--->
 
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Unrealised Gain/Loss</td>
-          <?php foreach ($stocks as $k => $s): ?>
+          <?php if (!empty($stocks)): ?>
+            <?php foreach ($stocks as $k => $s): ?>
+              <td style="text-align:center">
+                <?php //echo $s['stock'] echo ''?>
+                <?php echo 'USD xxx' ?>
+              </td>
+            <?php endforeach; ?>
+          <?php else: ?>
             <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
               <?php echo 'USD xxx' ?>
             </td>
-          <?php endforeach; ?>
+          <?php endif; ?>
         </tr>
+
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white"></td>
-          <?php foreach ($stocks as $k => $s): ?>
+          <?php if (!empty($stocks)): ?>
+            <?php foreach ($stocks as $k => $s): ?>
+              <td style="text-align:center">
+                <?php //echo $s['stock'] echo ''?>
+                <?php echo 'SGD xxx' ?>
+              </td>
+            <?php endforeach; ?>
+          <?php else: ?>
             <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
               <?php echo 'SGD xxx' ?>
             </td>
-          <?php endforeach; ?>
+          <?php endif; ?>
         </tr>
+
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white"></td>
-          <?php foreach ($stocks as $k => $s): ?>
+          <?php if (!empty($stocks)): ?>
+            <?php foreach ($stocks as $k => $s): ?>
+              <td style="text-align:center">
+                <?php //echo $s['stock'] echo ''?>
+                <?php echo '%' ?>
+              </td>
+            <?php endforeach; ?>
+          <?php else: ?>
             <td style="text-align:center">
-              <?php //echo $s['stock'] echo ''?>
               <?php echo '%' ?>
             </td>
-          <?php endforeach; ?>
+          <?php endif; ?>
         </tr>
 
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white">Realised Gain/Loss</td>
-          <?php foreach ($stocks as $k => $s): ?>
+          <?php if (!empty($stocks)): ?>
+            <?php foreach ($stocks as $k => $s): ?>
+              <td style="text-align:center">
+                <?php //echo $s['stock'] echo ''?>
+                <?php echo 'USD xxx' ?>
+              </td>
+            <?php endforeach; ?>
+          <?php else: ?>
             <td style="text-align:center">
               <?php //echo $s['stock'] echo ''?>
               <?php echo 'USD xxx' ?>
             </td>
-          <?php endforeach; ?>
+          <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white"></td>
-          <?php foreach ($stocks as $k => $s): ?>
+          <?php if (!empty($stocks)): ?>
+            <?php foreach ($stocks as $k => $s): ?>
+              <td style="text-align:center">
+                <?php //echo $s['stock'] echo ''?>
+                <?php echo 'SGD xxx' ?>
+              </td>
+            <?php endforeach; ?>
+          <?php else: ?>
             <td style="text-align:center">
               <?php //echo $s['stock'] echo ''?>
               <?php echo 'SGD xxx' ?>
             </td>
-          <?php endforeach; ?>
+          <?php endif; ?>
         </tr>
         <tr>
           <td style="width:20%; text-align:center" class="th-daily-blue" style="color:white"></td>
-          <?php foreach ($stocks as $k => $s): ?>
+          <?php if (!empty($stocks)): ?>
+            <?php foreach ($stocks as $k => $s): ?>
+              <td style="text-align:center">
+                <?php //echo $s['stock'] echo ''?>
+                <?php echo '%' ?>
+              </td>
+            <?php endforeach; ?>
+          <?php else: ?>
             <td style="text-align:center">
               <?php //echo $s['stock'] echo ''?>
               <?php echo '%' ?>
             </td>
-          <?php endforeach; ?>
+          <?php endif; ?>
         </tr>
 
       </tbody>
@@ -896,16 +1093,16 @@ $company_metal_sum = 0;
           ?>
         <tr>
           <td><?php echo date('M Y',strtotime($d['re_date'])) ?></td>
-          <td><?php echo '$'.number_format($inv_earn,2) ?></td>
-          <td>
+          <td class="rights"><?php echo '$'.number_format($inv_earn,2) ?></td>
+          <td class="rights">
             <?php
              $metal = $metal_per->re_metal_per *100;
              echo number_format($metal,2).'%';
             ?>
           </td>
-          <td><?php echo '$'.number_format($total,2) ?></td>
-          <td><?php echo '$'.number_format($comms,2) ?></td>
-          <td>
+          <td class="rights"><?php echo '$'.number_format($total,2) ?></td>
+          <td class="rights"><?php echo '$'.number_format($comms,2) ?></td>
+          <td class="rights">
             <?php
                  $tranche = 100*$metal_per->tranche;
                  echo number_format($tranche,2).'%';
