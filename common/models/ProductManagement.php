@@ -82,6 +82,10 @@ class ProductManagement extends \yii\db\ActiveRecord
         'invest_type'=>$ids,
         'product_cat'=>1,
       ])->execute();
+
+      $lastInsertID = $connection->getLastInsertID();
+      return $lastInsertID;
+
     }
 
     public function getCat(){
