@@ -2,7 +2,12 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\grid\GridView;
+use yii\widgets\Pjax;
 use common\components\Retrieve;
+use common\models\Investor;
+use common\models\Forex;
+
 /* @var $this yii\web\View */
 /* @var $model common\models\Stocks */
 
@@ -11,7 +16,6 @@ $this->params['breadcrumbs'][] = ['label' => 'Stocks', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="stocks-view">
-
 
 
     <p>
@@ -34,25 +38,17 @@ $this->params['breadcrumbs'][] = $this->title;
               'attribute'=>'date',
               'format' => ['date', 'php:d M Y'],
             ],
-            [
-              'attribute'=>'sold_date',
-              'format' => ['date', 'php:d M Y'],
-            ],
-            'sold_units',
+
             'buy_units',
-            [
-              'attribute'=>'price',
-              'value'=>function($model){
-                return '$'.Retrieve::retrieveFormat($model->price);
-              },
-            ],
 
             [
-              'attribute'=>'add_in',
+              'attribute'=>'forex',
               'value'=>function($model){
-                return '$'.$model->add_in.'.00';
-              },
+                $data = Forex::find()->where(['id'=>$model->forex])->one();
+                return $data->currency_code;
+              }
             ],
+
             [
               'attribute'=>'buy_in_price',
               'value'=>function($model){
@@ -60,34 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //    return '$'.$model->buy_in_price;
               },
             ],
-            [
-              'attribute'=>'sold_price',
-              'value'=>function($model){
-                $data = number_format($model->sold_price,2);
-                return '$'.$data;
-              },
-            ],
-            [
-              'attribute'=>'month_end_price',
-              'value'=>function($model){
-                  return '$'.Retrieve::retrieveFormat($model->month_end_price);
-              //  return '$'.$model->month_end_price;
-              },
-            ],
-            [
-              'attribute'=>'unrealized',
-              'value'=>function($model){
-                  return '$'.Retrieve::retrieveFormat($model->unrealized);
-            //    return '$'.$model->unrealized;
-              },
-            ],
-            [
-              'attribute'=>'add_in_rate',
-              'value'=>function($model){
-                  return '$'.Retrieve::retrieveFormat($model->add_in_rate);
-            //    return '$'.$model->unrealized;
-              },
-            ],
+
             [
               'attribute'=>'buy_in_rate',
               'value'=>function($model){
@@ -95,23 +64,131 @@ $this->params['breadcrumbs'][] = $this->title;
             //    return '$'.$model->unrealized;
               },
             ],
+
             [
-              'attribute'=>'sold_price-rate',
+              'attribute'=>'buy_in_local',
               'value'=>function($model){
-                  return '$'.Retrieve::retrieveFormat($model->sold_price_rate);
+                  return '$'.Retrieve::retrieveFormat($model->buy_in_local);
             //    return '$'.$model->unrealized;
               },
             ],
-            [
-              'attribute'=>'month_end_rate',
-              'value'=>function($model){
-                  return '$'.Retrieve::retrieveFormat($model->unrealized_rate);
-            //    return '$'.$model->unrealized;
-              },
-            ],
+
+
 
 
         ],
     ]) ?>
+
+    <hr>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Stock Details</h3>
+      </div>
+      <div class="panel-body">
+        <?php Pjax::begin(); ?>
+          <?= GridView::widget([
+                'dataProvider' => $modelLine,
+            //    'filterModel' => $searchModel,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+
+                    [
+                      'attribute'=>'month',
+                      'value'=>function($model){
+                        return Retrieve::retrieveDate_dmy($model->month);
+                      }
+                    ],
+
+                    [
+                      'attribute'=>'month_curr',
+                      'value'=>function($model){
+                        $data = Forex::find()->where(['id'=>$model->month_curr])->one();
+                        return $data->currency_code;
+                      }
+                    ],
+                  //  'month_price:decimal',
+                    [
+                      'attribute'=>'month_price',
+                      'format'=>['decimal',2],
+                    ],
+                    [
+                      'attribute'=>'month_rate',
+                      'format'=>['decimal',2],
+                    ],
+                    [
+                      'attribute'=>'unrealized_curr',
+                      'format'=>['decimal',2],
+                    ],
+                    [
+                      'attribute'=>'unrealized_local',
+                      'format'=>['decimal',2],
+                    ],
+
+                  //  'month_rate:decimal',
+                  //  'unrealized_curr:decimal',
+                  //  'unrealized_local:decimal',
+                ],
+            ]); ?>
+        <?php Pjax::end(); ?>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Purchase History</h3>
+      </div>
+      <div class="panel-body">
+        <?php Pjax::begin(); ?>
+          <?= GridView::widget([
+                'dataProvider' => $purchaseData,
+            //    'filterModel' => $searchModel,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+
+                    'purchase_no',
+                    [
+                      'attribute'=>'investor',
+                      'value'=>function($model){
+                        $data = Investor::findOne($model->investor);
+                        return $data->nric_comp;
+                      }
+                    ],
+                    [
+                      'attribute'=>'price',
+                      'format'=>['decimal',2],
+                    ],
+
+                    [
+                      'attribute'=>'sold_currency',
+                      'value'=>function($model){
+                        $data = Forex::find()->where(['id'=>$model->sold_currency])->one();
+                        if (!empty($data) ) {
+                          return $data->currency_code;
+                        }else{
+                          return null;
+                        }
+
+                      }
+                    ],
+
+                    [
+                      'attribute'=>'sold_price',
+                      'format'=>['decimal',2],
+                    ],
+                    [
+                      'attribute'=>'sold_price_rate',
+                      'format'=>['decimal',2],
+                    ],
+                    [
+                      'attribute'=>'customer_earn',
+                      'format'=>['decimal',2],
+                    ],
+
+                ],
+            ]); ?>
+        <?php Pjax::end(); ?>
+      </div>
+    </div>
 
 </div>

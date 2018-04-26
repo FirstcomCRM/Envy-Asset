@@ -40,22 +40,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     //'id',
                     'stock',
-                    [
-                      'attribute'=>'price',
-                      'headerOptions' => ['style'=>'text-align:right'],
-                      'contentOptions' => ['style' => 'text-align:right'],
-                      'value'=>function($model){
-                        return '$'.Retrieve::retrieveFormat($model->price);
-                      },
-                    ],
-                    [
-                      'attribute'=>'add_in',
-                      'headerOptions' => ['style'=>'text-align:right'],
-                      'contentOptions' => ['style' => 'text-align:right'],
-                      'value'=>function($model){
-                        return '$'.$model->add_in.'.00';
-                      },
-                    ],
+
+
                     [
                       'attribute'=>'buy_in_price',
                       'headerOptions' => ['style'=>'text-align:right'],

@@ -12,10 +12,11 @@ $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="stocks-update">
 
-  
+
 
     <?= $this->render('_form', [
         'model' => $model,
+        'modelLine'=> $modelLine,
     ]) ?>
 
 </div>

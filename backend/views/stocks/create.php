@@ -12,10 +12,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="stocks-create">
 
-  
+
 
     <?= $this->render('_form', [
         'model' => $model,
+        'modelLine'=> $modelLine,
     ]) ?>
 
 </div>
