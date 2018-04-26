@@ -23,7 +23,7 @@ class PurchaseSearch extends Purchase
     {
         return [
             [['id','salesperson','dummy_id'], 'integer'],
-            [['investor', 'product', 'share', 'date','start','end', 'remarks', 'purchase_no'], 'safe'],
+            [['investor', 'product', 'share', 'purchase_type','date','start','end', 'remarks', 'purchase_no'], 'safe'],
             [['price'], 'number'],
         ];
     }
@@ -68,6 +68,7 @@ class PurchaseSearch extends Purchase
             'price' => $this->price,
             'date' => $this->date,
             'salesperson'=>$this->salesperson,
+            'purchase_type'=>$this->purchase_type,
         ]);
 
         $query->andFilterWhere(['like', 'investor', $this->investor])
@@ -113,12 +114,13 @@ class PurchaseSearch extends Purchase
       }
 
     //  if (!empty($this->id) || !empty($this->salesperson) || !empty($this->date) ) {
-        $query->andFilterwhere(['>=','date',$this->start])
-              ->andFilterwhere(['<=','expiry_date',$this->end])
+        $query->andFilterwhere(['<=','date',$this->start])
+              ->andFilterwhere(['>=','expiry_date',$this->end])
               ->andFilterWhere(['salesperson'=>$this->salesperson])
               ->andFilterwhere(['id'=>$this->id])
               ->andFilterwhere(['id'=>$this->dummy_id])
               ->andFilterWhere(['purchase_no'=>$this->purchase_no]);
+
     //  }else{
       //  $query->andFilterwhere(['id'=>0]);
     //  }
