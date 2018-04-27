@@ -57,11 +57,11 @@ class Stocks extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['stock', 'date', 'buy_in_price'], 'required'],
-            [['date', 'date_created', 'date_edited', 'date_added','sold_date','buy_in_price', 'buy_in_rate','buy_in_local'], 'safe'],
+            [['stock', 'date', 'buy_in_price','buy_in_rate'], 'required'],
+            [['date', 'date_created', 'date_edited', 'date_added','buy_in_price', 'buy_in_rate','buy_in_local'], 'safe'],
           //  [[], 'number','numberPattern' => '/^\s*[-+]?[0-9\,]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/'],
-            [['added_by', 'edited_by','forex','product_id','sold_units'], 'integer'],
-            [['stock'], 'string', 'max' => 75],
+            [['added_by', 'edited_by','forex','product_id'], 'integer'],
+            [['stock','ticker','exchange'], 'string', 'max' => 75],
             [['buy_units'], 'string', 'max' => 50],
 
         ];
@@ -79,8 +79,8 @@ class Stocks extends \yii\db\ActiveRecord
             'buy_in_price' => 'Buy In Price',
             'buy_in_rate'=>'Buy in Price Rate',
             'buy_in_local'=>'Local(SGD)',
-            'sold_date'=>'Sold Date',
-            'sold_units'=>'Sold Units',
+            'ticker'=>'Ticker',
+            'exchange'=>'Exchange',
             'buy_units'=>'Buy Units',
             'date_created' => 'Date Created',
             'date_edited' => 'Date Edited',
@@ -93,17 +93,7 @@ class Stocks extends \yii\db\ActiveRecord
 
     public function beforeSave($insert) {
         if (parent::beforeSave($insert)) {
-          //  $this->final_sales_price = str_replace(",", "", $this->final_sales_price);
             $this->date = date('Y-m-d',strtotime($this->date));
-            $this->sold_date = date('Y-m-d',strtotime($this->sold_date));
-
-
-            /*
-            $model->date = date('Y-m-d', strtotime($model->date) );
-          //    print_r($model->sold_date);die();
-            $model->sold_date = date('Y-m-d', strtotime($model->sold_date) );
-            */
-
             return true;
         } else {
             return false;
