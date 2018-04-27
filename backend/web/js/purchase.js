@@ -1,8 +1,35 @@
 $(document).ready(function(){
+  //$("#stocks-test").hide();
+  //$("#nickels-test").hide();
+  var typep = '';
+  var typep = $('input[name="Purchase[purchase_type]"]:checked').val();
+  //console.log(typep);
+  if (typep == 'Metal') {
+    $("#stocks-test").hide();
+    $("#nickels-test").hide();
+  }else if(typep == 'Nickel'){
+    $("#stocks-test").hide();
+    $("#nickels-test").show();
+  }else{
+    $("#stocks-test").show();
+    $("#nickels-test").hide();
+  }
 
   //Purchase Module Area
   //$("input[name=someRadioGroup]").on('change', function()
   $('input[name="Purchase[purchase_type]"]').on('change', function() {
+    var ptype = $('input[name="Purchase[purchase_type]"]:checked').val();
+    //console.log(ptype);
+    if (ptype == 'Metal') {
+      $("#stocks-test").hide();
+      $("#nickels-test").hide();
+    }else if(ptype == 'Nickel'){
+      $("#stocks-test").hide();
+      $("#nickels-test").show();
+    }else{
+      $("#stocks-test").show();
+      $("#nickels-test").hide();
+    }
     pur_sum();
   });
 
@@ -22,6 +49,10 @@ $(document).ready(function(){
   });
 
   $('#charge_type').on('change',function(){
+    pur_sum();
+  });
+
+  $('#purchase-sold_price').on('change',function(){
     pur_sum();
   });
 
@@ -54,6 +85,7 @@ function datas(){
 //  console.log(purchase_date);
 //  console.log(expiry_date);
   if (price != '' && purchase_date != '' && expiry_date != '') {
+
     $.post("?r=purchase/ajax-sum",{
           price:price,
           purchase_date:purchase_date,
@@ -76,8 +108,9 @@ function datas(){
       //    $('.selected-item-list').append(data);
           // console.log(status);
       });
+
   }else{
-    console.log('error something');
+    //console.log('error something');
   }
 }
 
@@ -90,10 +123,15 @@ function pur_sum(){
   var purchase_type = $('input[name="Purchase[purchase_type]"]:checked').val();
   var charge_type = $('#charge_type').val();
   var company_charge = $('#company_charge').val();
+  var sold_price = $('#purchase-sold_price').val();
+  if (sold_price == '') {
+    sold_price = 0;
+  }
+  //purchase-sold_price
   //company_charge
-  console.log(price);
-  console.log(purchase_type);
-  console.log(charge_type);
+  console.log(sold_price);
+//  console.log(purchase_type);
+//  console.log(charge_type);
   if (price != '' && purchase_date != '' && expiry_date != '') {
     $.post("?r=purchase/ajax-sum",{
           price:price,
@@ -101,7 +139,8 @@ function pur_sum(){
           expiry_date:expiry_date,
           charge_type:charge_type,
           purchase_type:purchase_type,
-          company_charge:company_charge
+          company_charge:company_charge,
+          sold_price:sold_price,
 
       },
       function(data, status){
@@ -118,7 +157,7 @@ function pur_sum(){
           // console.log(status);
       });
   }else{
-    console.log('error something');
+  //  console.log('error something');
   }
 
 
