@@ -147,7 +147,6 @@ class StocksController extends Controller
         $modelLine = [new StocksLine];
         if ($model->load(Yii::$app->request->post()) ) {
 
-
             $modelLine = Model::createMultiple(StocksLine::classname());
             Model::loadMultiple($modelLine, Yii::$app->request->post());
 
@@ -159,7 +158,7 @@ class StocksController extends Controller
 
             if ($valid) {
                 $prods = new ProductManagement();
-                $product_id =   $prods->addProduct($model->stock,1);
+                $product_id =  $prods->addProduct($model->stock,1);
                 $model->product_id = $product_id;
               //  var_dump($product_id);die();
                 $transaction = \Yii::$app->db->beginTransaction();
@@ -210,7 +209,7 @@ class StocksController extends Controller
         $model = $this->findModel($id);
         $modelLine = StocksLine::find()->where(['stocks_id' => $id])->all();
         $model->date = date('d M Y', strtotime($model->date) );
-        $model->sold_date = date('d M Y', strtotime($model->sold_date) );
+      
         if ($model->load(Yii::$app->request->post())  ) {
 
             $oldIDs = ArrayHelper::map($modelLine, 'id', 'id');
