@@ -28,12 +28,9 @@ $forex =ArrayHelper::map($data,'id','currency_code');
       'options'=>['class'=>'form-control'],
       ]) ?>
 
+    <?= $form->field($model, 'ticker')->textInput(['maxlength' => true]) ?>
 
-    <?php echo $form->field($model,'sold_date')->widget(yii\jui\DatePicker::className(), [
-        'options'=>['class'=>'form-control'],
-    ]) ?>
-
-    <?= $form->field($model, 'sold_units')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'exchange')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'buy_units')->textInput(['maxlength' => true]) ?>
 
@@ -42,7 +39,6 @@ $forex =ArrayHelper::map($data,'id','currency_code');
         <?php echo $form->field($model,'forex')->dropDownList($forex); ?>
       </div>
       <div class="col-md-3">
-
         <?= $form->field($model, 'buy_in_price')->widget(\yii\widgets\MaskedInput::className(), [
         //  'options' => ['id' => 'another-id'],
           'clientOptions' => [
@@ -57,7 +53,6 @@ $forex =ArrayHelper::map($data,'id','currency_code');
         ]) ?>
       </div>
       <div class="col-md-3">
-
         <?= $form->field($model, 'buy_in_rate')->widget(\yii\widgets\MaskedInput::className(), [
         //  'options' => ['id' => 'another-id'],
           'clientOptions' => [
@@ -70,8 +65,6 @@ $forex =ArrayHelper::map($data,'id','currency_code');
             'removeMaskOnSubmit' => true,
           ],
         ]) ?>
-
-
       </div>
       <div class="col-md-3">
         <?php $form->field($model, 'buy_in_local')->textInput(['maxlength' => true, 'readOnly'=>true]) ?>
