@@ -33,6 +33,10 @@ $end = date('Y-m-t',strtotime($model->date));
 $start_search = date('Y-m-01',strtotime($searchModel->start) );
 $start_end = date('Y-m-t',strtotime($searchModel->end));
 
+$d = new \DateTime($start_search);
+$d->modify('-1month');
+$reduc_date_start = $d->format('Y-m-d');
+$reduc_date_end = $d->format('Y-m-t');
 //echo $searchModel->start;
 //$al = MetalAl::find()->where(['date_uploaded'=>$start])->all();
 //$cu = MetalCu::find()->where(['date_uploaded'=>$start])->all();
@@ -87,6 +91,8 @@ $stocks = Purchase::find()->where(['investor'=>$model->investor, 'purchase_type'
 $inv = Investor::find()->where(['id'=>$model->investor])->one();
 
 $dates = PurchaseEarning::find()->select(['re_date'])->where(['investor'=>$model->investor])->distinct()->asArray()->all();
+//$fmt_trade = PurchaseEarning::find()->where(['investor'=>$model->investor, 're_date'=>$reduc_date_start])->asArray()->all();
+$fmt_trade_sum = PurchaseEarning::find()->where(['investor'=>$model->investor, 're_date'=>$reduc_date_start])->sum('customer_earn_after');
 
 
 $withdraw_metal = 0;
@@ -98,6 +104,15 @@ $company_metal_sum = 0;
 $fmt = 0;
 $fmt_diff = 0;
 $pmt = 0;
+$bb = [];
+
+//Under Beginning balance execute looping for future meta trading(metal), securities and Phyiscal Metal Trading(nickel)
+/*foreach ($fmt_trade as $k => $v) {
+  $bb[] = $v['customer_earn_after'];
+}*/
+
+
+
  ?>
 <style>
     table{
@@ -202,7 +217,9 @@ $pmt = 0;
 
 
 <div class="test">
-
+  <pre>
+    <?php print_r($fmt_trade)  ?>
+  </pre>
 </div>
 
 
@@ -227,12 +244,19 @@ $pmt = 0;
 
 <div class="breakdown">
   <h4>Appendix I - Breakdown</h4>
+
   <table border="0" class="table-breakdown">
     <tr>
+      <td  style="width:20%"></td>
+      <td  style="width:40%"></td>
+      <td  style="width:20%"></td>
+      <td class="rights" style="width:20%"><strong>SGD</strong> </td>
+    </tr>
+    <tr>
       <td class="th-daily" style="width:20%">Date</td>
-      <td class="th-daily" style="width:40%">Beginning Balance</td>
+      <td class="th-daily" style="width:40%">Beginning Balance as at <?php echo $d->format('t M Y'); ?></td>
       <td class="th-daily" style="width:20%"></td>
-      <td class="th-daily" style="width:20%"> </td>
+      <td class="th-daily rights" style="width:20%"><?php echo number_format( ($fmt_trade_sum+$model->price),2) ?> </td>
     </tr>
     <tr>
       <td></td>
@@ -241,7 +265,7 @@ $pmt = 0;
       </td>
       <td></td>
       <td class="rights">
-        <b>0.00</b>
+        <b><?php echo number_format($fmt_trade_sum)  ?></b>
       </td>
     </tr>
     <tr>
@@ -687,7 +711,10 @@ $pmt = 0;
               <?php foreach ($stocks as $k => $s): ?>
                 <td style="text-align:center">
                   <?php //echo $s['stock'] echo ''?>
-                  <?php echo '-' ?>
+                  <?php
+                    $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
+                    echo $data->ticker;
+                  ?>
                 </td>
               <?php endforeach; ?>
             <?php else: ?>
@@ -699,8 +726,10 @@ $pmt = 0;
             <?php if (!empty($stocks)): ?>
               <?php foreach ($stocks as $k => $s): ?>
                 <td style="text-align:center">
-                  <?php //echo $s['stock'] echo ''?>
-                  <?php echo '-' ?>
+                  <?php
+                    $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
+                    echo $data->exchange;
+                  ?>
                 </td>
               <?php endforeach; ?>
             <?php else: ?>
@@ -762,7 +791,12 @@ $pmt = 0;
                 <td style="text-align:center">
                   <?php
                     $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
-                    echo date('d M Y', strtotime($data->date));
+                    if (empty($data->date)) {
+                      echo '-';
+                    }else{
+                        echo date('d M Y', strtotime($data->date));
+                    }
+
                   ?>
                 </td>
               <?php endforeach; ?>
@@ -839,8 +873,13 @@ $pmt = 0;
               <?php foreach ($stocks as $k => $s): ?>
                 <td style="text-align:center">
                   <?php
-                    $data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
-                    echo date('d M Y',strtotime($data->sold_date) );
+                    //$data = Stocks::find()->where(['product_id'=>$s['product'] ])->one();
+                  //  if (empty($data->sold_date)) {
+                  ////    echo '-';
+                  //  }else{
+                  //    echo date('d M Y',strtotime($data->sold_date) );
+
+                  //  }
                   ?>
                 </td>
               <?php endforeach; ?>
