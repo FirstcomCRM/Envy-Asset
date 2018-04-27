@@ -72,10 +72,8 @@ $this->params['breadcrumbs'][] = $this->title;
             //    return '$'.$model->unrealized;
               },
             ],
-
-
-
-
+            'ticker',
+            'exchange',
         ],
     ]) ?>
 
