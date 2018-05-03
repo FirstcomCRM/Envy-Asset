@@ -6,6 +6,8 @@ use Yii;
 use common\models\InvestStock;
 use common\models\InvestMetal;
 use yii\db\Command;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 /**
  * This is the model class for table "product_management".
  *
@@ -25,9 +27,23 @@ class ProductManagement extends \yii\db\ActiveRecord
      */
      public function behaviors()
  	   {
-   		return [
+   		/*return [
    			'sammaye\audittrail\LoggableBehavior'
-   		];
+   		];*/
+      return [
+          [
+              'class' => BlameableBehavior::className(),
+              'createdByAttribute' => 'created_by',
+              'updatedByAttribute' => 'edited_by',
+          ],
+          [
+            'class' => TimestampBehavior::className(),
+            'createdAtAttribute' => 'date_created',
+            'updatedAtAttribute' => 'date_edited',
+          //  'value' => new Expression('NOW()'),
+              'value' => date('Y-m-d H:i:s'),
+          ],
+      ];
  	   }
 
     public static function tableName()
@@ -46,8 +62,8 @@ class ProductManagement extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['product_price', 'product_cost'], 'number'],
             [['product_name', 'product_code', 'product_type', 'product_cat'], 'string', 'max' => 100],
-            [['date_adedd'],'safe'],
-            [['invest_type'],'integer'],
+            [['date_created','date_edited'],'safe'],
+            [['invest_type','created_by','edited_by'],'integer'],
         ];
     }
 
