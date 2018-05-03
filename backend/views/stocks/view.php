@@ -39,7 +39,21 @@ $this->params['breadcrumbs'][] = $this->title;
               'format' => ['date', 'php:d M Y'],
             ],
 
-            'buy_units',
+
+            [
+              'attribute'=>'buy_units',
+              'value'=>function($model){
+                  return Retrieve::retrieveFormat($model->buy_units);
+            //    return '$'.$model->buy_in_price;
+              },
+            ],
+            [
+              'attribute'=>'balance_unit',
+              'value'=>function($model){
+                  return Retrieve::retrieveFormat($model->balance_unit);
+            //    return '$'.$model->buy_in_price;
+              },
+            ],
 
             [
               'attribute'=>'forex',
@@ -188,5 +202,58 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php Pjax::end(); ?>
       </div>
     </div>
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Company Sold</h3>
+      </div>
+      <div class="panel-body">
+        <?php Pjax::begin(); ?>
+          <?= GridView::widget([
+                'dataProvider' => $modelLinea,
+            //    'filterModel' => $searchModel,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+
+                    'sold_date',
+                    [
+                      'attribute'=>'sold_currency',
+                      'value'=>function($model){
+                        $data = Forex::find()->where(['id'=>$model->sold_currency])->one();
+                        if (!empty($data) ) {
+                          return $data->currency_code;
+                        }else{
+                          return null;
+                        }
+
+                      }
+                    ],
+                    [
+                      'attribute'=>'currency_rate',
+                      'format'=>['decimal',4],
+                    ],
+                    [
+                      'attribute'=>'sold_price',
+                      'format'=>['decimal',2],
+                    ],
+                    [
+                      'attribute'=>'sold_units',
+                      'format'=>['decimal',2],
+                    ],
+                    [
+                      'attribute'=>'balance',
+                      'format'=>['decimal',2],
+                    ],
+
+
+                ],
+            ]); ?>
+        <?php Pjax::end(); ?>
+      </div>
+    </div>
+
+
+
 
 </div>
