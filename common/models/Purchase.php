@@ -35,7 +35,7 @@ class Purchase extends \yii\db\ActiveRecord
     {
         return [
             [['investor', 'product', 'price', 'date','trading_days','prorated_days','company_charge'], 'required'],
-            [['price','sum_all','company_charge','staff_earn','company_earn','customer_earn','sold_price','sold_price_rate'], 'number'],
+            [['sum_all','company_charge'], 'number'],
             [['date'], 'safe'],
             [['trading_days','prorated_days','sold_currency'],'integer'],
             [['remarks','purchase_no'], 'string'],
@@ -43,7 +43,7 @@ class Purchase extends \yii\db\ActiveRecord
       //      [['salesperson'], 'integer'],
             [['investor', 'product', 'share'], 'string', 'max' => 75],
             [['purchase_type','charge_type'], 'string', 'max' => 50],
-            [['date_adedd','expiry_date','salesperson','nickel_date','nickel_expiry'],'safe'],
+            [['date_adedd','expiry_date','salesperson','nickel_date','nickel_expiry','price','customer_earn','company_earn','staff_earn','sold_price','sold_price_rate','ptotal_sold_unit'],'safe'],
         ];
     }
 
@@ -75,6 +75,7 @@ class Purchase extends \yii\db\ActiveRecord
             'customer_earn'=>'Investor Return',
             'company_earn'=>'Company Commission',
             'staff_earn'=>'Staff Commission',
+            'ptotal_sold_unit'=>'Total Sold Units',
         ];
     }
 
