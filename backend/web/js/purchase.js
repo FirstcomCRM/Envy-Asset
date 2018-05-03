@@ -1,6 +1,5 @@
 $(document).ready(function(){
-  //$("#stocks-test").hide();
-  //$("#nickels-test").hide();
+
   var typep = '';
   var typep = $('input[name="Purchase[purchase_type]"]:checked').val();
   //console.log(typep);
@@ -10,8 +9,11 @@ $(document).ready(function(){
   }else if(typep == 'Nickel'){
     $("#stocks-test").hide();
     $("#nickels-test").show();
-  }else{
+  }else if(typep == 'Stocks'){
     $("#stocks-test").show();
+    $("#nickels-test").hide();
+  }else{
+    $("#stocks-test").hide();
     $("#nickels-test").hide();
   }
 
@@ -26,10 +28,27 @@ $(document).ready(function(){
     }else if(ptype == 'Nickel'){
       $("#stocks-test").hide();
       $("#nickels-test").show();
-    }else{
+    }else if(ptype == 'Stocks'){
       $("#stocks-test").show();
       $("#nickels-test").hide();
     }
+
+    if (ptype) {
+      console.log('ajax-product')
+      $.post("?r=purchase/ajax-product",{
+            ptype:ptype,
+        },
+        function(data, status){
+
+            $("#products").empty();
+            $.each(data,function(key,value){
+                $("#products").append('<option value="'+key+'">'+value+'</option>');
+           });
+
+        },'json' );
+
+    }
+
     pur_sum();
   });
 
@@ -127,6 +146,7 @@ function pur_sum(){
   if (sold_price == '') {
     sold_price = 0;
   }
+  price = price.replace(",", "");
   //purchase-sold_price
   //company_charge
   console.log(sold_price);
@@ -178,4 +198,28 @@ function nickelDate(){
       //    'purchase-nickel_expiry',
       });
   }
+}
+
+function pursolds(item){
+  var mtotal = 0;
+  
+  index  = item.attr("id").replace(/[^0-9.]/g, "");
+  //purchaseline-0-psold_price"
+  var ids_price = "purchaseline-"+index+"-psold_price";
+  var ids_unit = "purchaseline-"+index+"-psold_units";
+  var ids_balance = "purchaseline-"+index+"-pbalance";
+
+  var sold_price = $('#'+ids_price).val();
+  var sold_units = $('#'+ids_unit).val();
+
+  sold_price = sold_price.replace(",", "");
+  sold_units = sold_units.replace(",", "");
+
+  if (sold_price != '' && sold_units != '') {
+    mtotal = sold_price*sold_units;
+    $('#'+ids_balance).val(mtotal);
+  }
+  //item_a
+
+
 }
