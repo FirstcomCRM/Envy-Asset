@@ -33,9 +33,9 @@ class StocksLinea extends \yii\db\ActiveRecord
     {
         return [
           //  [['stocks_id', 'sold_date', 'sold_currency', 'currency_rate', 'sold_price', 'sold_units', 'balance'], 'required'],
-            [['stocks_id', 'sold_currency', 'sold_units'], 'integer'],
-            [['sold_date'], 'safe'],
-            [['currency_rate', 'sold_price', 'balance'], 'number'],
+            [['stocks_id', 'sold_currency'], 'integer'],
+            [['sold_date','currency_rate','sold_units','sold_price','balance'], 'safe'],
+
         ];
     }
 
