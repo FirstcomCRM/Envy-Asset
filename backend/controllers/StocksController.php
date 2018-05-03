@@ -11,6 +11,8 @@ use common\models\User;
 use common\models\ProductManagement;
 use common\models\StocksLine;
 use common\models\StocksLineSearch;
+use common\models\StocksLinea;
+use common\models\StocksLineaSearch;
 use common\models\PurchaseSearch;
 use common\models\Model;
 use yii\web\Controller;
@@ -124,6 +126,10 @@ class StocksController extends Controller
         $searchLine->stocks_id = $id;
         $modelLine = $searchLine->search(Yii::$app->request->queryParams);
 
+        $searchLinea = new StocksLineaSearch();
+        $searchLinea->stocks_id = $id;
+        $modelLinea = $searchLinea->search(Yii::$app->request->queryParams);
+
         $purchase = new PurchaseSearch();
         $purchase->product =$model->product_id;
         $purchase->purchase_type = 'Stocks';
@@ -132,6 +138,7 @@ class StocksController extends Controller
         return $this->render('view', [
             'model' => $model,
             'modelLine'=>$modelLine,
+            'modelLinea'=>$modelLinea,
             'purchaseData'=>$purchaseData,
         ]);
     }
@@ -145,17 +152,18 @@ class StocksController extends Controller
     {
         $model = new Stocks();
         $modelLine = [new StocksLine];
+        $modelLinea = [new StocksLinea];
         if ($model->load(Yii::$app->request->post()) ) {
 
             $modelLine = Model::createMultiple(StocksLine::classname());
             Model::loadMultiple($modelLine, Yii::$app->request->post());
+            $modelLinea = Model::createMultiple(StocksLinea::classname());
+            Model::loadMultiple($modelLinea, Yii::$app->request->post());
 
             $valid = $model->validate();
-
-            $valid = Model::validateMultiple($modelLine) && $valid;
-            //echo '<pre>';
-              //var_dump($valid);die();
-
+            $valid = Model::validateMultiple($modelLine)&&  Model::validateMultiple($modelLinea) && $valid;
+        //    echo '<pre>';
+          //    var_dump($valid);die();
             if ($valid) {
                 $prods = new ProductManagement();
                 $product_id =  $prods->addProduct($model->stock,1);
@@ -173,6 +181,15 @@ class StocksController extends Controller
                                 break;
                             }
                         }
+                        foreach ($modelLinea as $linea)
+                        {
+                            $linea->stocks_id = $model->id;
+                            if (! ($flag = $linea->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+
                     }
                     if ($flag) {
                         $transaction->commit();
@@ -194,6 +211,7 @@ class StocksController extends Controller
             return $this->render('create', [
                 'model' => $model,
                 'modelLine'=> (empty($modelLine)) ? [new StocksLine] : $modelLine,
+                'modelLinea'=> (empty($modelLinea)) ? [new StocksLinea] : $modelLinea,
             ]);
         }
     }
@@ -208,8 +226,8 @@ class StocksController extends Controller
     {
         $model = $this->findModel($id);
         $modelLine = StocksLine::find()->where(['stocks_id' => $id])->all();
+        $modelLinea = StocksLinea::find()->where(['stocks_id' => $id])->all();
         $model->date = date('d M Y', strtotime($model->date) );
-      
         if ($model->load(Yii::$app->request->post())  ) {
 
             $oldIDs = ArrayHelper::map($modelLine, 'id', 'id');
@@ -217,8 +235,17 @@ class StocksController extends Controller
             Model::loadMultiple($stockline, Yii::$app->request->post());
             $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($stockline, 'id', 'id')));
 
+            $oldIDsa = ArrayHelper::map($modelLinea, 'id', 'id');
+            $stocklinea = Model::createMultiple(StocksLinea::classname(), $modelLinea);
+            Model::loadMultiple($stocklinea, Yii::$app->request->post());
+            $deletedIDsa = array_diff($oldIDsa, array_filter(ArrayHelper::map($stocklinea, 'id', 'id')));
+
+
             $valid = $model->validate();
-            $valid = Model::validateMultiple($stockline) && $valid;
+          //  $valid = Model::validateMultiple($modelLine)&&  Model::validateMultiple($modelLinea) && $valid;
+            $valid = Model::validateMultiple($stockline)&&  Model::validateMultiple($stocklinea) && $valid;
+
+          //  $valid = Model::validateMultiple($stockline) && $valid;
 
             //var_dump($valid);die();
             if ($valid) {
@@ -237,6 +264,19 @@ class StocksController extends Controller
                                 break;
                               }
                             }
+
+                        if (! empty($deletedIDsa)) {
+                          StocksLinea::deleteAll(['id' => $deletedIDsa]);
+                         }
+
+                         foreach ($stocklinea as $linea) {
+                             $linea->stocks_id = $model->id;
+                             if (! ($flag = $linea->save(false))) {
+                                 $transaction->rollBack();
+                                 break;
+                               }
+                             }
+
                         }
                         if ($flag) {
                             $transaction->commit();
@@ -260,6 +300,7 @@ class StocksController extends Controller
             return $this->render('update', [
                 'model' => $model,
                 'modelLine'=> (empty($modelLine)) ? [new StocksLine] : $modelLine,
+                'modelLinea'=> (empty($modelLinea)) ? [new StocksLinea] : $modelLinea,
             ]);
         }
     }
