@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 use common\models\User;
 use common\models\UserGroup;
 /**
@@ -25,8 +27,22 @@ class Investor extends \yii\db\ActiveRecord
      public $file;
      public function behaviors()
       {
-       return [
+      /* return [
          'sammaye\audittrail\LoggableBehavior'
+       ];*/
+       return [
+           [
+               'class' => BlameableBehavior::className(),
+               'createdByAttribute' => 'created_by',
+               'updatedByAttribute' => 'edited_by',
+           ],
+           [
+             'class' => TimestampBehavior::className(),
+             'createdAtAttribute' => 'date_created',
+             'updatedAtAttribute' => 'date_edited',
+           //  'value' => new Expression('NOW()'),
+               'value' => date('Y-m-d H:i:s'),
+           ],
        ];
       }
 
@@ -43,14 +59,14 @@ class Investor extends \yii\db\ActiveRecord
         return [
             [['company_name', 'customer_group', 'nric', 'contact_person', 'email', 'mobile','bank_a', 'username','password','usergroup'], 'required'],
             [['company_name','nric'],'unique'],
-            [['salesperson'], 'integer'],
+            [['salesperson','edited_by','created_by'], 'integer'],
             [['address', 'remark','email_cc','bank_b','bank_c','bank_d','bank_e'], 'string'],
             [['company_name', 'customer_group', 'contact_person'], 'string', 'max' => 75],
             [['email'], 'string', 'max' => 50],
             [['email'],'email'],
             [['mobile','company_registration'],'string','max'=>25],
             [['nric_comp'],'string','max'=>50],
-            [['date_added','start_date'],'safe'],
+            [['date_added','start_date','date_created','date_edited'],'safe'],
             [['file'],'file','skipOnEmpty'=>true, 'mimeTypes'=>'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                'wrongMimeType'=>'Invalid file format. Please use .xls or .xlsx',
             ],
