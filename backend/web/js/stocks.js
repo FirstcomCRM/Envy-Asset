@@ -13,7 +13,18 @@ $(document).ready(function(){
      });
    });
 
-
+   $(".dynamicform_wrapper").on("afterDelete", function(e, item) {
+       $(".picker").each(function() {
+          $(this).datepicker({
+            // dateFormat : "dd/mm/yy",
+              dateFormat : "yy-mm-dd",
+            // yearRange : "1925:+0",
+             //maxDate : "-1D",
+             //changeMonth: true,
+             //changeYear: true
+          });
+     });
+   });
 
   $('#stocks-buy_in_price').on('change',function(){
     multis();
@@ -96,7 +107,56 @@ function lineLocal(monthrated,monthpriced,buyrate,buyprice,index){
   //console.log(monthrated);
   //console.log(monthpriced);
 
-  console.log(monthprod);
-  console.log(buyprod);
-  console.log(mtotal);
+}
+
+function solds(item){
+  var mtotal = 0;
+
+  index  = item.attr("id").replace(/[^0-9.]/g, "");
+  //stockslinea-0-sold_price
+  var ids_price = "stockslinea-"+index+"-sold_price";
+  var ids_unit = "stockslinea-"+index+"-sold_units";
+  var ids_balance = "stockslinea-"+index+"-balance";
+
+  var sold_price = $('#'+ids_price).val();
+  var sold_units = $('#'+ids_unit).val();
+
+  sold_price = sold_price.replace(",", "");
+  sold_units = sold_units.replace(",", "");
+
+  if (sold_price != '' && sold_units != '') {
+    mtotal = sold_price*sold_units;
+    $('#'+ids_balance).val(mtotal);
+  }
+
+  unitsTotal();
+
+
+}
+
+function unitsTotal(){
+  var ntotal = 0;
+  var total = 0;
+  var items = $('.item_a');
+  items.each(function(index, elem){
+    var totalPart = $(elem).find(".sumPart").val();
+    totalPart = totalPart.replace(",", "");
+    if ($.isNumeric(totalPart) ) {
+      total = parseFloat(total) + parseFloat(totalPart);
+      total = parseFloat(total).toFixed(2);
+      ntotal = total;
+    //  console.log(typeof ntotal);
+    }
+
+  });
+  $('#stocks-total_sold_unit').val(ntotal);
+//  console.log(ntotal);
+}
+
+function offRecalc(item){
+  var index =  item.attr("id").replace(/[^0-9.]/g, "");
+  removeUnits= "stockslinea-"+index+"-sold_units";
+  $('#'+removeUnits).val(0.00);
+  unitsTotal();
+
 }
