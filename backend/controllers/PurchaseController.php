@@ -16,6 +16,8 @@ use common\models\MetalUnrealisedGain;
 use common\models\PurchaseEarning;
 use common\models\MetalNickelDeals;
 use common\models\ProductManagement;
+use common\models\PurchaseLine;
+use common\models\Model;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -135,10 +137,11 @@ class PurchaseController extends Controller
     public function actionCreate()
     {
         $model = new Purchase();
+        $modelLine = [new PurchaseLine];
         $model->date = date('d M Y');
-        $model->purchase_type = 'Metal';
+      //  $model->purchase_type = 'Metal';
         $model->company_charge = 0.00;
-        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+        if ($model->load(Yii::$app->request->post())  ) {
             $model->date = date('Y-m-d', strtotime($model->date) );
             $model->expiry_date = date('Y-m-d', strtotime($model->expiry_date) );
             $model->date_added = date('Y-m-d h:i:s');
@@ -149,23 +152,62 @@ class PurchaseController extends Controller
             $end = date('Y-m-01',strtotime($model->expiry_date) );
             $end = strtotime($end);
 
-            $model->save(false);
+          /*  $model->save(false);
             $model->purchase_no = date('Ym').'-'.sprintf("%005d", $model->id);
-            $model->save(false);
+            $model->save(false);*/
 
-            while ($start<=$end) {
-              $date_test =  date('Y-m-d', $start);
-          //    $this->commission($date_test,$model->getAttributes() );
-              $this->earning($date_test,$model->getAttributes() );
-            //  $model->earning($date_test);
-              $start = strtotime("+1month", $start);
+            $modelLine = Model::createMultiple(PurchaseLine::classname());
+            Model::loadMultiple($modelLine, Yii::$app->request->post());
+            $valid = $model->validate();
+
+            $valid = Model::validateMultiple($modelLine)&&  $valid;
+
+              //print_r($valid);die();
+
+            if ($valid) {
+
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+
+                    if ($flag = $model->save(false)) {
+                        $model->purchase_no = date('Ym').'-'.sprintf("%005d", $model->id);
+                        $model->save(false);
+                        foreach ($modelLine as $line)
+                        {
+                            $line->purchase_id = $model->id;
+                            if (! ($flag = $line->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+
+
+                    }
+                    if ($flag) {
+                        $transaction->commit();
+                        while ($start<=$end) {
+                            $date_test =  date('Y-m-d', $start);
+                        //    $this->commission($date_test,$model->getAttributes() );
+                            $this->earning($date_test,$model->getAttributes() );
+                          //  $model->earning($date_test);
+                            $start = strtotime("+1month", $start);
+                        }
+                        Yii::$app->session->setFlash('success', "Stocks created");
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }else{
+              echo '<pre>';
+              var_dump($modelLine);
+              die();
             }
 
-            Yii::$app->session->setFlash('success', "Purchase added");
-            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'modelLine'=> (empty($modelLine)) ? [new PurchaseLine] : $modelLine,
             ]);
         }
     }
@@ -179,21 +221,66 @@ class PurchaseController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $modelLine = PurchaseLine::find()->where(['purchase_id' => $id])->all();
         $model->date = date('d M Y', strtotime($model->date) );
         $model->expiry_date = date('d M Y', strtotime($model->expiry_date) );
         $model->company_charge = $model->company_charge*100;
-        if ($model->load(Yii::$app->request->post()) && $model->validate() ) {
+        if ($model->load(Yii::$app->request->post())  ) {
 
             $model->date = date('Y-m-d', strtotime($model->date) );
             $model->expiry_date = date('Y-m-d', strtotime($model->expiry_date) );
             $model->company_charge = $model->company_charge/100;
 
-            $model->save(false);
-            Yii::$app->session->setFlash('success', "Purchase updated");
-            return $this->redirect(['view', 'id' => $model->id]);
+            $oldIDs = ArrayHelper::map($modelLine, 'id', 'id');
+            $purline = Model::createMultiple(PurchaseLine::classname(), $modelLine);
+            Model::loadMultiple($purline, Yii::$app->request->post());
+            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($purline, 'id', 'id')));
+
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($purline)&&  $valid;
+
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+              try {
+
+                if ($flag = $model->save(false)) {
+                    if (! empty($deletedIDs)) {
+                      PurchaseLine::deleteAll(['id' => $deletedIDs]);
+                    }
+
+                foreach ($purline as $line) {
+                    $line->purchase_id = $model->id;
+                    if (! ($flag = $line->save(false))) {
+                        $transaction->rollBack();
+                        break;
+                      }
+                    }
+
+                }
+                if ($flag) {
+                    $transaction->commit();
+                    Yii::$app->session->setFlash('success', "Purchase updated");
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+
+              } catch (Exception $e) {
+                  $transaction->rollBack();
+              }
+            }else{
+              echo '<pre>';
+              print_r($model);
+              die();
+            }
+
+
+
+          //  $model->save(false);
+          //  Yii::$app->session->setFlash('success', "Purchase updated");
+          //  return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'modelLine'=> (empty($modelLine)) ? [new PurchaseLine] : $modelLine,
             ]);
         }
     }
@@ -236,6 +323,26 @@ class PurchaseController extends Controller
            }
         //   echo "<option>N/A</option>";
        }
+   }
+
+   public function actionAjaxProduct(){
+     if ( Yii::$app->request->post() ) {
+       $ptype = Yii::$app->request->post()['ptype'];
+
+       if ($ptype == 'Metal') {
+         $data = ProductManagement::find()->select(['id','product_name'])->where(['invest_type'=>2])->asArray()->all();
+       }elseif($ptype == 'Nickel'){
+         $data = ProductManagement::find()->select(['id','product_name'])->where(['invest_type'=>3])->asArray()->all();
+       }else{
+         $data = ProductManagement::find()->select(['id','product_name'])->where(['invest_type'=>1])->asArray()->all();
+       }
+       $json = [];
+       foreach ($data as $key => $value) {
+         $json[$value['id']] = $value['product_name'];
+       }
+
+       return json_encode($json);
+     }
    }
 
    public function actionAjaxSum(){
