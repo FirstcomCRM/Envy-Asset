@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "metal_nickel_deals".
@@ -36,6 +38,27 @@ class MetalNickelDeals extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'metal_nickel_deals';
+    }
+
+    public function behaviors()
+    {
+     /*return [
+       'sammaye\audittrail\LoggableBehavior'
+     ];*/
+     return [
+         [
+             'class' => BlameableBehavior::className(),
+             'createdByAttribute' => 'created_by',
+             'updatedByAttribute' => 'edited_by',
+         ],
+         [
+           'class' => TimestampBehavior::className(),
+           'createdAtAttribute' => 'date_created',
+           'updatedAtAttribute' => 'date_edited',
+         //  'value' => new Expression('NOW()'),
+             'value' => date('Y-m-d H:i:s'),
+         ],
+     ];
     }
 
     /**
