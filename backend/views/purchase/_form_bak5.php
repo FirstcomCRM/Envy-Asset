@@ -4,14 +4,13 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use yii\jui\DatePicker;
 use wbraganca\dynamicform\DynamicFormWidget;
 use common\models\Investor;
 use common\models\ProductManagement;
 use common\models\UserManagement;
 use common\models\Forex;
 use kartik\widgets\Select2;
-//use kartik\widgets\DatePicker;
+use kartik\widgets\DatePicker;
 /* @var $this yii\web\View */
 /* @var $model common\models\Purchase */
 /* @var $form yii\widgets\ActiveForm */
@@ -99,17 +98,29 @@ $x = ArrayHelper::map($salesperson,'id','name');
           ],
         ]) ?>
 
-        <?php echo $form->field($model,'date')->widget(yii\jui\DatePicker::className(), [
-          'options'=>['class'=>'form-control','readOnly'=>true],
-          'dateFormat'=>'php:d M Y',
-          ]) ?>
-
-          <?php echo $form->field($model,'expiry_date')->widget(yii\jui\DatePicker::className(), [
-            'options'=>['class'=>'form-control','readOnly'=>true],
-            'dateFormat'=>'php:d M Y',
-            ]) ?>
-
-
+        <?php echo $form->field($model, 'date')->widget(DatePicker::classname(), [
+          'options' => ['id' => 'purchase_date'],
+        //  'value' => '08/10/2004',
+          'convertFormat'=>true,
+          'readonly' => true,
+          'pluginOptions' => [
+            'autoclose'=>true,
+          //  'format' => 'mm/dd/yyyy'
+            'format' => 'php:d M Y',
+          ]
+        ]); ?>
+        <?php echo $form->field($model, 'expiry_date')->widget(DatePicker::classname(), [
+          //'options' => ['placeholder' => 'Date'],
+            'options' => ['id' => 'expiry_date'],
+        //  'value' => '08/10/2004',
+          'convertFormat'=>true,
+          'readonly' => true,
+          'pluginOptions' => [
+            'autoclose'=>true,
+          //  'format' => 'mm/dd/yyyy'
+            'format' => 'php:d M Y',
+          ]
+        ]); ?>
         <?= $form->field($model, 'remarks')->textarea(['rows' => 4]) ?>
 
 
@@ -205,7 +216,7 @@ $x = ArrayHelper::map($salesperson,'id','name');
 
     <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Sold Details</h3>
+          <h3 class="panel-title">Company Sold</h3>
         </div>
         <div class="panel-body">
              <?php DynamicFormWidget::begin([
@@ -249,9 +260,7 @@ $x = ArrayHelper::map($salesperson,'id','name');
                     ?>
 
                     <td>
-                      <?php echo $form->field($line,"[{$i}]psold_date")->label(false)->widget(yii\jui\DatePicker::className(),
-                      ['options' => ['class' => 'form-control picker'], 'dateFormat'=>'php:Y-m-d'] )
-                      ?>
+                      <?= $form->field($line, "[{$i}]psold_date")->textInput(['maxlength' => true])->label(false) ?>
                     </td>
 
                     <td>
