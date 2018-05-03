@@ -58,7 +58,7 @@ class Stocks extends \yii\db\ActiveRecord
     {
         return [
             [['stock', 'date', 'buy_in_price','buy_in_rate'], 'required'],
-            [['date', 'date_created', 'date_edited', 'date_added','buy_in_price', 'buy_in_rate','buy_in_local'], 'safe'],
+            [['date', 'date_created', 'date_edited', 'date_added','buy_in_price', 'buy_in_rate','buy_in_local','total_sold_unit','balance_unit'], 'safe'],
           //  [[], 'number','numberPattern' => '/^\s*[-+]?[0-9\,]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/'],
             [['added_by', 'edited_by','forex','product_id'], 'integer'],
             [['stock','ticker','exchange'], 'string', 'max' => 75],
@@ -88,6 +88,8 @@ class Stocks extends \yii\db\ActiveRecord
             'edited_by' => 'Edited By',
             'date_added' => 'Date Added',
             'forex'=>'Forex',
+            'total_sold_unit'=>'Total Sold Units',
+            'balance_unit'=>'Balance Units'
         ];
     }
 
