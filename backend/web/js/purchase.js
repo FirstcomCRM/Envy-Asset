@@ -1,20 +1,26 @@
 $(document).ready(function(){
-
+  //$(".stocks-head").hide();
   var typep = '';
   var typep = $('input[name="Purchase[purchase_type]"]:checked').val();
   //console.log(typep);
   if (typep == 'Metal') {
     $("#stocks-test").hide();
     $("#nickels-test").hide();
+    $(".stocks-head").hide();
+    $(".metal-head").show();
   }else if(typep == 'Nickel'){
     $("#stocks-test").hide();
     $("#nickels-test").show();
+    $(".metal-head").hide();
   }else if(typep == 'Stocks'){
     $("#stocks-test").show();
     $("#nickels-test").hide();
+    $(".metal-head").hide();
   }else{
     $("#stocks-test").hide();
     $("#nickels-test").hide();
+    $(".stocks-head").hide();
+    $(".metal-head").hide();
   }
 
   //Purchase Module Area
@@ -25,12 +31,18 @@ $(document).ready(function(){
     if (ptype == 'Metal') {
       $("#stocks-test").hide();
       $("#nickels-test").hide();
+      $(".stocks-head").hide();
+      $(".metal-head").show();
     }else if(ptype == 'Nickel'){
       $("#stocks-test").hide();
+      $(".metal-head").show();
+      $(".stocks-head").hide();
       $("#nickels-test").show();
     }else if(ptype == 'Stocks'){
       $("#stocks-test").show();
+      $(".stocks-head").show();
       $("#nickels-test").hide();
+      $(".metal-head").hide();
     }
 
     if (ptype) {
@@ -202,7 +214,7 @@ function nickelDate(){
 
 function pursolds(item){
   var mtotal = 0;
-  
+
   index  = item.attr("id").replace(/[^0-9.]/g, "");
   //purchaseline-0-psold_price"
   var ids_price = "purchaseline-"+index+"-psold_price";
@@ -220,6 +232,35 @@ function pursolds(item){
     $('#'+ids_balance).val(mtotal);
   }
   //item_a
+  punitsTotal();
+}
 
+function punitsTotal(){
+  var ntotal = 0;
+  var total = 0;
+  var items = $('.item_a');
+  items.each(function(index, elem){
+    var totalPart = $(elem).find(".sumPart").val();
+    totalPart = totalPart.replace(",", "");
+    if ($.isNumeric(totalPart) ) {
+      total = parseFloat(total) + parseFloat(totalPart);
+      total = parseFloat(total).toFixed(2);
+      ntotal = total;
+    //  console.log(typeof ntotal);
+    }
+
+  });
+  $('#purchase-ptotal_sold_unit').val(ntotal);
+//  console.log(ntotal);
+}
+
+
+
+function poffRecalc(item){
+  var index =  item.attr("id").replace(/[^0-9.]/g, "");
+  //purchaseline-0-psold_units
+  removeUnits= "purchaseline-"+index+"-psold_units";
+  $('#'+removeUnits).val(0.00);
+  punitsTotal();
 
 }
