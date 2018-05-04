@@ -104,10 +104,13 @@ $x = ArrayHelper::map($salesperson,'id','name');
           'dateFormat'=>'php:d M Y',
           ]) ?>
 
-          <?php echo $form->field($model,'expiry_date')->widget(yii\jui\DatePicker::className(), [
-            'options'=>['class'=>'form-control','readOnly'=>true],
-            'dateFormat'=>'php:d M Y',
-            ]) ?>
+        <div class="metal-head">
+            <?php echo $form->field($model,'expiry_date')->widget(yii\jui\DatePicker::className(), [
+              'options'=>['class'=>'form-control','readOnly'=>true],
+              'dateFormat'=>'php:d M Y',
+              ]) ?>
+        </div>
+
 
 
         <?= $form->field($model, 'remarks')->textarea(['rows' => 4]) ?>
@@ -117,19 +120,17 @@ $x = ArrayHelper::map($salesperson,'id','name');
 
       <div class="col-md-6">
 
-
-        <?php echo $form->field($model, 'trading_days')->textInput(['style'=>'text-align:right;']) ?>
-        <?php echo $form->field($model, 'prorated_days')->textInput(['style'=>'text-align:right;']) ?>
-
+        <div class="metal-head" id="metals-test">
+          <?php echo $form->field($model, 'trading_days')->textInput(['style'=>'text-align:right;']) ?>
+          <?php echo $form->field($model, 'prorated_days')->textInput(['style'=>'text-align:right;']) ?>
+        </div>
         <div id="nickels-test">
           <?php echo $form->field($model, 'nickel_date')->textInput(['readOnly'=>true]) ?>
           <?php echo $form->field($model, 'nickel_expiry')->textInput(['readOnly'=>true]) ?>
         </div>
         <div id="stocks-test">
-          <?php echo $form->field($model, 'sold_currency')->dropDownList($forex,['prompt'=>'Select Currency']) ?>
-
-
-          <?= $form->field($model, 'sold_price')->widget(\yii\widgets\MaskedInput::className(), [
+          <?php echo $form->field($model, 'buy_currency')->dropDownList($forex,['prompt'=>'Select Currency']) ?>
+          <?= $form->field($model, 'buy_curr_rate')->widget(\yii\widgets\MaskedInput::className(), [
             'options' => ['class'=>'form-control'],
             'clientOptions' => [
               'alias' => 'decimal',
@@ -141,7 +142,7 @@ $x = ArrayHelper::map($salesperson,'id','name');
               'removeMaskOnSubmit' => true,
             ],
           ]) ?>
-          <?= $form->field($model, 'sold_price_rate')->widget(\yii\widgets\MaskedInput::className(), [
+          <?= $form->field($model, 'buy_units')->widget(\yii\widgets\MaskedInput::className(), [
             'options' => ['class'=>'form-control'],
             'clientOptions' => [
               'alias' => 'decimal',
@@ -203,20 +204,20 @@ $x = ArrayHelper::map($salesperson,'id','name');
     </div>
 
 
-    <div class="panel panel-default">
+    <div class="panel panel-default stocks-head">
         <div class="panel-heading">
-          <h3 class="panel-title">Sold Details</h3>
+          <h3 class="panel-title">Stocks Sold Details</h3>
         </div>
         <div class="panel-body">
              <?php DynamicFormWidget::begin([
                 'widgetContainer' => 'dynamicform_wrapper', // required: only alphanumeric characters plus "_" [A-Za-z0-9_]
                 'widgetBody' => '.container-items_a', // required: css class selector
                 'widgetItem' => '.item_a', // required: css class
-                'limit' => 100, // the maximum times, an element can be cloned (default 999)
+                'limit' => 300, // the maximum times, an element can be cloned (default 999)
                 'min' => 1, // 0 or 1 (default 1)
                 //'min' => 3, // 0 or 1 (default 1)
                 'insertButton' => '.add-item_a', // css class
-                'deleteButton' => '.remove-item_a', // css class
+                'deleteButton' => '.remove-item_a', // css clas s
                 'model' => $modelLine[0],
                 'formId' => 'dynamic-form',
                 'formFields' => [
@@ -250,7 +251,7 @@ $x = ArrayHelper::map($salesperson,'id','name');
 
                     <td>
                       <?php echo $form->field($line,"[{$i}]psold_date")->label(false)->widget(yii\jui\DatePicker::className(),
-                      ['options' => ['class' => 'form-control picker'], 'dateFormat'=>'php:Y-m-d'] )
+                      ['options' => ['class' => 'form-control picker'], 'dateFormat'=>'php:d M Y'] )
                       ?>
                     </td>
 
@@ -288,7 +289,7 @@ $x = ArrayHelper::map($salesperson,'id','name');
                     </td>
                     <td>
                       <?= $form->field($line, "[{$i}]psold_units")->label(false)->widget(\yii\widgets\MaskedInput::className(), [
-                        'options' => ['class'=>'form-control','onchange'=>'pursolds($(this))'],
+                        'options' => ['class'=>'form-control sumPart','onchange'=>'pursolds($(this))'],
                         'clientOptions' => [
                           'alias' => 'decimal',
                           'digits' => 2,
@@ -316,14 +317,37 @@ $x = ArrayHelper::map($salesperson,'id','name');
                     </td>
                     <td>
                       <button type="button" class="add-item_a btn btn-success btn-xs"><i class="glyphicon glyphicon-plus"></i></button>
-                      <button type="button" class="remove-item_a btn btn-danger btn-xs" id=<?php echo 'remove-'.$i.'-ra' ?> ><i class="glyphicon glyphicon-minus"></i></button>
+                      <button type="button" class="remove-item_a btn btn-danger btn-xs" id=<?php echo 'remove-'.$i.'-ra' ?> onclick="poffRecalc($(this))" ><i class="glyphicon glyphicon-minus"></i></button>
                     </td>
                     <?php endforeach; ?>
               </tr>
 
 
             </table>
-
+            <table class="table">
+              <tr>
+                <td style="width:15%;border-top:0px"></td>
+                <td style="width:10%;border-top:0px"></td>
+                <td style="width:10%;border-top:0px"></td>
+                <td style="width:10%;border-top:0px;vertical-align:middle; text-align:right;border-top:0px" ><label>Total Sold Units</label></td>
+                <td style="width:10%;vertical-align:middle; text-align:right;border-top:0px">
+                  <?= $form->field($model, 'ptotal_sold_unit')->label(false)->widget(\yii\widgets\MaskedInput::className(), [
+                    'options' => ['readOnly' => 'true','class'=>'form-control'],
+                    'clientOptions' => [
+                      'alias' => 'decimal',
+                      'digits' => 2,
+                      'digitsOptional' => false,
+                      'radixPoint' => '.',
+                      'groupSeparator' => ',',
+                      'autoGroup' => true,
+                      'removeMaskOnSubmit' => true,
+                    ],
+                  ]) ?>
+                </td>
+                <td style="width:15%;border-top:0px"></td>
+                <td style="width:5%;border-top:0px"></td>
+              </tr>
+            </table>
             <?php DynamicFormWidget::end(); ?>
           </div>
 
