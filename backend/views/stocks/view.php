@@ -38,7 +38,13 @@ $this->params['breadcrumbs'][] = $this->title;
               'attribute'=>'date',
               'format' => ['date', 'php:d M Y'],
             ],
-
+            [
+              'attribute'=>'total_sold_unit',
+              'value'=>function($model){
+                  return Retrieve::retrieveFormat($model->total_sold_unit);
+            //    return '$'.$model->buy_in_price;
+              },
+            ],
 
             [
               'attribute'=>'buy_units',
@@ -172,9 +178,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
 
                     [
-                      'attribute'=>'sold_currency',
+                      'attribute'=>'buy_currency',
                       'value'=>function($model){
-                        $data = Forex::find()->where(['id'=>$model->sold_currency])->one();
+                        $data = Forex::find()->where(['id'=>$model->buy_currency])->one();
                         if (!empty($data) ) {
                           return $data->currency_code;
                         }else{
@@ -185,11 +191,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
 
                     [
-                      'attribute'=>'sold_price',
+                      'attribute'=>'buy_curr_rate',
                       'format'=>['decimal',2],
                     ],
                     [
-                      'attribute'=>'sold_price_rate',
+                      'attribute'=>'buy_units',
                       'format'=>['decimal',2],
                     ],
                     [
@@ -216,7 +222,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 
-                    'sold_date',
+                    //'sold_date',
+                    [
+                      'attribute'=>'sold_date',
+                      'value'=>function($model){
+                        return Retrieve::retrieveDate_dmy($model->sold_date);
+                      }
+                    ],
+
                     [
                       'attribute'=>'sold_currency',
                       'value'=>function($model){
