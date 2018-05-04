@@ -154,7 +154,7 @@ class StocksController extends Controller
         $modelLine = [new StocksLine];
         $modelLinea = [new StocksLinea];
         if ($model->load(Yii::$app->request->post()) ) {
-
+            $model->total_sold_unit = str_replace(",","",$model->total_sold_unit);
             $modelLine = Model::createMultiple(StocksLine::classname());
             Model::loadMultiple($modelLine, Yii::$app->request->post());
             $modelLinea = Model::createMultiple(StocksLinea::classname());
@@ -176,6 +176,7 @@ class StocksController extends Controller
                         foreach ($modelLine as $line)
                         {
                             $line->stocks_id = $model->id;
+                            $line->month = date('Y-m-d',strtotime($line->month) );
                             if (! ($flag = $line->save(false))) {
                                 $transaction->rollBack();
                                 break;
@@ -184,6 +185,7 @@ class StocksController extends Controller
                         foreach ($modelLinea as $linea)
                         {
                             $linea->stocks_id = $model->id;
+                            $linea->sold_date = date('Y-m-d',strtotime($linea->sold_date) );
                             if (! ($flag = $linea->save(false))) {
                                 $transaction->rollBack();
                                 break;
@@ -193,6 +195,8 @@ class StocksController extends Controller
                     }
                     if ($flag) {
                         $transaction->commit();
+                        $model->updateBU();
+                      //  $model->save(false);
                         Yii::$app->session->setFlash('success', "Stock created");
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
@@ -259,6 +263,7 @@ class StocksController extends Controller
 
                         foreach ($stockline as $line) {
                             $line->stocks_id = $model->id;
+                            $line->month = date('Y-m-d',strtotime($line->month) );
                             if (! ($flag = $line->save(false))) {
                                 $transaction->rollBack();
                                 break;
@@ -271,6 +276,7 @@ class StocksController extends Controller
 
                          foreach ($stocklinea as $linea) {
                              $linea->stocks_id = $model->id;
+                             $linea->sold_date = date('Y-m-d',strtotime($linea->sold_date) );
                              if (! ($flag = $linea->save(false))) {
                                  $transaction->rollBack();
                                  break;
@@ -280,6 +286,7 @@ class StocksController extends Controller
                         }
                         if ($flag) {
                             $transaction->commit();
+                              $model->updateBU();
                             Yii::$app->session->setFlash('success', "Stock updated");
                             return $this->redirect(['view', 'id' => $model->id]);
                         }
