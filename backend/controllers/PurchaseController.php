@@ -142,6 +142,7 @@ class PurchaseController extends Controller
       //  $model->purchase_type = 'Metal';
         $model->company_charge = 0.00;
         if ($model->load(Yii::$app->request->post())  ) {
+            $model->ptotal_sold_unit = str_replace(",","",$model->ptotal_sold_unit);
             $model->date = date('Y-m-d', strtotime($model->date) );
             $model->expiry_date = date('Y-m-d', strtotime($model->expiry_date) );
             $model->date_added = date('Y-m-d h:i:s');
@@ -162,7 +163,11 @@ class PurchaseController extends Controller
 
             $valid = Model::validateMultiple($modelLine)&&  $valid;
 
-              //print_r($valid);die();
+          //  echo $model->ptotal_sold_unit; die();
+            //print_r($valid);die();
+            if ($model->purchase_type != 'Stocks') {
+              $modelLine = [];
+            }
 
             if ($valid) {
 
@@ -175,6 +180,7 @@ class PurchaseController extends Controller
                         foreach ($modelLine as $line)
                         {
                             $line->purchase_id = $model->id;
+                            $line->psold_date = date('Y-m-d', strtotime($line->psold_date) );
                             if (! ($flag = $line->save(false))) {
                                 $transaction->rollBack();
                                 break;
@@ -192,7 +198,7 @@ class PurchaseController extends Controller
                           //  $model->earning($date_test);
                             $start = strtotime("+1month", $start);
                         }
-                        Yii::$app->session->setFlash('success', "Stocks created");
+                        Yii::$app->session->setFlash('success', "Purchase created");
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
                 } catch (Exception $e) {
@@ -239,6 +245,12 @@ class PurchaseController extends Controller
             $valid = $model->validate();
             $valid = Model::validateMultiple($purline)&&  $valid;
 
+            if ($model->purchase_type != 'Stocks') {
+              $purline = [];
+            }
+            //echo '<pre>';
+            //print_r($modelLine);die();
+
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
               try {
@@ -250,6 +262,7 @@ class PurchaseController extends Controller
 
                 foreach ($purline as $line) {
                     $line->purchase_id = $model->id;
+                    $line->psold_date = date('Y-m-d', strtotime($line->psold_date) );
                     if (! ($flag = $line->save(false))) {
                         $transaction->rollBack();
                         break;
@@ -411,7 +424,7 @@ class PurchaseController extends Controller
           if (!empty($nickel)) {
             $dates = new \DateTime($nickel->contract_period_start);
             $start = $dates->format('d M Y');
-            $dates = new \  DateTime($nickel->contract_period_end);
+            $dates = new \DateTime($nickel->contract_period_end);
             $end = $dates->format('d M Y');
 
             return json_encode(array(
