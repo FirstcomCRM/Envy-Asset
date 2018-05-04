@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <p class="text-right">
             <?= Html::a('<i class="fa fa-plus" aria-hidden="true"></i> Add', ['create'], ['class' => 'btn btn-default']) ?>
         </p>
+        <div class="table-responsive">
           <?php Pjax::begin(); ?>    <?= GridView::widget([
               'dataProvider' => $dataProvider,
             //  'filterModel' => $searchModel,
@@ -79,6 +80,8 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
           ]); ?>
         <?php Pjax::end(); ?>
+        </div>
+
       </div>
     </div>
 
