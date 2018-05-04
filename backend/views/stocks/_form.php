@@ -23,7 +23,7 @@ $forex =ArrayHelper::map($data,'id','currency_code');
     <?php echo $form->field($model, 'stock')->textInput(['maxlength' => true]) ?>
 
     <?php echo $form->field($model,'date')->widget(yii\jui\DatePicker::className(), [
-      'options'=>['class'=>'form-control'],
+      'options'=>['class'=>'form-control'],'dateFormat'=>'php:d M Y',
       ]) ?>
 
     <?= $form->field($model, 'ticker')->textInput(['maxlength' => true]) ?>
@@ -31,7 +31,18 @@ $forex =ArrayHelper::map($data,'id','currency_code');
     <?= $form->field($model, 'exchange')->textInput(['maxlength' => true]) ?>
 
     <?php if (!$model->isNewRecord ): ?>
-      <?= $form->field($model, 'balance_unit')->textInput(['maxlength' => true]) ?>
+      <?= $form->field($model, 'balance_unit')->widget(\yii\widgets\MaskedInput::className(), [
+        'options' => ['class'=>'form-control'],
+        'clientOptions' => [
+          'alias' => 'decimal',
+          'digits' => 2,
+          'digitsOptional' => false,
+          'radixPoint' => '.',
+          'groupSeparator' => ',',
+          'autoGroup' => true,
+          'removeMaskOnSubmit' => true,
+        ],
+      ]) ?>
     <?php endif; ?>
 
 
@@ -148,7 +159,7 @@ $forex =ArrayHelper::map($data,'id','currency_code');
 
                     <td>
                       <?php echo $form->field($line,"[{$i}]month")->label(false)->widget(yii\jui\DatePicker::className(),
-                      ['options' => ['class' => 'form-control picker'], 'dateFormat'=>'php:Y-m-d'] )
+                      ['options' => ['class' => 'form-control picker'],'dateFormat'=>'php:d M Y'] )
                       ?>
                     </td>
 
@@ -277,7 +288,7 @@ $forex =ArrayHelper::map($data,'id','currency_code');
 
                       <td>
                         <?php echo $form->field($line,"[{$i}]sold_date")->label(false)->widget(yii\jui\DatePicker::className(),
-                        ['options' => ['class' => 'form-control picker'], 'dateFormat'=>'php:Y-m-d'] )
+                        ['options' => ['class' => 'form-control picker'], 'dateFormat'=>'php:d M Y'] )
                         ?>
                       </td>
 
@@ -351,17 +362,16 @@ $forex =ArrayHelper::map($data,'id','currency_code');
 
               </table>
 
-              <!----->
-
+              <!---here-->
               <table class="table">
                 <tr>
                   <td style="width:15%;border-top:0px"></td>
                   <td style="width:10%;border-top:0px"></td>
                   <td style="width:10%;border-top:0px"></td>
                   <td style="width:10%;border-top:0px;vertical-align:middle; text-align:right;border-top:0px" ><label>Total Sold Units</label></td>
-                  <td style="width:10%;vertical-align:middle; text-align:right;border-top:0px">
+                  <td style="width:10%;vertical-align:middle;border-top:0px">
                     <?= $form->field($model, 'total_sold_unit')->label(false)->widget(\yii\widgets\MaskedInput::className(), [
-                      'options' => ['readOnly' => 'true','class'=>'form-control'],
+                      'options' => ['readOnly'=>'true', 'class'=>'form-control'],
                       'clientOptions' => [
                         'alias' => 'decimal',
                         'digits' => 2,
@@ -378,9 +388,11 @@ $forex =ArrayHelper::map($data,'id','currency_code');
                 </tr>
               </table>
 
+
             </div>
 
         </div>
+        <!---->
         <?php DynamicFormWidget::end(); ?>
 
       <div class="form-group">
