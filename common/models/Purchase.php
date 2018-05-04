@@ -3,9 +3,12 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 use common\models\MetalUnrealisedGain;
 use common\models\PurchaseEarning;
 use common\models\MetalNickelDeals;
+
 
 /**
  * This is the model class for table "purchase".
@@ -27,6 +30,26 @@ class Purchase extends \yii\db\ActiveRecord
     {
         return 'purchase';
     }
+    public function behaviors()
+    {
+     /*return [
+       'sammaye\audittrail\LoggableBehavior'
+     ];*/
+     return [
+         [
+             'class' => BlameableBehavior::className(),
+             'createdByAttribute' => 'created_by',
+             'updatedByAttribute' => 'edited_by',
+         ],
+         [
+           'class' => TimestampBehavior::className(),
+           'createdAtAttribute' => 'date_created',
+           'updatedAtAttribute' => 'date_edited',
+         //  'value' => new Expression('NOW()'),
+             'value' => date('Y-m-d H:i:s'),
+         ],
+     ];
+    }
 
     /**
      * @inheritdoc
@@ -34,16 +57,16 @@ class Purchase extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['investor', 'product', 'price', 'date','trading_days','prorated_days','company_charge'], 'required'],
+            [['investor', 'product', 'price', 'date','company_charge'], 'required'],
             [['sum_all','company_charge'], 'number'],
             [['date'], 'safe'],
-            [['trading_days','prorated_days','sold_currency'],'integer'],
+            [['trading_days','prorated_days','buy_currency','created_by','edited_by'],'integer'],
             [['remarks','purchase_no'], 'string'],
         //    [['salesperson'], 'string'],
       //      [['salesperson'], 'integer'],
             [['investor', 'product', 'share'], 'string', 'max' => 75],
             [['purchase_type','charge_type'], 'string', 'max' => 50],
-            [['date_adedd','expiry_date','salesperson','nickel_date','nickel_expiry','price','customer_earn','company_earn','staff_earn','sold_price','sold_price_rate','ptotal_sold_unit'],'safe'],
+            [['date_adedd','expiry_date','salesperson','nickel_date','nickel_expiry','price','customer_earn','company_earn','staff_earn','buy_curr_rate','buy_units','ptotal_sold_unit','date_created','date_added','date_edited'],'safe'],
         ];
     }
 
@@ -76,6 +99,9 @@ class Purchase extends \yii\db\ActiveRecord
             'company_earn'=>'Company Commission',
             'staff_earn'=>'Staff Commission',
             'ptotal_sold_unit'=>'Total Sold Units',
+            'buy_currency'=>'Buy Currency',
+            'buy_curr_rate'=>'Buy Currency Rate',
+            'buy_units'=>'Buy Units'
         ];
     }
 
