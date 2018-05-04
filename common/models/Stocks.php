@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use common\models\Purchase;
 
 /**
  * This is the model class for table "stocks".
@@ -100,5 +101,14 @@ class Stocks extends \yii\db\ActiveRecord
         } else {
             return false;
         }
+    }
+// /$model->product_id
+    public function updateBU(){
+      $data = Purchase::find()->where(['product'=>$this->product_id])->sum('ptotal_sold_unit');
+      if (empty($data) ) {
+        $data = 0;
+      }
+      $this->balance_unit = $this->buy_units-($this->total_sold_unit + $data);
+      $this->save(false);
     }
 }
