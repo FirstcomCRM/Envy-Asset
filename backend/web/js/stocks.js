@@ -4,7 +4,8 @@ $(document).ready(function(){
        $(".picker").each(function() {
           $(this).datepicker({
             // dateFormat : "dd/mm/yy",
-              dateFormat : "yy-mm-dd",
+            //  dateFormat : "yy-mm-dd",
+                dateFormat : "dd M yy",
             // yearRange : "1925:+0",
              //maxDate : "-1D",
              //changeMonth: true,
@@ -17,7 +18,8 @@ $(document).ready(function(){
        $(".picker").each(function() {
           $(this).datepicker({
             // dateFormat : "dd/mm/yy",
-              dateFormat : "yy-mm-dd",
+            //  dateFormat : "yy-mm-dd",
+              dateFormat : "dd M yy",
             // yearRange : "1925:+0",
              //maxDate : "-1D",
              //changeMonth: true,
@@ -150,7 +152,7 @@ function unitsTotal(){
 
   });
   $('#stocks-total_sold_unit').val(ntotal);
-//  console.log(ntotal);
+  console.log(ntotal);
 }
 
 function offRecalc(item){
