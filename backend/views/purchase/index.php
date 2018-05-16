@@ -64,10 +64,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute'=>'date',
                     'format' => ['date', 'php:d M Y'],
                   ],
-                  [
+                /*  [
                     'attribute'=>'expiry_date',
                     'format' => ['date', 'php:d M Y'],
-                  ],
+                  ],*/
                   [
                     'attribute'=>'salesperson',
                     'value'=>function($model){
