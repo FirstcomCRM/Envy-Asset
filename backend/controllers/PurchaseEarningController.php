@@ -36,7 +36,7 @@ class PurchaseEarningController extends Controller
     public function actionIndex()
     {
         $searchModel = new PurchaseEarningSearch();
-
+      
 
         $request = Yii::$app->request;
         $test = $request->get();
