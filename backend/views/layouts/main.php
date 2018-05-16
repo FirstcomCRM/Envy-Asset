@@ -72,7 +72,8 @@ AppAsset::register($this);
           ['label'=>'Reports', 'class'=>'navbars', 'items'=>[
           //  ['label'=>'User Log Files', 'url'=>['/user-log/index']],
           //  ['label'=>'Investment Overview', 'url'=>['toollist/index']],
-            ['label'=>'Investor Report', 'url'=>['investor-report/index']],
+        //    ['label'=>'Investor Report', 'url'=>['investor-report/index']],
+            ['label'=>'Investor Report', 'url'=>['investor-report/alter']],
             ['label'=>'Commission Future Metal', 'url'=>['purchase-earning/index']],
 
 
