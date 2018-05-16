@@ -1,71 +1,69 @@
 $(document).ready(function(){
   //$(".stocks-head").hide();
+
+
+  //.monthpicker applicable only at investor report
+  $(".monthPicker").datepicker({
+    dateFormat: 'M yy',
+    changeMonth: true,
+    changeYear: true,
+    showButtonPanel: true,
+
+        onClose: function(dateText, inst) {
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
+        }
+    });
+
+  $(".monthPicker").focus(function () {
+       $(".ui-datepicker-calendar").hide();
+       $("#ui-datepicker-div").position({
+           my: "center top",
+           at: "center bottom",
+           of: $(this)
+       });
+   });
+
+
+
   var typep = '';
   var typep = $('input[name="Purchase[purchase_type]"]:checked').val();
   //console.log(typep);
-  if (typep == 'Metal') {
-    $("#stocks-test").hide();
-    $("#nickels-test").hide();
-    $(".stocks-head").hide();
-    $(".metal-head").show();
-  }else if(typep == 'Nickel'){
-    $("#stocks-test").hide();
-    $("#nickels-test").show();
-    $(".metal-head").hide();
-  }else if(typep == 'Stocks'){
-    $("#stocks-test").show();
-    $("#nickels-test").hide();
-    $(".metal-head").hide();
-  }else{
-    $("#stocks-test").hide();
-    $("#nickels-test").hide();
-    $(".stocks-head").hide();
-    $(".metal-head").hide();
-  }
+  hiding(typep);
+//  listProducts(typep);
 
   //Purchase Module Area
   //$("input[name=someRadioGroup]").on('change', function()
   $('input[name="Purchase[purchase_type]"]').on('change', function() {
     var ptype = $('input[name="Purchase[purchase_type]"]:checked').val();
-    //console.log(ptype);
-    if (ptype == 'Metal') {
-      $("#stocks-test").hide();
-      $("#nickels-test").hide();
-      $(".stocks-head").hide();
-      $(".metal-head").show();
-    }else if(ptype == 'Nickel'){
-      $("#stocks-test").hide();
-      $(".metal-head").show();
-      $(".stocks-head").hide();
-      $("#nickels-test").show();
-    }else if(ptype == 'Stocks'){
-      $("#stocks-test").show();
-      $(".stocks-head").show();
-      $("#nickels-test").hide();
-      $(".metal-head").hide();
-    }
-
+    hiding(ptype);
     if (ptype) {
-      console.log('ajax-product')
-      $.post("?r=purchase/ajax-product",{
-            ptype:ptype,
-        },
-        function(data, status){
-
-            $("#products").empty();
-            $.each(data,function(key,value){
-                $("#products").append('<option value="'+key+'">'+value+'</option>');
-           });
-
-        },'json' );
-
+      listProducts(ptype);
     }
+    //pur_sum();
+  });
 
-    pur_sum();
+
+
+  $('#purchase-buy_units').on('change',function(){
+    console.log('purchase-buy_unit');
+    stocksAmount();
+  });
+
+  $('#purchase-buy_in_price').on('change',function(){
+    console.log('purchase-buy_price');
+    stocksAmount();
+  });
+
+
+  $('#products').on('change',function(){
+    nickelDate();
   });
 
   $('#price').on('change',function(){
   //  datas();
+  //  console.log('@@');
     pur_sum();
   });
 
@@ -93,9 +91,6 @@ $(document).ready(function(){
 
 
   $('#purchase-product').on('change',function(){
-      //console.log('expire date');
-  //  var product = $('#purchase-product').val();
-  //  console.log(product);
     nickelDate();
   });
 
@@ -104,50 +99,84 @@ $(document).ready(function(){
 
 });
 
-function datas(){
-  var price = $('#price').val();
-  var purchase_date = $('#purchase_date').val();
-  var expiry_date = $('#expiry_date').val();
-  var purchase_type = $('input[name="Purchase[purchase_type]"]:checked').val();
-  var charge_type = $('#charge_type').val();
-  var company_charge = $('#company_charge').val();
-  //company_charge
-//  console.log(price);
-//  console.log(purchase_date);
-//  console.log(expiry_date);
-  if (price != '' && purchase_date != '' && expiry_date != '') {
+//function to hide divs
+function hiding(typep){
+  if (typep == 'Metal') {
+    $(".metal-head").show();
+    $(".nickels-head").hide();
+    $(".stocks-head").hide();
+    $("#purchase-buy_curr_rate").val('');
+    $("#purchase-buy_units").val('');
+    $("#purchase-buy_in_price").val('');
+    $("#purchase-nickel_date").val('');
+    $("#purchase-nickel_expiry").val('');
 
-    $.post("?r=purchase/ajax-sum",{
-          price:price,
-          purchase_date:purchase_date,
-          expiry_date:expiry_date,
-          charge_type:charge_type,
-          purchase_type:purchase_type,
-          company_charge:company_charge
+  }else if(typep == 'Nickel'){
+    $(".nickels-head").show();
+    $(".stocks-head").hide();
+    $(".metal-head").hide();
+    $("#purchase-buy_curr_rate").val('');
+    $("#purchase-buy_units").val('');
+    $("#purchase-buy_in_price").val('');
+    $("#purchase-expiry_date").val('');
+    $("#purchase-trading_days").val('');
+    $("#purchase-prorated_days").val('');
 
-      },
-      function(data, status){
-        //  console.log(data);
-          //    $( "#sum_all" ).empty().val(data);
-      //    var content = $( data ).find( "#content" );
-      //    $( "#result" ).empty().append(data);
-
-          var jsonObj = eval ("(" + data + ")");
-          $('#customer_earn').empty().val(jsonObj.customer_amount);
-          $('#company_earn').empty().val(jsonObj.company_earn);
-          $('#staff_earn').empty().val(jsonObj.staff_earn);
-      //    $('.selected-item-list').append(data);
-          // console.log(status);
-      });
+  }else if(typep == 'Stocks'){
+    $(".stocks-head").show();
+    $(".nickels-head").hide();
+    $(".metal-head").hide();
+    $("#purchase-nickel_date").val('');
+    $("#purchase-nickel_expiry").val('');
+    $("#purchase-expiry_date").val('');
+    $("#purchase-trading_days").val('');
+    $("#purchase-prorated_days").val('');
 
   }else{
-    //console.log('error something');
+    $(".nickel-head").hide();
+    $(".stocks-head").hide();
+    $(".metal-head").hide();
   }
 }
 
+//function to list Products based on selected value
+function listProducts(typep){
+  var selects = 'Select Product';
+  var test = 0;
+  $.post("?r=purchase/ajax-product",{
+      //  ptype:ptype,
+        ptype:typep,
+    },
+    function(data, status){
 
+        $("#products").empty();
+        $("#products").append('<option value="'+test+'">'+selects+'</option>');
+        $.each(data,function(key,value){
+            //add a fix add selected attribute
+            $("#products").append('<option value="'+key+'">'+value+'</option>');
+       });
+
+    },'json' );
+
+}
+
+function stocksAmount(){
+  var stocks_unit = $("#purchase-buy_units").val();
+  var stocks_price = $("#purchase-buy_in_price").val();
+  if (stocks_price != '' && stocks_unit != '') {
+    $.post("?r=purchase/ajax-stockamount",{
+          stocks_unit:stocks_unit,
+          stocks_price:stocks_price,
+      },
+      function(data, status){
+          $('#price').empty().val(data);
+
+      });
+  }
+}
+
+//onchange()
 function pur_sum(){
-
   var price = $('#price').val();
   var purchase_date = $('#purchase_date').val();
   var expiry_date = $('#expiry_date').val();
@@ -158,12 +187,8 @@ function pur_sum(){
   if (sold_price == '') {
     sold_price = 0;
   }
+  //console.log(expiry_date);
   price = price.replace(",", "");
-  //purchase-sold_price
-  //company_charge
-  console.log(sold_price);
-//  console.log(purchase_type);
-//  console.log(charge_type);
   if (price != '' && purchase_date != '' && expiry_date != '') {
     $.post("?r=purchase/ajax-sum",{
           price:price,
@@ -172,21 +197,14 @@ function pur_sum(){
           charge_type:charge_type,
           purchase_type:purchase_type,
           company_charge:company_charge,
-          sold_price:sold_price,
+        //  sold_price:sold_price,
 
       },
       function(data, status){
-        //  console.log(data);
-          //    $( "#sum_all" ).empty().val(data);
-      //    var content = $( data ).find( "#content" );
-      //    $( "#result" ).empty().append(data);
-
           var jsonObj = eval ("(" + data + ")");
           $('#customer_earn').empty().val(jsonObj.customer_amount);
           $('#company_earn').empty().val(jsonObj.company_earn);
           $('#staff_earn').empty().val(jsonObj.staff_earn);
-      //    $('.selected-item-list').append(data);
-          // console.log(status);
       });
   }else{
   //  console.log('error something');
@@ -196,13 +214,15 @@ function pur_sum(){
 }
 
 function nickelDate(){
-  var product = $('#purchase-product').val();
+  var product = $('#products').val();
 
+  console.log(product);
   if (product!='') {
     $.post("?r=purchase/ajax-nickel",{
           product:product,
       },
       function(data, status){
+        console.log('test');
           var jsonObj = eval ("(" + data + ")");
           $('#purchase-nickel_date').empty().val(jsonObj.start);
           $('#purchase-nickel_expiry').empty().val(jsonObj.end);
@@ -212,6 +232,7 @@ function nickelDate(){
   }
 }
 
+//onchange()
 function pursolds(item){
   var mtotal = 0;
 
@@ -235,6 +256,7 @@ function pursolds(item){
   punitsTotal();
 }
 
+//onchange()
 function punitsTotal(){
   var ntotal = 0;
   var total = 0;
@@ -255,7 +277,7 @@ function punitsTotal(){
 }
 
 
-
+//onchange()
 function poffRecalc(item){
   var index =  item.attr("id").replace(/[^0-9.]/g, "");
   //purchaseline-0-psold_units
