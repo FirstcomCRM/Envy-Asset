@@ -100,35 +100,32 @@ $x = ArrayHelper::map($salesperson,'id','name');
         ]) ?>
 
         <?php echo $form->field($model,'date')->widget(yii\jui\DatePicker::className(), [
-          'options'=>['class'=>'form-control','readOnly'=>true],
+          'options'=>['class'=>'form-control','readOnly'=>true, 'id'=>'purchase_date'],
           'dateFormat'=>'php:d M Y',
           ]) ?>
 
         <div class="metal-head">
-            <?php echo $form->field($model,'expiry_date')->widget(yii\jui\DatePicker::className(), [
-              'options'=>['class'=>'form-control','readOnly'=>true],
+            <?php echo $form->field($model,'metal_expiry_date')->widget(yii\jui\DatePicker::className(), [
+              'options'=>['class'=>'form-control','readOnly'=>true, 'id'=>'expiry_date'],
               'dateFormat'=>'php:d M Y',
               ]) ?>
         </div>
 
-
-
         <?= $form->field($model, 'remarks')->textarea(['rows' => 4]) ?>
-
 
       </div>
 
       <div class="col-md-6">
 
-        <div class="metal-head" id="metals-test">
+        <div class="metal-head" >
           <?php echo $form->field($model, 'trading_days')->textInput(['style'=>'text-align:right;']) ?>
           <?php echo $form->field($model, 'prorated_days')->textInput(['style'=>'text-align:right;']) ?>
         </div>
-        <div id="nickels-test">
+        <div class="nickels-head">
           <?php echo $form->field($model, 'nickel_date')->textInput(['readOnly'=>true]) ?>
           <?php echo $form->field($model, 'nickel_expiry')->textInput(['readOnly'=>true]) ?>
         </div>
-        <div id="stocks-test">
+        <div class="stocks-head">
           <?php echo $form->field($model, 'buy_currency')->dropDownList($forex,['prompt'=>'Select Currency']) ?>
           <?= $form->field($model, 'buy_curr_rate')->widget(\yii\widgets\MaskedInput::className(), [
             'options' => ['class'=>'form-control'],
@@ -143,6 +140,18 @@ $x = ArrayHelper::map($salesperson,'id','name');
             ],
           ]) ?>
           <?= $form->field($model, 'buy_units')->widget(\yii\widgets\MaskedInput::className(), [
+            'options' => ['class'=>'form-control'],
+            'clientOptions' => [
+              'alias' => 'decimal',
+              'digits' => 2,
+              'digitsOptional' => false,
+              'radixPoint' => '.',
+              'groupSeparator' => ',',
+              'autoGroup' => true,
+              'removeMaskOnSubmit' => true,
+            ],
+          ]) ?>
+          <?= $form->field($model, 'buy_in_price')->widget(\yii\widgets\MaskedInput::className(), [
             'options' => ['class'=>'form-control'],
             'clientOptions' => [
               'alias' => 'decimal',
