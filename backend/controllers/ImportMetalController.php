@@ -127,6 +127,7 @@ class ImportMetalController extends Controller
      */
     public function actionCreate()
     {
+
         $model = new ImportMetal();
 
         if ($model->load(Yii::$app->request->post()) ) {
@@ -140,7 +141,8 @@ class ImportMetalController extends Controller
               $model->importExcel($filename);
             }
             Yii::$app->session->setFlash('success',"File sucessfully uploaded");
-            return $this->redirect(['view', 'id' => $model->id]);
+          //  return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -191,7 +193,7 @@ class ImportMetalController extends Controller
 
      public function actionBaseMetal(){
        $model = new ImportMetal();
-
+      // die();
        if ($model->load(Yii::$app->request->post()) ) {
            $model->date_file = date('Y-m-d', strtotime($model->date_file) );
            $model->date_added = date('Y-m-d h:i:s');
@@ -203,7 +205,8 @@ class ImportMetalController extends Controller
              $model->importBase($filename);
            }
            Yii::$app->session->setFlash('success',"File sucessfully uploaded");
-           return $this->redirect(['view', 'id' => $model->id]);
+        //   return $this->redirect(['view', 'id' => $model->id]);
+             return $this->redirect(['index']);
        } else {
            return $this->render('create-base', [
                'model' => $model,
@@ -225,7 +228,8 @@ class ImportMetalController extends Controller
              $model->importNickel($filename);
            }
            Yii::$app->session->setFlash('success',"File sucessfully uploaded");
-           return $this->redirect(['view', 'id' => $model->id]);
+           return $this->redirect(['index']);
+          // return $this->redirect(['view', 'id' => $model->id]);
        } else {
            return $this->render('create-nickel', [
                'model' => $model,
