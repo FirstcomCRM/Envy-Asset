@@ -17,6 +17,7 @@ use common\models\PurchaseEarning;
 use common\models\MetalNickelDeals;
 use common\models\ProductManagement;
 use common\models\PurchaseLine;
+use common\models\PurchaseLineSearch;
 use common\models\Model;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -124,8 +125,13 @@ class PurchaseController extends Controller
      */
     public function actionView($id)
     {
+        $line = new PurchaseLineSearch();
+        $line->purchase_id = $id;
+        $dataProvider_line = $line->search(Yii::$app->request->queryParams);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'dataProvider_line'=>$dataProvider_line
         ]);
     }
 
@@ -138,21 +144,16 @@ class PurchaseController extends Controller
     {
         $model = new Purchase();
         $modelLine = [new PurchaseLine];
-        $model->date = date('d M Y');
-      //  $model->purchase_type = 'Metal';
-        $model->company_charge = 0.00;
+        $model->setDefaults();
         if ($model->load(Yii::$app->request->post())  ) {
-            $model->ptotal_sold_unit = str_replace(",","",$model->ptotal_sold_unit);
-            $model->date = date('Y-m-d', strtotime($model->date) );
-            $model->expiry_date = date('Y-m-d', strtotime($model->expiry_date) );
-            $model->date_added = date('Y-m-d h:i:s');
-            $model->company_charge = $model->company_charge/100;
+
           //    $model->Quo_ID = $quo = 'QUO-'. sprintf("%007d", $model->ID);
             $start = date('Y-m-01',strtotime($model->date) );
             $start = strtotime($start);
-            $end = date('Y-m-01',strtotime($model->expiry_date) );
+            $end = date('Y-m-01',strtotime($model->metal_expiry_date) );
             $end = strtotime($end);
 
+          //  print_r($model->nickel_date);die();
           /*  $model->save(false);
             $model->purchase_no = date('Ym').'-'.sprintf("%005d", $model->id);
             $model->save(false);*/
@@ -198,6 +199,8 @@ class PurchaseController extends Controller
                           //  $model->earning($date_test);
                             $start = strtotime("+1month", $start);
                         }
+                        //print_r($model->company_charge);
+                        //die();
                         Yii::$app->session->setFlash('success', "Purchase created");
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
@@ -228,14 +231,21 @@ class PurchaseController extends Controller
     {
         $model = $this->findModel($id);
         $modelLine = PurchaseLine::find()->where(['purchase_id' => $id])->all();
+
         $model->date = date('d M Y', strtotime($model->date) );
         $model->expiry_date = date('d M Y', strtotime($model->expiry_date) );
         $model->company_charge = $model->company_charge*100;
+        $model->nickel_date = date('d M Y', strtotime($model->nickel_date) );
+        $model->nickel_expiry = date('d M Y', strtotime($model->nickel_expiry) );
+
         if ($model->load(Yii::$app->request->post())  ) {
 
+            $model->ptotal_sold_unit = str_replace(",","",$model->ptotal_sold_unit);
             $model->date = date('Y-m-d', strtotime($model->date) );
             $model->expiry_date = date('Y-m-d', strtotime($model->expiry_date) );
-            $model->company_charge = $model->company_charge/100;
+            $model->nickel_date = date('Y-m-d', strtotime($model->nickel_date) );
+            $model->nickel_expiry= date('Y-m-d', strtotime($model->nickel_expiry) );
+        //    $model->company_charge = $model->company_charge/100;
 
             $oldIDs = ArrayHelper::map($modelLine, 'id', 'id');
             $purline = Model::createMultiple(PurchaseLine::classname(), $modelLine);
@@ -366,7 +376,7 @@ class PurchaseController extends Controller
       $sold_price_amount = 0;
        if ( Yii::$app->request->post() ) {
             $amount = Yii::$app->request->post()['price'];
-            $sold_price = Yii::$app->request->post()['sold_price'];
+          //  $sold_price = Yii::$app->request->post()['sold_price'];
             $expiry_date = Yii::$app->request->post()['expiry_date'];
             $data = new \DateTime($expiry_date);
             $expire = $data->format('Y-m-d');
@@ -418,9 +428,13 @@ class PurchaseController extends Controller
      if ( Yii::$app->request->post() ) {
           $product_id = Yii::$app->request->post()['product'];
 
-          $products =  ProductManagement::find()->where(['id'=>$product_id])->one();
+        //  $products =  ProductManagement::find()->where(['id'=>$product_id])->one();
         //  print_r($products);die();
-          $nickel = MetalNickelDeals::find()->where(['title'=>$products->product_name])->one();
+        //  $nickel = MetalNickelDeals::find()->where(['title'=>$products->product_name])->one();
+          $nickel = MetalNickelDeals::find()->where(['product_id'=>$product_id])->one();
+
+          //print_r($product_id);
+          //print_r($nickel);die();
           if (!empty($nickel)) {
             $dates = new \DateTime($nickel->contract_period_start);
             $start = $dates->format('d M Y');
@@ -439,6 +453,18 @@ class PurchaseController extends Controller
               'end'=>'',
             ));
           }
+     }
+   }
+
+   public function actionAjaxStockamount(){
+     $amount = 0;
+     if ( Yii::$app->request->post() ) {
+        $unit = str_replace(",","",Yii::$app->request->post()['stocks_unit']);
+        $price = str_replace(",","",Yii::$app->request->post()['stocks_price']);
+      //  str_replace(",","",$model->ptotal_sold_unit);
+        $amount = $unit*$price;
+        return $amount;
+
      }
    }
 
@@ -492,7 +518,7 @@ class PurchaseController extends Controller
       }
 
       $compare_start =  date('Y-m-01',strtotime($model['date']) );
-      $compare_end  = date('Y-m-01',strtotime($model['expiry_date']) );
+      $compare_end  = date('Y-m-01',strtotime($model['metal_expiry_date']) );
 
       if ($model['charge_type']=='Others' && $model['purchase_type'] =='Metal') {
       //  $customer_amount  = ($new_comm->transact_amount*$multiplier);
