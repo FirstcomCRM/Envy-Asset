@@ -8,7 +8,7 @@ use common\models\Investor;
 /* @var $this yii\web\View */
 /* @var $model common\models\PurchaseEarningSearch */
 /* @var $form yii\widgets\ActiveForm */
-$data = Investor::find()->select(['id','company_name'])->asArray()->all();
+$data = Investor::find()->select(['id','company_name'])->orderBy(['company_name'=>SORT_ASC])->asArray()->all();
 //$investor = ArrayHelper::map($data,'company_name','company_name');
 $investor = ArrayHelper::map($data,'id','company_name');
 
@@ -34,9 +34,6 @@ $investor = ArrayHelper::map($data,'id','company_name');
 
       </div>
     </div>
-
-
-
 
     <?php ActiveForm::end(); ?>
 
