@@ -11,6 +11,7 @@ use common\models\UserPermission;
 use common\models\Purchase;
 use common\models\PurchaseSearch;
 use common\models\Investor;
+use common\models\InvestorSearch;
 use common\components\Retrieve;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -119,6 +120,35 @@ class InvestorReportController extends \yii\web\Controller
           'dataProvider' => $dataProvider,
           'test'=>$test,
       ]);
+    }
+
+//temporary
+    public function actionAlter(){
+        $searchModel = new InvestorSearch();
+
+        $request = Yii::$app->request;
+
+        $session = Yii::$app->session;
+        if (!$session->isActive) {
+            $session->open();
+        }
+        $test = $request->get();
+        if (array_key_exists('InvestorSearch', $test)) {
+          //die('work');
+        }else{
+            $searchModel->id = 0;
+        }
+
+        //print_r($test);die();
+
+        $dataProvider = $searchModel->alterSearch(Yii::$app->request->queryParams);
+
+        $session['alter-report'] = Yii::$app->request->queryParams;
+        return $this->render('alter', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            //'test'=>$test,
+        ]);
     }
 
     public function actionView($id)
@@ -234,6 +264,25 @@ class InvestorReportController extends \yii\web\Controller
         exit();
       }
    }
+
+     public function actionAlterDownload($id){
+        $model =Investor::findOne($id);
+      //  print_r($model);die();
+       $searchModel = new InvestorSearch();
+       $searchModel->alterSearch(Yii::$app->session->get('alter-report'));
+    //   print_r($searchModel->date_filter);die();
+        $title = $model->company_name.'-'.$searchModel->date_filter;
+       $mpdf = new mPDF('utf-8','A3');
+       $mpdf->content = $this->renderPartial('alter-pdf',[
+           'model'=>$model,
+          'searchModel'=>$searchModel,
+        ]);
+        $mpdf->setFooter('|GROWTH - CONSISTENCY - ETHICS|{PAGENO}');
+        $mpdf->WriteHTML($mpdf->content);
+        $mpdf->Output($title.'.pdf','I');
+        exit();
+
+     }
 
    public function actionDIndex(){
      $searchModel = new PurchaseSearch();
