@@ -32,7 +32,7 @@ class CronController extends Controller
       $multiplier = 0;
     //  $date = '2018-03-31';
 
-      $data = Purchase::find()->where(['expiry_date'=>$date, 'purchase_type'=>'Nickel', 'charge_type'=>'Others'])->orderBy(['id'=>SORT_ASC])->all();
+      $data = Purchase::find()->where(['true_expiry_date'=>$date, 'purchase_type'=>'Nickel', 'charge_type'=>'Others'])->orderBy(['id'=>SORT_ASC])->all();
       $re = MetalNickelDeals::find()->where(['contract_period_end'=>$date])->one();
       if (!empty($re)) {
         $multiplier = $re->unrealised_profit_a;
