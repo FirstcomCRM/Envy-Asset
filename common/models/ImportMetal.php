@@ -183,11 +183,11 @@ class ImportMetal extends \yii\db\ActiveRecord
       if (!empty($data) ) {
         foreach ($data as $key => $value) {
           $purs = Purchase::find()->where(['id'=>$value->purchase_id])->one();
-          
+
           if ($purs->charge_type == 'Others' && $purs->purchase_type == 'Metal') {
 
               $compare_start =  date('Y-m-01',strtotime($purs->date) );
-              $compare_end  = date('Y-m-01',strtotime($purs->expiry_date) );
+              $compare_end  = date('Y-m-01',strtotime($purs->metal_expiry_date) );
 
               if ($compare_start == $value->re_date ||$compare_end == $value->re_date ) {
                   $before_return = $value->purchase_amount*$multiplier;
@@ -195,9 +195,11 @@ class ImportMetal extends \yii\db\ActiveRecord
                   $true_return = $traded*$purs->prorated_days;
                   $value->customer_earn = $true_return;
                   $value->re_metal_per = $multiplier;
-                  $value->company_earn = $value_customer_earn*$purs->company_charge;
+              //    $value->company_earn = $value_customer_earn*$purs->company_charge;
+                  $value->company_earn = $value->customer_earn*$purs->company_charge;
                   $value->customer_earn_after = $value->customer_earn - $value->company_earn;
                   $value->staff_earn = $value->company_earn/2;
+                //  print_r()
               }else{
                 $value->customer_earn =  $value->purchase_amount*$multiplier;
                 $value->re_metal_per = $multiplier;
