@@ -38,12 +38,12 @@ class Purchase extends \yii\db\ActiveRecord
      return [
          [
              'class' => BlameableBehavior::className(),
-             'createdByAttribute' => 'created_by',
+             'createdByAttribute' => 'added_by',
              'updatedByAttribute' => 'edited_by',
          ],
          [
            'class' => TimestampBehavior::className(),
-           'createdAtAttribute' => 'date_created',
+           'createdAtAttribute' => 'date_added',
            'updatedAtAttribute' => 'date_edited',
          //  'value' => new Expression('NOW()'),
              'value' => date('Y-m-d H:i:s'),
@@ -60,13 +60,13 @@ class Purchase extends \yii\db\ActiveRecord
             [['investor', 'product', 'price', 'date','company_charge'], 'required'],
             [['sum_all','company_charge'], 'number'],
             [['date'], 'safe'],
-            [['trading_days','prorated_days','buy_currency','created_by','edited_by'],'integer'],
+            [['trading_days','prorated_days','buy_currency','added_by','edited_by'],'integer'],
             [['remarks','purchase_no'], 'string'],
         //    [['salesperson'], 'string'],
       //      [['salesperson'], 'integer'],
             [['investor', 'product', 'share'], 'string', 'max' => 75],
             [['purchase_type','charge_type'], 'string', 'max' => 50],
-            [['date_adedd','expiry_date','salesperson','nickel_date','nickel_expiry','price','customer_earn','company_earn','staff_earn','buy_curr_rate','buy_units','ptotal_sold_unit','date_created','date_added','date_edited'],'safe'],
+            [['metal_expiry_date','true_expiry_date','salesperson','nickel_date','nickel_expiry','price','customer_earn','company_earn','staff_earn','buy_curr_rate','buy_units','ptotal_sold_unit','date_created','date_added','date_edited','buy_in_price'],'safe'],
         ];
     }
 
@@ -87,9 +87,10 @@ class Purchase extends \yii\db\ActiveRecord
             'date' => 'Date',
             'salesperson'=>'Sales Person',
             'remarks' => 'Remarks',
+            'true_expiry_date'=>'Expiry Date',
             'nickel_date'=>'Nickel Date',
             'nickel_expiry'=>'Nickel Expiry Date',
-            'expiry_date'=>'Expiry Date',
+            'expiry_date'=>'Metal Expiry Date',
             'trading_days'=>'Trading days in Month',
             'prorated_days'=>'Pro-rated days in Month',
             'purchase_type'=>'Purchase Type',
@@ -101,16 +102,41 @@ class Purchase extends \yii\db\ActiveRecord
             'ptotal_sold_unit'=>'Total Sold Units',
             'buy_currency'=>'Buy Currency',
             'buy_curr_rate'=>'Buy Currency Rate',
-            'buy_units'=>'Buy Units'
+            'buy_units'=>'Buy Units',
+            'buy_in_price'=>'Buy In Price',
         ];
     }
 
-    public function earnMetal(){
-
+    public function setDefaults(){
+      $this->date = date('d M Y');
+      $this->purchase_type = 'Metal';
+      $this->company_charge = 0.00;
+      $this->trading_days = 20;
+      $this->prorated_days = 15;
     }
 
-    public function earnNickel(){
-
+    public function beforeSave($insert) {
+        if (parent::beforeSave($insert)) {
+          //  $this->final_sales_price = str_replace(",", "", $this->final_sales_price);
+            $this->ptotal_sold_unit = str_replace(",","",$this->ptotal_sold_unit);
+            $this->date = date('Y-m-d', strtotime($this->date) );
+            $this->metal_expiry_date = date('Y-m-d', strtotime($this->metal_expiry_date) );
+            $this->date_added = date('Y-m-d h:i:s');
+            $x = $this->company_charge/100;
+            $this->company_charge = $x;
+            $this->nickel_date = date('Y-m-d', strtotime($this->nickel_date) );
+            $this->nickel_expiry= date('Y-m-d', strtotime($this->nickel_expiry) );
+            if ($this->purchase_type == 'Metal') {
+              $this->true_expiry_date = $this->metal_expiry_date;
+            }elseif ($this->purchase_type == 'Nickel') {
+              $this->true_expiry_date = $this->nickel_expiry;
+            }else{
+              $this->true_expiry_date = null;
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function earning($date_test){
@@ -163,7 +189,7 @@ class Purchase extends \yii\db\ActiveRecord
       }
 
       $compare_start =  date('Y-m-01',strtotime($this->date) );
-      $compare_end  = date('Y-m-01',strtotime($this->expiry_date) );
+      $compare_end  = date('Y-m-01',strtotime($this->metal_expiry_date) );
 
       if ($this->charge_type == 'Others') {
 
