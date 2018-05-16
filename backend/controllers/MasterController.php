@@ -15,6 +15,7 @@ class MasterController extends \yii\web\Controller
       //die('working');
       Yii::$app->db->createCommand()->truncateTable('purchase')->execute();
       Yii::$app->db->createCommand()->truncateTable('purchase_earning')->execute();
+      Yii::$app->db->createCommand()->truncateTable('purchase_line')->execute();
       Yii::$app->session->setFlash('success',"Purchase Truncate Successful");
       return $this->redirect(['index']);
     }
@@ -43,6 +44,8 @@ class MasterController extends \yii\web\Controller
 
     public function actionTruncateStocks(){
       Yii::$app->db->createCommand()->truncateTable('stocks')->execute();
+      Yii::$app->db->createCommand()->truncateTable('stocks_line')->execute();
+      Yii::$app->db->createCommand()->truncateTable('stocks_linea')->execute();
     //  Yii::$app->db->createCommand()->truncateTable('metal_al')->execute();
       Yii::$app->session->setFlash('success',"Stocks Truncate Successful");
       return $this->redirect(['index']);
