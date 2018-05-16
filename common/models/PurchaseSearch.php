@@ -95,13 +95,12 @@ class PurchaseSearch extends Purchase
       $this->load($params);
 
       if (!empty($this->date) ) {
-        list($this->start,$this->end) = explode(' - ', $this->date);
+        //list($this->start,$this->end) = explode(' - ', $this->date);
+         $mdate = new \DateTime($this->date);
+         $this->start = $mdate->format('Y-m-01');
+         $this->end = $mdate->format('Y-m-t');
+      //  print_r($this->start);die();
       }else{
-    //    $mdate = new \DateTime('now');
-    //    print_r($mdate->format('Y-m-d')) ;
-    //    die();
-        //$mdate->modify('-1month');
-        //$gain->true_date = $mdate->format('Y-m-d');
 
         $this->start = '';
         $this->end = '';
@@ -114,8 +113,9 @@ class PurchaseSearch extends Purchase
       }
 
     //  if (!empty($this->id) || !empty($this->salesperson) || !empty($this->date) ) {
-        $query->andFilterwhere(['<=','date',$this->start])
-              ->andFilterwhere(['>=','expiry_date',$this->end])
+    //    $query->andFilterwhere(['<=','date',$this->start])
+        $query->andFilterwhere(['between','date',$this->start,$this->end])
+              //->andFilterwhere(['>=','expiry_date',$this->end])
               ->andFilterWhere(['salesperson'=>$this->salesperson])
               ->andFilterwhere(['id'=>$this->id])
               ->andFilterwhere(['id'=>$this->dummy_id])
