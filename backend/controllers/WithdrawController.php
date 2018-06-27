@@ -8,7 +8,9 @@ use common\models\WithdrawSearch;
 use common\models\UserPermission;
 use common\models\User;
 use common\models\UserGroup;
+use common\models\UserManagement;
 use common\models\ProductManagement;
+use common\models\Investor;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -177,6 +179,27 @@ class WithdrawController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionAjaxInvestor(){
+      $data = 0;
+      if ( Yii::$app->request->get() ) {
+        $types = Yii::$app->request->get()['types'];
+        if ($types == 'Investor') { //type investor
+          $data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->select(['id','nric_comp'])->all();
+          foreach ($data as $key => $value) {
+            echo "<option value='".$value->id."'>".$value->nric_comp."</option>";
+          }
+        }else{//type Staff
+          $data = UserManagement::find()->all();
+          foreach ($data as $key => $value) {
+            echo "<option value='".$value->id."'>".$value->name."</option>";
+          }
+        }
+
+       //  die($types);
+
+      }
     }
 
     /**
