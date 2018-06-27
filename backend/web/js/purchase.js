@@ -29,9 +29,8 @@ $(document).ready(function(){
 
   var typep = '';
   var typep = $('input[name="Purchase[purchase_type]"]:checked').val();
-  //console.log(typep);
   hiding(typep);
-//  listProducts(typep);
+
 
   //Purchase Module Area
   //$("input[name=someRadioGroup]").on('change', function()
@@ -44,15 +43,24 @@ $(document).ready(function(){
     //pur_sum();
   });
 
+  $('#types').on('change',function(){
+    var types = (this.value);
+    console.log(types);
+    $.get("?r=purchase/ajax-investor",{
+          types:types
+      },
+      function(data, status){
+        //  $('#price').empty().val(data);
+          $("#purchase-investor").html(data);
+      });
+  });
 
 
   $('#purchase-buy_units').on('change',function(){
-    console.log('purchase-buy_unit');
     stocksAmount();
   });
 
   $('#purchase-buy_in_price').on('change',function(){
-    console.log('purchase-buy_price');
     stocksAmount();
   });
 
@@ -62,8 +70,6 @@ $(document).ready(function(){
   });
 
   $('#price').on('change',function(){
-  //  datas();
-  //  console.log('@@');
     pur_sum();
   });
 
@@ -119,8 +125,8 @@ function hiding(typep){
     $("#purchase-buy_units").val('');
     $("#purchase-buy_in_price").val('');
     $("#purchase-expiry_date").val('');
-    $("#purchase-trading_days").val('');
-    $("#purchase-prorated_days").val('');
+    $("#purchase-trading_days").val(20);
+    $("#purchase-prorated_days").val(15);
 
   }else if(typep == 'Stocks'){
     $(".stocks-head").show();
@@ -184,6 +190,8 @@ function pur_sum(){
   var charge_type = $('#charge_type').val();
   var company_charge = $('#company_charge').val();
   var sold_price = $('#purchase-sold_price').val();
+  var trade_days =  $('#purchase-trading_days').val();
+  var rated_days =  $('#purchase-prorated_days').val();
   if (sold_price == '') {
     sold_price = 0;
   }
@@ -197,11 +205,16 @@ function pur_sum(){
           charge_type:charge_type,
           purchase_type:purchase_type,
           company_charge:company_charge,
+          trade_days:trade_days,
+          rated_days:rated_days,
         //  sold_price:sold_price,
 
       },
       function(data, status){
           var jsonObj = eval ("(" + data + ")");
+          //var test = val(jsonObj.tier_charge);
+          //console.log(test);
+          $('#company_charge').empty().val(jsonObj.tier_charge);
           $('#customer_earn').empty().val(jsonObj.customer_amount);
           $('#company_earn').empty().val(jsonObj.company_earn);
           $('#staff_earn').empty().val(jsonObj.staff_earn);
@@ -215,15 +228,17 @@ function pur_sum(){
 
 function nickelDate(){
   var product = $('#products').val();
-
-  console.log(product);
+  var charge_type = $('#charge_type').val();
+//  console.log(product);
   if (product!='') {
     $.post("?r=purchase/ajax-nickel",{
           product:product,
+          charge_type:charge_type,
       },
       function(data, status){
         console.log('test');
           var jsonObj = eval ("(" + data + ")");
+          $('#company_charge').empty().val(jsonObj.com_per);
           $('#purchase-nickel_date').empty().val(jsonObj.start);
           $('#purchase-nickel_expiry').empty().val(jsonObj.end);
       //    'purchase-nickel_date',
