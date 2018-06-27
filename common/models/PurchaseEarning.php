@@ -36,6 +36,7 @@ class PurchaseEarning extends \yii\db\ActiveRecord
       //      [['purchase_id', 'purchase_date', 'expiry_date', 're_date', 'purchase_amount', 'customer_earn', 'company_earn', 'staff_earn'], 'required'],
             [['purchase_id','investor'], 'integer'],
             [['re_date'], 'safe'],
+            [['ptype'],'string'],
             [['customer_earn', 'purchase_amount','company_earn', 'staff_earn','re_metal_per','customer_earn_after','tranche'], 'number'],
         ];
     }
@@ -48,6 +49,7 @@ class PurchaseEarning extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'purchase_id' => 'Purchase ID',
+            'ptype'=>'Type',
             'Investor'=>'Investor',
             're_date' => 'Re Date',
             'purchase_amount'=>'Purchase Amount',
