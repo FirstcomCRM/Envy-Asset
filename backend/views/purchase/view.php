@@ -16,10 +16,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $metal = [
   'purchase_no',
+  'type',
   [
     'attribute'=>'investor',
     'value'=>function($model){
-      return Retrieve::retrieveInvestor($model->investor);
+      if ($model->type == 'Investor') {
+        return Retrieve::retrieveInvestor($model->investor);
+      }else{
+        return Retrieve::retrieveUsernameManagement($model->investor);
+      }
+
     },
   ],
   [
