@@ -66,6 +66,7 @@ class Purchase extends \yii\db\ActiveRecord
       //      [['salesperson'], 'integer'],
             [['investor', 'product', 'share'], 'string', 'max' => 75],
             [['purchase_type','charge_type'], 'string', 'max' => 50],
+            [['type'],'string','max'=>25],
             [['metal_expiry_date','true_expiry_date','salesperson','nickel_date','nickel_expiry','price','customer_earn','company_earn','staff_earn','buy_curr_rate','buy_units','ptotal_sold_unit','date_created','date_added','date_edited','buy_in_price'],'safe'],
         ];
     }
@@ -79,6 +80,7 @@ class Purchase extends \yii\db\ActiveRecord
         //    'id' => 'ID',
             'id' => 'ID',
             'purchase_no'=>'Purchase No',
+            'type'=>'Type',
             'investor' => 'Investor',
             'product' => 'Product',
             'share' => 'Security Name',
@@ -122,8 +124,8 @@ class Purchase extends \yii\db\ActiveRecord
             $this->date = date('Y-m-d', strtotime($this->date) );
             $this->metal_expiry_date = date('Y-m-d', strtotime($this->metal_expiry_date) );
             $this->date_added = date('Y-m-d h:i:s');
-            $x = $this->company_charge/100;
-            $this->company_charge = $x;
+        //    $x = $this->company_charge/100;
+        //    $this->company_charge = $x;
             $this->nickel_date = date('Y-m-d', strtotime($this->nickel_date) );
             $this->nickel_expiry= date('Y-m-d', strtotime($this->nickel_expiry) );
             if ($this->purchase_type == 'Metal') {
@@ -133,10 +135,26 @@ class Purchase extends \yii\db\ActiveRecord
             }else{
               $this->true_expiry_date = null;
             }
+            //print_r($this->company_charge);
+            //die('@@');
             return true;
         } else {
             return false;
         }
+    }
+
+    public function tierFunc($multiplier){
+      $m = 0;
+      if ($multiplier<=0.30) {
+        $m = 0.15;
+      }elseif($multiplier>0.30 && $multiplier<=0.40){
+        $m = 0.18;
+      }elseif ($multiplier>0.40 && $multiplier <=0.50) {
+        $m = 0.20;
+      }else {
+        $m = 0.25;
+      }
+      return $m;
     }
 
     public function earning($date_test){
