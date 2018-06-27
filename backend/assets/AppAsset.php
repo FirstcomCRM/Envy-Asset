@@ -24,6 +24,8 @@ class AppAsset extends AssetBundle
       'js/purchase.js',
       'js/nickel.js',
       'js/stocks.js',
+      'js/investor-report.js',
+      'js/withdraw.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
