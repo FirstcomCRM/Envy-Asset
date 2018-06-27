@@ -432,12 +432,17 @@ class ImportMetal extends \yii\db\ActiveRecord
     $deals->final_sales_price = $testarr[7];
     $deals->purchase_price_b  = $testarr[8];
     $deals->insurance_cost_b = $testarr[9];
-    $deals->total_cost_price = $testarr[10];
+    $deals->total_cost_price = $testarr[10]; //cost price
     $deals->unrealised_profit_a = $testarr[11]/$testarr[10];
-    $deals->commision =  $testarr[12];
+    $deals->commision =  $testarr[12];//commission
     $deals->unrealised_profit_b = $testarr[13];
     $deals->net_unrealised = $testarr[14];
+    $deals->commission_per = $testarr[12]/$testarr[10];
 
+  /*  echo '<pre>';
+    print_r($testarr);
+    echo '</pre>';
+    die();*/
     list($start,$end) = explode(' - ', $testarr[2]);
     $date = new \DateTime($start);
     $deals->contract_period_start = $date->format('Y-m-d');
