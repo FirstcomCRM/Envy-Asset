@@ -16,14 +16,30 @@ use kartik\widgets\Select2;
 /* @var $model common\models\Purchase */
 /* @var $form yii\widgets\ActiveForm */
 
-$data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->select(['id','nric_comp'])->all();
-$invest = ArrayHelper::map($data,'id','nric_comp');
+if ($model->isNewRecord) {
+  $data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->where(['id'=>0])->select(['id','nric_comp'])->all();
+  $invest = ArrayHelper::map($data,'id','nric_comp');
+}else{
+  if ($model->type == 'Investor') {
+    $data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->select(['id','nric_comp'])->all();
+    $invest = ArrayHelper::map($data,'id','nric_comp');
+  }else{
+    $data = UserManagement::find()->orderBy(['name'=>SORT_ASC])->select(['id','name'])->all();
+    $invest = ArrayHelper::map($data,'id','name');
+  }
+}
+
 
 $data = ProductManagement::find()->orderBy(['product_name'=>SORT_ASC])->select(['id','product_name'])->all();
 $prod = ArrayHelper::map($data,'id','product_name');
 
 $data = Forex::find()->all();
 $forex = ArrayHelper::map($data,'id','currency_code');
+
+$type = [
+  'Investor'=>'Investor',
+  'Staff'=>'Staff',
+];
 
 $pur_type = [
   'Metal'=>'Metal',
@@ -50,6 +66,16 @@ $x = ArrayHelper::map($salesperson,'id','name');
 
     <div class="row">
       <div class="col-md-6">
+
+        <?php echo $form->field($model,'type')->widget(Select2::className(),[
+           'data'=>$type,
+           'options'=>['placeholder'=>'Select Type', 'id'=>'types'],
+           'theme'=> Select2::THEME_BOOTSTRAP,
+           'size'=> Select2::MEDIUM,
+           'pluginOptions' => [
+             'allowClear' => true
+           ],
+         ]) ?>
 
         <?php echo $form->field($model,'investor')->widget(Select2::className(),[
            'data'=>$invest,
@@ -83,6 +109,8 @@ $x = ArrayHelper::map($salesperson,'id','name');
               'allowClear' => true
             ],
           ]) ?>
+
+        <?php echo  $form->field($model, 'charge_type')->dropDownList($ch_type,['id'=>'charge_type'])?>
 
         <?= $form->field($model, 'share')->textInput(['maxlength' => true]) ?>
 
@@ -167,7 +195,6 @@ $x = ArrayHelper::map($salesperson,'id','name');
 
         </div>
 
-        <?php echo  $form->field($model, 'charge_type')->dropDownList($ch_type,['id'=>'charge_type'])?>
         <?php echo $form->field($model, 'company_charge')->textInput(['id'=>'company_charge','style'=>'text-align:right;']) ?>
 
         <?= $form->field($model, 'customer_earn')->widget(\yii\widgets\MaskedInput::className(), [
