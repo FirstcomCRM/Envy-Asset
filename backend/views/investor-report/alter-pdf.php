@@ -1,4 +1,6 @@
 <?php
+
+use yii\db\Query;
 use common\components\Retrieve;
 use common\models\MetalAl;
 use common\models\MetalCu;
@@ -20,21 +22,16 @@ use common\models\Forex;
 ?>
 
 <?php
-if (!empty($searchModel->start)) {
-  $newDate = date('M-Y',strtotime($searchModel->start));
-  $endDate = date('d M Y', strtotime($searchModel->end));
-}else{
-  $newDate = '';
-}
-
 
 $start_search = date('Y-m-01',strtotime($searchModel->date_filter) );
 $start_end = date('Y-m-t',strtotime($searchModel->date_filter));
 
 $d = new \DateTime($start_search);
 $d->modify('-1month');
-$reduc_date_start = $d->format('Y-m-d');
 $reduc_date_end = $d->format('Y-m-t');
+$d->modify('-2month');
+$reduc_date_start = $d->format('Y-m-d');
+
 
 $al = MetalAl::find()->where(['date_uploaded'=>$start_search])->all();
 $cu = MetalCu::find()->where(['date_uploaded'=>$start_search])->all();
@@ -46,65 +43,101 @@ $zn = MetalZn::find()->where(['date_uploaded'=>$start_search])->all();
 $unrealised = MetalUnrealised::find()->where(['date_uploaded'=>$start])->all();
 $unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$start])->one();
 
-$pur_metal = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Metal'])->asArray()->all();
-$pur_metal_prev =Purchase::find()->andFilterWhere(['investor'=>$model->id, 'purchase_type'=>'Metal'])
+$pur_metal = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Metal','type'=>'Investor'])->asArray()->all();
+$pur_metal_prev =Purchase::find()->andFilterWhere(['investor'=>$model->id, 'purchase_type'=>'Metal','type'=>'Investor'])
       ->andFilterWhere(['between','date',$reduc_date_start,$reduc_date_end])
       ->sum('price');
-$pur_metal_current =Purchase::find()->andFilterWhere(['investor'=>$model->id, 'purchase_type'=>'Metal'])
+$pur_metal_current =Purchase::find()->andFilterWhere(['investor'=>$model->id, 'purchase_type'=>'Metal','type'=>'Investor'])
       ->andFilterWhere(['between','date',$start_search,$start_end])
       ->sum('price');
-$pur_metal_curr = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Metal'])
+$pur_metal_curr = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Metal','type'=>'Investor'])
           ->andFilterWhere(['between','date',$start_search,$start_end])
           ->asArray()
           ->all();
 
-$pur_nickel_curr = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel'])
+$pur_nickel_curr = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor'])
             ->andFilterWhere(['between','date',$start_search,$start_end])
             ->asArray()->all();
-$pur_nickel_prev = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel'])
+$pur_nickel_prev = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor'])
             ->andFilterWhere(['between','date',$reduc_date_start,$reduc_date_end])
             ->asArray()->all();
 
-$pur_nickel_prev_sum = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel'])
+$pur_nickel_prev_sum = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor'])
         ->andFilterWhere(['between','date',$reduc_date_start,$reduc_date_end])
         ->sum('price');
-$pur_nickel_curr_sum = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel'])
+$pur_nickel_curr_sum = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor'])
         ->andFilterWhere(['between','date',$start_search,$start_end])
         ->sum('price');
 
-/*
-$query->andFilterwhere(['<=','date',$this->start])
-      ->andFilterwhere(['>=','expiry_date',$this->end])
-*/
+$pur_stocks_prev =Purchase::find()->andFilterWhere(['investor'=>$model->id, 'purchase_type'=>'Stocks','type'=>'Investor'])
+        ->andFilterWhere(['between','date',$reduc_date_start,$reduc_date_end])
+        ->sum('price');
+$pur_stocks_current =Purchase::find()->andFilterWhere(['investor'=>$model->id, 'purchase_type'=>'Stocks','type'=>'Investor'])
+        ->andFilterWhere(['between','date',$start_search,$start_end])
+        ->sum('price');
 
-$metals_curr = Withdraw::find()->where(['between','date',$start_search,$start_end])->andFilterWhere(['investor'=>$model->id,'product_type'=>2])->asArray()->all();
-$nickels_curr = Withdraw::find()->where(['between','date',$start_search,$start_end ])->andFilterWhere(['investor'=>$model->id,'product_type'=>3])->asArray()->all();
-$metals_curr_sum = Withdraw::find()->where(['between','date',$start_search,$start_end])->andFilterWhere(['investor'=>$model->id,'product_type'=>2])->sum('price');
-$nickels_curr_sum = Withdraw::find()->where(['between','date',$start_search,$start_end ])->andFilterWhere(['investor'=>$model->id,'product_type'=>3])->sum('price');
+$metals_curr = Withdraw::find()->where(['between','date',$start_search,$start_end])->andFilterWhere(['investor'=>$model->id,'product_type'=>2,'type'=>'Investor'])->asArray()->all();
+$nickels_curr = Withdraw::find()->where(['between','date',$start_search,$start_end ])->andFilterWhere(['investor'=>$model->id,'product_type'=>3,'type'=>'Investor'])->asArray()->all();
+$metals_curr_sum = Withdraw::find()->where(['between','date',$start_search,$start_end])->andFilterWhere(['investor'=>$model->id,'product_type'=>2,'type'=>'Investor'])->sum('price');
+$nickels_curr_sum = Withdraw::find()->where(['between','date',$start_search,$start_end])->andFilterWhere(['investor'=>$model->id,'product_type'=>3,'type'=>'Investor'])->sum('price');
+$stocks_curr_sum = Withdraw::find()->where(['between','date',$start_search,$start_end])->andFilterWhere(['investor'=>$model->id,'product_type'=>1,'type'=>'Investor'])->sum('price');
 
 
-$metals_prev = Withdraw::find()->where(['between','date',$reduc_date_start,$reduc_date_end])->andFilterWhere(['investor'=>$model->id,'product_type'=>2])->asArray()->all();
-$nickels_prev = Withdraw::find()->where(['between','date',$reduc_date_start,$reduc_date_end ])->andFilterWhere(['investor'=>$model->id,'product_type'=>3])->asArray()->all();
-$metals_prev_sum = Withdraw::find()->where(['between','date',$reduc_date_start,$reduc_date_end])->andFilterWhere(['investor'=>$model->id,'product_type'=>2])->sum('price');
-$nickels_prev_sum = Withdraw::find()->where(['between','date',$reduc_date_start,$reduc_date_end ])->andFilterWhere(['investor'=>$model->id,'product_type'=>3])->sum('price');
-
+$metals_prev = Withdraw::find()->where(['between','date',$reduc_date_start,$reduc_date_end])->andFilterWhere(['investor'=>$model->id,'product_type'=>2,'type'=>'Investor'])->asArray()->all();
+$nickels_prev = Withdraw::find()->where(['between','date',$reduc_date_start,$reduc_date_end ])->andFilterWhere(['investor'=>$model->id,'product_type'=>3,'type'=>'Investor'])->asArray()->all();
+$metals_prev_sum = Withdraw::find()->where(['between','date',$reduc_date_start,$reduc_date_end])->andFilterWhere(['investor'=>$model->id,'product_type'=>2,'type'=>'Investor'])->sum('price');
+$nickels_prev_sum = Withdraw::find()->where(['between','date',$reduc_date_start,$reduc_date_end ])->andFilterWhere(['investor'=>$model->id,'product_type'=>3,'type'=>'Investor'])->sum('price');
+$stocks_prev_sum = Withdraw::find()->where(['between','date',$reduc_date_start,$reduc_date_end ])->andFilterWhere(['investor'=>$model->id,'product_type'=>1,'type'=>'Investor'])->sum('price');
 
 //$stocks = Stocks::find()->where(['between','date',$start_search,$start_end])->asArray()->limit(3)->all();
-$stocks = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Stocks'])->asArray()->limit(3)->all();
-$stocks_prev = Purchase::find()->andFilterWhere(['investor'=>$model->id, 'purchase_type'=>'Stocks'])
+$stocks = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Stocks','type'=>'Investor'])->asArray()->limit(3)->all();
+$stocks_prev = Purchase::find()->andFilterWhere(['investor'=>$model->id, 'purchase_type'=>'Stocks','type'=>'Investor'])
       ->andFilterWhere(['between','date',$reduc_date_start,$reduc_date_end])
       ->sum('price');
-$stocks_current = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Stocks'])
+$stocks_current = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Stocks','type'=>'Investor'])
     ->andFilterWhere(['between','date',$start_search,$start_end])
     ->sum('price');
 //$pur_nickel = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel'])->asArray()->all();
 
 $inv = Investor::find()->where(['id'=>$model->id])->one();
 
-$dates = PurchaseEarning::find()->select(['re_date'])->where(['investor'=>$model->id])->distinct()->asArray()->all();
+$dates = PurchaseEarning::find()->select(['re_date'])->where(['investor'=>$model->id,'ptype'=>'Investor'])->distinct()->asArray()->all();
 //$fmt_trade = PurchaseEarning::find()->where(['investor'=>$model->id, 're_date'=>$reduc_date_start])->asArray()->all();
-$fmt_trade_sum = PurchaseEarning::find()->where(['investor'=>$model->id, 're_date'=>$reduc_date_start])->sum('customer_earn_after');
+$fmt_trade_sum = PurchaseEarning::find()->where(['investor'=>$model->id, 're_date'=>$reduc_date_start,'ptype'=>'Investor'])->sum('customer_earn_after');
 
+
+
+//
+//previous ending balance queries
+$previous_ending_balance = 0;
+$previous_metal_balance = 0;
+$previous_nickel_balance = 0;
+$previous_stocks_balance = 0;
+$nearn = 0;
+foreach ($pur_metal as $key => $value) {
+//  $nearning = PurchaseEarning::find()->where(['purchase_id'=>$value['id'],'re_date'=>$reduc_date_start])->asArray()->all();
+  $nearning = PurchaseEarning::find()->where(['purchase_id'=>$value['id']])
+      ->andWhere(['between','re_date',$reduc_date_start,$reduc_date_end])
+      ->asArray()->all();
+
+  foreach ($nearning as $k => $v) {
+    $nearn = $nearn+$v['customer_earn_after'];
+  }
+}
+
+$nickels_prev_cearn = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel'])
+            ->andFilterWhere(['between','date',$reduc_date_start,$reduc_date_end])
+            ->sum('customer_earn');
+
+$previous_metal_balance = $pur_metal_prev+$nearn-($metals_prev_sum);
+$previous_nickel_balance = $pur_nickel_prev_sum + $nickels_prev_cearn - ($nickels_prev_sum);
+$previous_stocks_balance = $pur_stocks_prev +$stocks_prev_sum - ($stocks_prev_sum);
+$previous_ending_balance = $previous_metal_balance+$previous_nickel_balance+$previous_stocks_balance;
+
+
+//echo $reduc_date_start;
+//edr001
+//end
 
 $withdraw_metal = 0;
 $withdraw_nickel = 0;
@@ -125,8 +158,8 @@ $fmt_diff = 0;
 $pmt = 0;
 $bb = [];
 
-$prev_total = $pur_metal_prev+$stocks_prev+$pur_nickel_prev_sum;
-$prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
+//$prev_total = $pur_metal_prev+$stocks_prev+$pur_nickel_prev_sum;
+//$prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
 
 
  ?>
@@ -238,9 +271,7 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
 
 
 <div class="test">
-  <pre>
-    <?php print_r($fmt_trade)  ?>
-  </pre>
+
 </div>
 
 
@@ -275,9 +306,9 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
     </tr>
     <tr>
       <td class="th-daily">Date</td>
-      <td class="th-daily">Beginning Balance as at <?php echo $d->format('t M Y'); ?></td>
+      <td class="th-daily">Beginning Balance as at <?php echo date('M Y',strtotime($reduc_date_end) ); ?></td>
       <td class="th-daily"></td>
-      <td class="th-daily rights"><?php echo number_format($prev_total,2) ?></td>
+      <td class="th-daily rights"><?php echo number_format($previous_ending_balance,2) ?></td>
       <td class="th-daily"></td>
     </tr>
       <!--Empty Space--->
@@ -294,7 +325,7 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
       <td style="border-bottom:1px solid black"><strong>Futures Metal Trading (Metal)</strong></td>
       <td style="border-bottom:1px solid black"></td>
       <td class="rights" style="border-bottom:1px solid black">
-        <strong><?php echo number_format($pur_metal_prev,2) ?></strong>
+        <strong><?php echo number_format($previous_metal_balance,2) ?></strong>
       </td>
       <td></td>
     </tr>
@@ -313,7 +344,7 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
       <td style="border-bottom:1px solid black"></td>
       <td class="rights" style="border-bottom:1px solid black">
         <strong>
-          <?php echo number_format($stocks_prev,2) ?>
+          <?php echo number_format($previous_stocks_balance,2) ?>
         </strong>
       </td>
       <td></td>
@@ -331,7 +362,7 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
       <td style="border-bottom:1px solid black"></td>
       <td style="border-bottom:1px solid black"><strong>Physical Metal Trading (Nickel)</strong></td>
       <td style="border-bottom:1px solid black"></td>
-      <td class="rights" style="border-bottom:1px solid black"> <strong><?php echo number_format($pur_nickel_prev_sum,2) ?></strong></td>
+      <td class="rights" style="border-bottom:1px solid black"> <strong><?php echo number_format($previous_nickel_balance,2) ?></strong></td>
       <td></td>
     </tr>
 
@@ -385,7 +416,7 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
     </tr>
 
     <!--Looping sequence for Future Metal Trading Records--->
-    <?php foreach ($pur_metal as $key => $value): ?>
+    <?php foreach ($pur_metal as $key => $value): ?>//edr00
       <?php $earning = PurchaseEarning::find()->where(['purchase_id'=>$value['id'],'re_date'=>$start_search])->asArray()->all() ?>
         <?php foreach ($earning as $k => $v): ?>
           <tr>
@@ -436,7 +467,12 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
     <?php foreach ($metals_curr as $key => $m): ?>
       <tr>
         <td><?php echo date('d M Y',strtotime($m['date']) ) ?></td>
-        <td>Metal withdraw from <?php echo date('d M Y',strtotime($m['date']) ) ?></td>
+        <td>
+          Metal withdraw from <?php echo date('d M Y',strtotime($m['date']) ) ?>
+          <?php $data = ProductManagement::findOne($m['product']);
+            echo $data->product_name;
+          ?>
+        </td>
         <td class="rights"><?php echo '('.number_format($m['price'],2).')' ?></td>
         <td></td>
         <td></td>
@@ -447,7 +483,12 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
     <?php foreach ($pur_metal_curr as $key => $m): ?>
       <tr>
         <td><?php echo date('d M Y',strtotime($m['date']) ) ?></td>
-        <td>Metal investment from <?php echo date('d M Y',strtotime($m['date']) ) ?></td>
+        <td>
+          Metal investment from <?php echo date('d M Y',strtotime($m['date']) ) ?>
+          <?php $data = ProductManagement::findOne($m['product']);
+            echo $data->product_name;
+          ?>
+        </td>
         <td></td>
         <td class="rights"><?php echo number_format($m['price'],2) ?></td>
         <td></td>
@@ -525,7 +566,12 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
     <?php foreach ($nickels_curr as $key => $n): ?>
       <tr>
         <td><?php echo date('d M Y',strtotime($n['date']) ) ?></td>
-        <td>Nickel withdraw from <?php echo date('d M Y',strtotime($n['date']) ) ?></td>
+        <td>
+          Nickel withdraw from <?php echo date('d M Y',strtotime($n['date']) ) ?>
+          <?php $data = ProductManagement::findOne($n['product']);
+            echo $data->product_name;
+          ?>
+        </td>
         <td class="rights"><?php echo '('.number_format($n['price'],2).')' ?></td>
         <td></td>
         <td></td>
@@ -535,7 +581,12 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
     <?php foreach ($pur_nickel_curr as $key => $n): ?>
       <tr>
         <td><?php echo date('d M Y',strtotime($n['date']) ) ?></td>
-        <td>Nickel investment from <?php echo date('d M Y',strtotime($n['date']) ) ?></td>
+        <td>
+          Nickel investment from <?php echo date('d M Y',strtotime($n['date']) ) ?>
+          <?php $data = ProductManagement::findOne($n['product']);
+            echo $data->product_name;
+          ?>
+        </td>
         <td></td>
         <td class="rights"><?php echo number_format($n['price'],2) ?></td>
         <td></td>
@@ -564,19 +615,25 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
   <br>
 
   <?php
-      $custom_metal_sum = 0;
-      $company_metal_sum = 0;
-      $company_nickel_sum= 0;
-      $custom_nickel_sum = 0;
-    //  $fmt = 0;
-  //    $pmt = 0;
       $eb = 0;
       $eb =  ($metal_wi_total+$fmt+$pmt+$nickel_wi_total+$stocks_current);
       $fmt_sum = $metal_wi_total+$fmt;
-      $pmt_sum = $pmt+$nickel_wi_total
+      $pmt_sum = $pmt+$nickel_wi_total;
+
+      //Ending balance queries
+      $current_metal_balance = 0;
+      $current_nickel_balance = 0;
+      $current_stocks_balance = 0;
+      $current_ending_balance = 0;
+
+      $current_metal_balance = $previous_metal_balance + $fmt + $metal_wi_total;
+      $current_nickel_balance = $previous_nickel_balance + $pmt + $nickel_wi_total;
+      $current_stocks_balance = $previous_stocks_balance + $stocks_current - $stocks_curr_sum;
+      $current_ending_balance = $current_metal_balance+$current_nickel_balance+$current_stocks_balance;
       //edr border
   ?>
 <hr>
+
   <table class="current-balance">
     <tr>
       <td style="width:15%"></td>
@@ -587,9 +644,9 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
     </tr>
     <tr>
       <td class="th-daily">Date</td>
-      <td class="th-daily">Ending Balance as at <?php echo date('d M Y', strtotime($start_search) ); ?></td>
+      <td class="th-daily">Ending Balance as at <?php echo date('M Y', strtotime($start_search) ); ?></td>
       <td class="th-daily"></td>
-      <td class="th-daily rights"><?php echo number_format($eb,2) ?></td>
+      <td class="th-daily rights"><?php echo number_format($current_ending_balance,2) ?></td>
       <td class="th-daily"></td>
     </tr>
       <!--Empty Space--->
@@ -606,7 +663,7 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
       <td style="border-bottom:1px solid black"><strong>Futures Metal Trading (Metal)</strong></td>
       <td style="border-bottom:1px solid black"></td>
       <td class="rights" style="border-bottom:1px solid black">
-         <strong><?php echo number_format($fmt_sum,2) ?></strong>
+         <strong><?php echo number_format($current_metal_balance,2) ?></strong>
       </td>
       <td></td>
     </tr>
@@ -625,7 +682,7 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
       <td style="border-bottom:1px solid black"></td>
       <td class="rights" style="border-bottom:1px solid black">
         <strong>
-          <?php echo number_format($stocks_current,2) ?>
+          <?php echo number_format($current_stocks_balance,2) ?>
         </strong>
       </td>
       <td></td>
@@ -643,7 +700,7 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
       <td style="border-bottom:1px solid black"></td>
       <td style="border-bottom:1px solid black"><strong>Physical Metal Trading (Nickel)</strong></td>
       <td style="border-bottom:1px solid black"></td>
-      <td class="rights" style="border-bottom:1px solid black"> <strong><?php echo number_format($pmt_sum,2) ?></strong></td>
+      <td class="rights" style="border-bottom:1px solid black"> <strong><?php echo number_format($current_nickel_balance,2) ?></strong></td>
       <td></td>
     </tr>
 
@@ -1210,10 +1267,10 @@ $prev_curr = $pur_metal_current+$stocks_current+$pur_nickel_curr_sum;
     <tbody>
       <?php foreach ($dates as $key => $d): ?>
           <?php
-            $inv_earn = PurchaseEarning::find()->where(['investor'=>$model->id,'re_date'=>$d['re_date'] ])->sum('customer_earn');
-            $metal_per = PurchaseEarning::find()->where(['investor'=>$model->id,'re_date'=>$d['re_date'] ])->one();
-            $total = PurchaseEarning::find()->where(['investor'=>$model->id,'re_date'=>$d['re_date'] ])->sum('purchase_amount');
-            $comms = PurchaseEarning::find()->where(['investor'=>$model->id,'re_date'=>$d['re_date'] ])->sum('company_earn');
+            $inv_earn = PurchaseEarning::find()->where(['investor'=>$model->id,'re_date'=>$d['re_date'],'ptype'=>'Investor' ])->sum('customer_earn');
+            $metal_per = PurchaseEarning::find()->where(['investor'=>$model->id,'re_date'=>$d['re_date'],'ptype'=>'Investor' ])->one();
+            $total = PurchaseEarning::find()->where(['investor'=>$model->id,'re_date'=>$d['re_date'],'ptype'=>'Investor' ])->sum('purchase_amount');
+            $comms = PurchaseEarning::find()->where(['investor'=>$model->id,'re_date'=>$d['re_date'],'ptype'=>'Investor' ])->sum('company_earn');
           ?>
         <tr>
           <td><?php echo date('M Y',strtotime($d['re_date'])) ?></td>
