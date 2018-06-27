@@ -146,7 +146,7 @@ class PurchaseController extends Controller
         $modelLine = [new PurchaseLine];
         $model->setDefaults();
         if ($model->load(Yii::$app->request->post())  ) {
-
+            $model->company_charge = $model->company_charge/100;
           //    $model->Quo_ID = $quo = 'QUO-'. sprintf("%007d", $model->ID);
             $start = date('Y-m-01',strtotime($model->date) );
             $start = strtotime($start);
@@ -233,7 +233,7 @@ class PurchaseController extends Controller
         $modelLine = PurchaseLine::find()->where(['purchase_id' => $id])->all();
 
         $model->date = date('d M Y', strtotime($model->date) );
-        $model->expiry_date = date('d M Y', strtotime($model->expiry_date) );
+        $model->metal_expiry_date = date('d M Y', strtotime($model->metal_expiry_date) );
         $model->company_charge = $model->company_charge*100;
         $model->nickel_date = date('d M Y', strtotime($model->nickel_date) );
         $model->nickel_expiry = date('d M Y', strtotime($model->nickel_expiry) );
@@ -272,6 +272,7 @@ class PurchaseController extends Controller
 
                 foreach ($purline as $line) {
                     $line->purchase_id = $model->id;
+
                     $line->psold_date = date('Y-m-d', strtotime($line->psold_date) );
                     if (! ($flag = $line->save(false))) {
                         $transaction->rollBack();
@@ -348,6 +349,27 @@ class PurchaseController extends Controller
        }
    }
 
+   public function actionAjaxInvestor(){
+     $data = 0;
+     if ( Yii::$app->request->get() ) {
+       $types = Yii::$app->request->get()['types'];
+       if ($types == 'Investor') { //type investor
+         $data = Investor::find()->orderBy(['company_name'=>SORT_ASC])->select(['id','nric_comp'])->all();
+         foreach ($data as $key => $value) {
+           echo "<option value='".$value->id."'>".$value->nric_comp."</option>";
+         }
+       }else{//type Staff
+         $data = UserManagement::find()->all();
+         foreach ($data as $key => $value) {
+           echo "<option value='".$value->id."'>".$value->name."</option>";
+         }
+       }
+
+      //  die($types);
+
+     }
+   }
+
    public function actionAjaxProduct(){
      if ( Yii::$app->request->post() ) {
        $ptype = Yii::$app->request->post()['ptype'];
@@ -371,8 +393,16 @@ class PurchaseController extends Controller
    public function actionAjaxSum(){
       $multiplier = 0;
       $namount= 0;
+      $tier_charge = 0;
       $customer_amount = 0;
+      $company_earn = 0;
       $staff_earn = 0;
+      $arr_customer_earn = [];
+      $arr_comapny_earn = [];
+      $arr_staff_earn = [];
+      $ncustomer_earn = 0;
+      $ncompany_earn = 0;
+      $nstaff_earn = 0;
       $sold_price_amount = 0;
        if ( Yii::$app->request->post() ) {
             $amount = Yii::$app->request->post()['price'];
@@ -388,6 +418,8 @@ class PurchaseController extends Controller
             $purchase_type = Yii::$app->request->post()['purchase_type'];
             $com_charge = Yii::$app->request->post()['company_charge'];
             $com_charge = $com_charge/100;
+            $trade_days =Yii::$app->request->post()['trade_days'];
+            $rated_days = Yii::$app->request->post()['rated_days'];
 
             //$metal = MetalUnrealisedGain::find()->where(['between','date_uploaded',$purchase,$expire])->sum('re_gain_loss');
             $metal = MetalUnrealisedGain::find()->where(['between','true_date',$purchase,$expire])->sum('re_gain_loss');
@@ -398,52 +430,195 @@ class PurchaseController extends Controller
               $multiplier = $metal;
             }
 
-            if ($purchase_type =='Metal' && $charge_type == 'Others') {
-            //  print_r($charge_type.'-'.$purchase_type);
-              $customer_amount  = ($amount*$multiplier); //customer earn
-            //  $namount = ($customer_amount*$com_charge); //company earn
-              $company_earn = ($customer_amount*$com_charge); //company earn
-              $staff_earn = $company_earn/2; //staff earn
-            }else{
-          //  print_r('--');
-            //  $namount = $amount*$multiplier;
-            //  $company_earn = $amount*$multiplier;
-              $company_earn =0;
-              $customer_amount = 0;
-              $staff_earn = 0;
+
+            $start = strtotime($purchase);
+            $end = date('Y-m-01',strtotime($expire) );
+            $end = strtotime($end);
+            $tier_charge  =$com_charge;
+            if ($charge_type == 'Others') {
+              if ($purchase_type == 'Metal') {
+
+                while ($start<=$end) {
+                    $date_test =  date('Y-m-d', $start);
+
+                    //
+                    $comm = MetalUnrealisedGain::find()->where(['true_date'=>$date_test])->one();
+                    if (empty($comm) ) {
+                      $multiplier = 0;
+                      //$date_re = null;
+                      $date_re = $date_test;
+                    }else{
+                      $multiplier = $comm->re_gain_loss;
+                      $date_re = $comm->true_date;
+                    }
+                    $compare_start =  date('Y-m-01',strtotime($purchase) );
+                    $compare_end  = date('Y-m-01',strtotime($expire) );
+
+                    if ($date_test == $compare_start || $date_test == $compare_end) {
+                      //use trading and prorated days formula
+
+                      $before_return = $amount*$multiplier;
+                      $traded = $before_return/$trade_days;
+                      $true_return = $traded*$rated_days;
+
+                      $ncustomer_earn= $true_return;
+                      $ncompany_earn = $ncustomer_earn*$com_charge;
+                      $nstaff_earn = $ncompany_earn/2;
+
+                    }else{
+                      //common formula
+
+                      $ncustomer_earn = $amount*$multiplier;
+                      $ncompany_earn = $ncustomer_earn*$com_charge;
+                      $nstaff_earn = $ncompany_earn/2;
+                    }
+                    //
+
+                    $arr_customer_earn[]=$ncustomer_earn;
+                    $arr_comapny_earn[]=$ncompany_earn;
+                    $arr_staff_earn[] =$nstaff_earn;
+                    $start = strtotime("+1month", $start);
+                }
+
+                $customer_amount = array_sum($arr_customer_earn);
+                $company_earn = array_sum($arr_comapny_earn);
+                $staff_earn = array_sum($arr_staff_earn);
+                return json_encode(array(
+                    'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
+                    'company_earn'=>number_format($company_earn,2,'.',''),
+                    'staff_earn'=>number_format($staff_earn,2,'.',''),
+                    'tier_charge'=>$tier_charge*100,
+                ));
+
+              }elseif ($purchase_type =='Nickel') {
+                $company_earn =0;
+                $customer_amount = 0;
+                $staff_earn = 0;
+                return json_encode(array(
+                    'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
+                    'company_earn'=>number_format($company_earn,2,'.',''),
+                    'staff_earn'=>number_format($staff_earn,2,'.',''),
+                ));
+              }else{
+                $company_earn =0;
+                $customer_amount = 0;
+                $staff_earn = 0;
+                return json_encode(array(
+                    'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
+                    'company_earn'=>number_format($company_earn,2,'.',''),
+                    'staff_earn'=>number_format($staff_earn,2,'.',''),
+                ));
+              }
+            }else{//charge type == 'Tier'
+
+              if ($purchase_type == 'Metal') {
+
+                $x = new Purchase();
+                $tier_charge = $x->tierFunc($metal);
+              //  $tier_charge = Purchase::tierFunc($metal);
+                while ($start<=$end) {
+                    $date_test =  date('Y-m-d', $start);
+
+                    //
+                    $comm = MetalUnrealisedGain::find()->where(['true_date'=>$date_test])->one();
+                    if (empty($comm) ) {
+                      $multiplier = 0;
+                      //$date_re = null;
+                      $date_re = $date_test;
+                    }else{
+                      $multiplier = $comm->re_gain_loss;
+                      $date_re = $comm->true_date;
+                    }
+                    $compare_start =  date('Y-m-01',strtotime($purchase) );
+                    $compare_end  = date('Y-m-01',strtotime($expire) );
+
+                    if ($date_test == $compare_start || $date_test == $compare_end) {
+                      //use trading and prorated days formula
+
+                      $before_return = $amount*$multiplier;
+                      $traded = $before_return/$trade_days;
+                      $true_return = $traded*$rated_days;
+
+                      $ncustomer_earn= $true_return;
+                      $ncompany_earn = $ncustomer_earn*$tier_charge;
+                      $nstaff_earn = $ncompany_earn/2;
+
+                    }else{
+                      //common formula
+
+                      $ncustomer_earn = $amount*$multiplier;
+                      $ncompany_earn = $ncustomer_earn*$tier_charge;
+                      $nstaff_earn = $ncompany_earn/2;
+                    }
+                    //
+
+                    $arr_customer_earn[]=$ncustomer_earn;
+                    $arr_comapny_earn[]=$ncompany_earn;
+                    $arr_staff_earn[] =$nstaff_earn;
+                    $start = strtotime("+1month", $start);
+                  }
+
+                    $customer_amount = array_sum($arr_customer_earn);
+                    $company_earn = array_sum($arr_comapny_earn);
+                    $staff_earn = array_sum($arr_staff_earn);
+                    return json_encode(array(
+                        'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
+                        'company_earn'=>number_format($company_earn,2,'.',''),
+                        'staff_earn'=>number_format($staff_earn,2,'.',''),
+                        'tier_charge'=>$tier_charge*100,
+                    ));
+
+
+              }elseif ($purchase_type == 'Nickel') {
+                $company_earn =0;
+                $customer_amount = 0;
+                $staff_earn = 0;
+                return json_encode(array(
+                    'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
+                    'company_earn'=>number_format($company_earn,2,'.',''),
+                    'staff_earn'=>number_format($staff_earn,2,'.',''),
+                ));
+              }else{
+                $company_earn =0;
+                $customer_amount = 0;
+                $staff_earn = 0;
+                return json_encode(array(
+                    'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
+                    'company_earn'=>number_format($company_earn,2,'.',''),
+                    'staff_earn'=>number_format($staff_earn,2,'.',''),
+                ));
+              }
             }
-              //return number_format($namount,2);
-            //  print_r($multiplier);die();
-              return json_encode(array(
-                'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
-                'company_earn'=>number_format($company_earn,2,'.',''),
-                'staff_earn'=>number_format($staff_earn,2,'.',''),
-              ));
+
+
        }
    }
 
    public function actionAjaxNickel(){
      $start = 0;
      $end = 0;
+     $com_per = 0;
      if ( Yii::$app->request->post() ) {
           $product_id = Yii::$app->request->post()['product'];
+          $charge_type = Yii::$app->request->post()['charge_type'];
 
-        //  $products =  ProductManagement::find()->where(['id'=>$product_id])->one();
-        //  print_r($products);die();
-        //  $nickel = MetalNickelDeals::find()->where(['title'=>$products->product_name])->one();
           $nickel = MetalNickelDeals::find()->where(['product_id'=>$product_id])->one();
 
-          //print_r($product_id);
-          //print_r($nickel);die();
           if (!empty($nickel)) {
             $dates = new \DateTime($nickel->contract_period_start);
             $start = $dates->format('d M Y');
             $dates = new \DateTime($nickel->contract_period_end);
             $end = $dates->format('d M Y');
+            if ($charge_type == 'Tier') {
+              $com_per = $nickel->commission_per*100;
+            }else{
+              $com_per = 0;
+            }
 
             return json_encode(array(
               'start'=>$start,
               'end'=>$end,
+              'com_per'=>$com_per,
             ));
           //  $start = $nickel->contract_period_start;
           //  $expire =$nickel->contract_period_end;
@@ -451,6 +626,7 @@ class PurchaseController extends Controller
             return json_encode(array(
               'start'=>'',
               'end'=>'',
+              'com_per'=>$com_per,
             ));
           }
      }
@@ -504,6 +680,7 @@ class PurchaseController extends Controller
       $earning->purchase_id = $model['id'];
       $earning->investor = $model['investor'];
       $earning->purchase_amount = $model['price'];
+      $earning->ptype = $model['type'];
       $earning->re_date = $date_re;
       $earning->re_metal_per = $multiplier;
 
@@ -517,12 +694,16 @@ class PurchaseController extends Controller
         $earning->tranche = 0.25;
       }
 
+
       $compare_start =  date('Y-m-01',strtotime($model['date']) );
       $compare_end  = date('Y-m-01',strtotime($model['metal_expiry_date']) );
 
-      if ($model['charge_type']=='Others' && $model['purchase_type'] =='Metal') {
-      //  $customer_amount  = ($new_comm->transact_amount*$multiplier);
-      //  $new_comm->commission_comp = ($customer_amount*$model['company_charge']);
+      $metal = MetalUnrealisedGain::find()->where(['between','true_date',$compare_start,$compare_end])->sum('re_gain_loss');
+
+
+      if ($model['charge_type'] == 'Others') {
+        if ($model['purchase_type']== 'Metal') {
+
           if ($date_test == $compare_start || $date_test == $compare_end) {
             //use trading and prorated days formula
             $before_return = $model['price']*$multiplier;
@@ -540,14 +721,58 @@ class PurchaseController extends Controller
             $earning->staff_earn = $earning->company_earn/2;
           }
 
-      }else{
+        }elseif ($model['purchase_type']== 'Nickel') {
           $earning->customer_earn = 0;
           $earning->customer_earn_after = 0;
           $earning->company_earn  = 0;
           $earning->staff_earn  = 0;
-      //  $new_comm->commission_comp = $new_comm->transact_amount*$multiplier;
+        }else{//purchase type is stocks
+          $earning->customer_earn = 0;
+          $earning->customer_earn_after = 0;
+          $earning->company_earn  = 0;
+          $earning->staff_earn  = 0;
+        }
+      }else{//charge type == 'tier'
+        if ($model['purchase_type']== 'Metal') {
+
+          $x = new Purchase();
+          $tier_charge = $x->tierFunc($metal);
+        //  $tier_charge = Purchase::tierFunc($metal);
+          //$multiplier = $tier_charge;
+
+          //
+          if ($date_test == $compare_start || $date_test == $compare_end) {
+            //use trading and prorated days formula
+            $before_return = $model['price']*$multiplier;
+            $traded = $before_return/$model['trading_days'];
+            $true_return = $traded*$model['prorated_days'];
+            $earning->customer_earn = $true_return;
+            $earning->company_earn = $earning->customer_earn*$tier_charge;
+            $earning->customer_earn_after = $earning->customer_earn - $earning->company_earn;
+            $earning->staff_earn = $earning->company_earn/2;
+          }else{
+            //common formula
+            $earning->customer_earn = $model['price']*$multiplier;
+            $earning->company_earn = $earning->customer_earn*$tier_charge;
+            $earning->customer_earn_after = $earning->customer_earn - $earning->company_earn;
+            $earning->staff_earn = $earning->company_earn/2;
+          }
+          //
+        }elseif ($model['purchase_type']== 'Nickel') {
+          $earning->customer_earn = 0;
+          $earning->customer_earn_after = 0;
+          $earning->company_earn  = 0;
+          $earning->staff_earn  = 0;
+        }else{//purchase type is stocks
+          $earning->customer_earn = 0;
+          $earning->customer_earn_after = 0;
+          $earning->company_earn  = 0;
+          $earning->staff_earn  = 0;
+        }
       }
-      if ($model['purchase_type'] == 'Nickel') {
+
+
+      if ($model['purchase_type'] == 'Nickel' || $model['purchase_type'] == 'Stocks') {
         unset($earning);
       }else{
         $earning->save(false);
