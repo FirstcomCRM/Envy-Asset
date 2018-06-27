@@ -280,9 +280,58 @@ class InvestorReportController extends \yii\web\Controller
         $mpdf->setFooter('|GROWTH - CONSISTENCY - ETHICS|{PAGENO}');
         $mpdf->WriteHTML($mpdf->content);
         $mpdf->Output($title.'.pdf','I');
+
         exit();
 
      }
+
+   public function actionAlterEmail(){
+     // /die('test');
+      if ( Yii::$app->request->post() ) {
+        $searchModel = new InvestorSearch();
+        if (is_array(Yii::$app->request->post()['keys']) ) {
+          $ids = Yii::$app->request->post()['keys'];
+
+        }else{
+          $ids = [];
+          $ids[] = Yii::$app->request->post()['keys'];
+
+        }
+
+        $date_filter = Yii::$app->request->post()['dates'];
+        $searchModel->date_filter = date('Y-m-d',strtotime($date_filter) );
+        foreach ($ids as $key => $value) {
+          $model =Investor::findOne($value);
+          $title = $model->company_name.'-'.$date_filter;
+          $mpdf = new mPDF('utf-8','A3');
+          $mpdf->content = $this->renderPartial('alter-pdf',[
+              'model'=>$model,
+              'searchModel'=>$searchModel,
+           ]);
+           $mpdf->setFooter('|GROWTH - CONSISTENCY - ETHICS|{PAGENO}');
+           $mpdf->WriteHTML($mpdf->content);
+           $attach = $mpdf->Output("{$title}.pdf",'S');
+
+           $message = "<p>Greetings,</p>";
+           $message .= '<p>Please find attached file.</p>';
+           $message .= '<p>Thank you.</p>';
+      //     $testcc = 'eumerjoseph.ramos@yahoo.com';
+           Yii::$app->mailer->compose()
+           ->setTo($model->email)
+         //  ->setFrom([$eng->email => $eng->fullname])
+           ->setFrom(['no-reply@envy.cc' => 'no-reply@envy.cc'])
+           //->setCc($testcc) //temp
+           ->setSubject($title)
+           ->setHtmlBody($message)
+       //    ->setReplyTo([$eng->email])
+           ->attachContent($attach,['fileName'=>$title.'.pdf','contentType' => 'application/pdf'])
+           ->send();
+
+        }
+
+      }
+
+    }
 
    public function actionDIndex(){
      $searchModel = new PurchaseSearch();
