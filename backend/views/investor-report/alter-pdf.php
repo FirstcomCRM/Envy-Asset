@@ -29,7 +29,8 @@ $start_end = date('Y-m-t',strtotime($searchModel->date_filter));
 $d = new \DateTime($start_search);
 $d->modify('-1month');
 $reduc_date_end = $d->format('Y-m-t');
-$d->modify('-2month');
+//$d->modify('-2month');
+$d->modify('-12month');
 $reduc_date_start = $d->format('Y-m-d');
 
 
@@ -40,8 +41,8 @@ $ni = MetalNi::find()->where(['date_uploaded'=>$start_search])->all();
 $oil = MetalOil::find()->where(['date_uploaded'=>$start_search])->all();
 $zn = MetalZn::find()->where(['date_uploaded'=>$start_search])->all();
 
-$unrealised = MetalUnrealised::find()->where(['date_uploaded'=>$start])->all();
-$unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$start])->one();
+$unrealised = MetalUnrealised::find()->where(['date_uploaded'=>$start_search])->all();
+$unrealisedgain =MetalUnrealisedGain::find()->where(['date_uploaded'=>$start_search])->one();
 
 $pur_metal = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Metal','type'=>'Investor'])->asArray()->all();
 $pur_metal_prev =Purchase::find()->andFilterWhere(['investor'=>$model->id, 'purchase_type'=>'Metal','type'=>'Investor'])
@@ -55,15 +56,27 @@ $pur_metal_curr = Purchase::find()->where(['investor'=>$model->id, 'purchase_typ
           ->asArray()
           ->all();
 
-$pur_nickel_curr = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor'])
+$pur_nickel_curr_ma = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor','nickel_state'=>'Mature'])
+          //  ->andFilterWhere(['between','date',$start_search,$start_end])
+            ->andFilterWhere(['between','true_expiry_date',$start_search,$start_end])
+            ->asArray()->all();
+$pur_nickel_curr_im = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor','nickel_state'=>'Immature'])
+          //  ->andFilterWhere(['between','date',$start_search,$start_end])
             ->andFilterWhere(['between','date',$start_search,$start_end])
             ->asArray()->all();
+
 $pur_nickel_prev = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor'])
             ->andFilterWhere(['between','date',$reduc_date_start,$reduc_date_end])
+          //  ->andFilterWhere(['between','date',$reduc_date_start,$start_end]) //edrfix
             ->asArray()->all();
+$pur_nickel_prev_im = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor','nickel_state'=>'Immature'])
+            //  ->andFilterWhere(['between','date',$reduc_date_start,$reduc_date_end])
+            ->andFilterWhere(['between','date',$reduc_date_start,$start_end]) //edrfix
+              ->asArray()->all();
 
 $pur_nickel_prev_sum = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor'])
         ->andFilterWhere(['between','date',$reduc_date_start,$reduc_date_end])
+      //  ->andFilterWhere(['between','date',$reduc_date_start,$start_end])
         ->sum('price');
 $pur_nickel_curr_sum = Purchase::find()->where(['investor'=>$model->id, 'purchase_type'=>'Nickel','type'=>'Investor'])
         ->andFilterWhere(['between','date',$start_search,$start_end])
@@ -130,7 +143,8 @@ $nickels_prev_cearn = Purchase::find()->where(['investor'=>$model->id, 'purchase
             ->sum('customer_earn');
 
 $previous_metal_balance = $pur_metal_prev+$nearn-($metals_prev_sum);
-$previous_nickel_balance = $pur_nickel_prev_sum + $nickels_prev_cearn - ($nickels_prev_sum);
+//$previous_nickel_balance = $pur_nickel_prev_sum + $nickels_prev_cearn - ($nickels_prev_sum);
+$previous_nickel_balance = $pur_nickel_prev_sum;
 $previous_stocks_balance = $pur_stocks_prev +$stocks_prev_sum - ($stocks_prev_sum);
 $previous_ending_balance = $previous_metal_balance+$previous_nickel_balance+$previous_stocks_balance;
 
@@ -306,7 +320,7 @@ $bb = [];
     </tr>
     <tr>
       <td class="th-daily">Date</td>
-      <td class="th-daily">Beginning Balance as at <?php echo date('M Y',strtotime($reduc_date_end) ); ?></td>
+      <td class="th-daily">Beginning Balance as at <?php echo date('d M Y',strtotime($start_search) ); ?></td>
       <td class="th-daily"></td>
       <td class="th-daily rights"><?php echo number_format($previous_ending_balance,2) ?></td>
       <td class="th-daily"></td>
@@ -370,7 +384,12 @@ $bb = [];
     <?php foreach ($pur_nickel_prev  as $key => $nickel): ?>
       <tr>
         <td></td>
-        <td><?php echo date('M Y',strtotime($nickel['date']) ) ?> Nickel Contract</td>
+        <td>
+          <?php $data = ProductManagement::findOne($nickel['product']);
+            echo $data->product_name;
+          ?>
+
+        </td>
         <td></td>
         <td class="rights"><?php echo number_format($nickel['price'],2) ?></td>
         <td></td>
@@ -515,7 +534,7 @@ $bb = [];
 
     <tr>
       <td></td>
-      <td><strong>Physical Metal Trading  (Nickel)</strong></td>
+      <td><strong>Physical Metal Trading (Nickel)</strong></td>
       <td></td>
       <td></td>
       <td></td>
@@ -523,17 +542,22 @@ $bb = [];
 
     <!--Looping sequence for Physical Metal Trading Records--->
 
-    <?php foreach ($pur_nickel_curr as $key => $nickel): ?>
+    <?php foreach ($pur_nickel_curr_ma as $key => $nickel): ?>
         <tr>
-          <td><?php echo date('d M Y', strtotime($nickel['date']) ) ?></td>
-          <td>Realised profits from <?php echo date('M Y', strtotime($nickel['date']) ) ?> nickel deals</td>
+          <td><?php echo date('d M Y', strtotime($nickel['true_expiry_date']) ) ?></td>
+          <td>
+            Realised profits from
+            <?php $data = ProductManagement::findOne($nickel['product']);
+              echo $data->product_name;
+            ?>
+          </td>
           <td></td>
           <td class="rights"><?php echo number_format($nickel['customer_earn'],2) ?></td>
           <?php $custom_nickel_sum+=$nickel['customer_earn'] ?>
           <td></td>
         </tr>
         <tr>
-          <td><?php echo date('d M Y', strtotime($nickel['date']) ) ?></td>
+          <td><?php echo date('d M Y', strtotime($nickel['true_expiry_date']) ) ?></td>
           <td>Commission charged </td>
           <td class="rights"><?php echo '('.number_format($nickel['company_earn'],2).')'; ?></td>
           <?php $company_nickel_sum+=$nickel['company_earn']?>
@@ -567,7 +591,7 @@ $bb = [];
       <tr>
         <td><?php echo date('d M Y',strtotime($n['date']) ) ?></td>
         <td>
-          Nickel withdraw from <?php echo date('d M Y',strtotime($n['date']) ) ?>
+          Nickel withdraw from
           <?php $data = ProductManagement::findOne($n['product']);
             echo $data->product_name;
           ?>
@@ -578,11 +602,11 @@ $bb = [];
       </tr>
     <?php endforeach; ?>
 
-    <?php foreach ($pur_nickel_curr as $key => $n): ?>
+    <?php foreach ($pur_nickel_curr_im as $key => $n): ?>
       <tr>
         <td><?php echo date('d M Y',strtotime($n['date']) ) ?></td>
         <td>
-          Nickel investment from <?php echo date('d M Y',strtotime($n['date']) ) ?>
+          Nickel investment from
           <?php $data = ProductManagement::findOne($n['product']);
             echo $data->product_name;
           ?>
@@ -644,7 +668,7 @@ $bb = [];
     </tr>
     <tr>
       <td class="th-daily">Date</td>
-      <td class="th-daily">Ending Balance as at <?php echo date('M Y', strtotime($start_search) ); ?></td>
+      <td class="th-daily">Ending Balance as at <?php echo date('d M Y', strtotime($start_end) ); ?></td>
       <td class="th-daily"></td>
       <td class="th-daily rights"><?php echo number_format($current_ending_balance,2) ?></td>
       <td class="th-daily"></td>
@@ -704,17 +728,30 @@ $bb = [];
       <td></td>
     </tr>
 
-    <!---Nickel Contract loop--->
-    <?php foreach ($pur_nickel_curr  as $key => $nickel): ?>
+    <!---Nickel Contract loop edr00--->
+    <?php foreach ($pur_nickel_prev_im  as $key => $nickel): ?>
        <tr>
          <td></td>
-         <td><?php echo date('M Y',strtotime($nickel['date']) ) ?> Nickel Contract</td>
+         <td>
+           <?php $data = ProductManagement::findOne($nickel['product']);
+            echo $data->product_name;
+          ?>
+         </td>
          <td></td>
          <td class="rights"><?php echo number_format($nickel['price'],2) ?></td>
          <td></td>
        </tr>
      <?php endforeach; ?>
     <!---Nickel Contract loop--->
+    <tr>
+      <td></td>
+      <td>
+        Payables
+      </td>
+      <td></td>
+      <td class="rights"><?php echo number_format($pmt,2) ?></td>
+      <td></td>
+    </tr>
 
   </table>
 
