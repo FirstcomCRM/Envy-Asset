@@ -451,7 +451,7 @@ class ImportMetal extends \yii\db\ActiveRecord
 
     $prods = new ProductManagement();
     //$prods->addProduct($this->remarks,3);
-    $product_id = $prods->addProduct($this->remarks,3);
+    $product_id = $prods->addProduct($title,3);
     $deals->product_id = $product_id;
 
     $deals->save(false);
