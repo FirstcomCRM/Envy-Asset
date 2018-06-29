@@ -135,6 +135,9 @@ class Purchase extends \yii\db\ActiveRecord
             }else{
               $this->true_expiry_date = null;
             }
+            if ($this->purchase_type == 'Nickel' && $this->nickel_state == null) {
+                $this->nickel_state = 'Immature';
+            }
             //print_r($this->company_charge);
             //die('@@');
             return true;

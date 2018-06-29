@@ -67,6 +67,7 @@ $(document).ready(function(){
 
   $('#products').on('change',function(){
     nickelDate();
+    //pur_sum();
   });
 
   $('#price').on('change',function(){
@@ -94,7 +95,6 @@ $(document).ready(function(){
   $('#company_charge').on('change',function(){
     pur_sum();
   });
-
 
   $('#purchase-product').on('change',function(){
     nickelDate();
@@ -192,12 +192,14 @@ function pur_sum(){
   var sold_price = $('#purchase-sold_price').val();
   var trade_days =  $('#purchase-trading_days').val();
   var rated_days =  $('#purchase-prorated_days').val();
+  var products = $('#products').val();
   if (sold_price == '') {
     sold_price = 0;
   }
+  console.log('ffffuuuckk');
   //console.log(expiry_date);
   price = price.replace(",", "");
-  if (price != '' && purchase_date != '' && expiry_date != '') {
+  if (price != '' && purchase_date != '') {
     $.post("?r=purchase/ajax-sum",{
           price:price,
           purchase_date:purchase_date,
@@ -207,6 +209,7 @@ function pur_sum(){
           company_charge:company_charge,
           trade_days:trade_days,
           rated_days:rated_days,
+          products:products,
         //  sold_price:sold_price,
 
       },
@@ -236,7 +239,7 @@ function nickelDate(){
           charge_type:charge_type,
       },
       function(data, status){
-        console.log('test');
+      //  console.log('test');
           var jsonObj = eval ("(" + data + ")");
           $('#company_charge').empty().val(jsonObj.com_per);
           $('#purchase-nickel_date').empty().val(jsonObj.start);
