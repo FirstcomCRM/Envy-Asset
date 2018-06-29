@@ -240,12 +240,12 @@ class PurchaseController extends Controller
 
         if ($model->load(Yii::$app->request->post())  ) {
 
-            $model->ptotal_sold_unit = str_replace(",","",$model->ptotal_sold_unit);
-            $model->date = date('Y-m-d', strtotime($model->date) );
-            $model->expiry_date = date('Y-m-d', strtotime($model->expiry_date) );
-            $model->nickel_date = date('Y-m-d', strtotime($model->nickel_date) );
-            $model->nickel_expiry= date('Y-m-d', strtotime($model->nickel_expiry) );
-        //    $model->company_charge = $model->company_charge/100;
+          //  $model->ptotal_sold_unit = str_replace(",","",$model->ptotal_sold_unit);
+          //  $model->date = date('Y-m-d', strtotime($model->date) );
+      //      $model->true_expiry_date = date('Y-m-d', strtotime($model->true_expiry_date) );
+        //    $model->nickel_date = date('Y-m-d', strtotime($model->nickel_date) );
+        //    $model->nickel_expiry= date('Y-m-d', strtotime($model->nickel_expiry) );
+            $model->company_charge = $model->company_charge/100;
 
             $oldIDs = ArrayHelper::map($modelLine, 'id', 'id');
             $purline = Model::createMultiple(PurchaseLine::classname(), $modelLine);
@@ -420,6 +420,7 @@ class PurchaseController extends Controller
             $com_charge = $com_charge/100;
             $trade_days =Yii::$app->request->post()['trade_days'];
             $rated_days = Yii::$app->request->post()['rated_days'];
+            $product_id = Yii::$app->request->post()['products'];
 
             //$metal = MetalUnrealisedGain::find()->where(['between','date_uploaded',$purchase,$expire])->sum('re_gain_loss');
             $metal = MetalUnrealisedGain::find()->where(['between','true_date',$purchase,$expire])->sum('re_gain_loss');
@@ -430,6 +431,7 @@ class PurchaseController extends Controller
               $multiplier = $metal;
             }
 
+        //    print_r('test');die();
 
             $start = strtotime($purchase);
             $end = date('Y-m-01',strtotime($expire) );
@@ -491,13 +493,28 @@ class PurchaseController extends Controller
                 ));
 
               }elseif ($purchase_type =='Nickel') {
-                $company_earn =0;
-                $customer_amount = 0;
-                $staff_earn = 0;
+                //charget type nickel others
+
+                $current_date = date('Y-m-d', strtotime($purchase_date) );
+                $nickel = MetalNickelDeals::find()->where(['product_id'=>$product_id])->one();
+                if ($nickel->contract_period_end <= $current_date) {
+                  $customer_amount = $amount*$nickel->unrealised_profit_a;
+                  $company_earn =$customer_amount*$com_charge;
+                  $staff_earn = $company_earn/2;
+                }else{
+                  $company_earn =0;
+                  $customer_amount = 0;
+                  $staff_earn = 0;
+                }
+                  $tier_charge = $com_charge;
+              //  $company_earn =10;
+              //  $customer_amount = 10;
+              //  $staff_earn = 10;
                 return json_encode(array(
                     'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
                     'company_earn'=>number_format($company_earn,2,'.',''),
                     'staff_earn'=>number_format($staff_earn,2,'.',''),
+                    'tier_charge'=>$tier_charge*100,
                 ));
               }else{
                 $company_earn =0;
@@ -570,13 +587,25 @@ class PurchaseController extends Controller
 
 
               }elseif ($purchase_type == 'Nickel') {
-                $company_earn =0;
-                $customer_amount = 0;
-                $staff_earn = 0;
+                $current_date = date('Y-m-d',strtotime($purchase_date) );
+                $nickel = MetalNickelDeals::find()->where(['product_id'=>$product_id])->one();
+                $x = new Purchase();
+                $tier_charge = $x->tierFunc($nickel->unrealised_profit_a);
+                  if ($nickel->contract_period_end <= $current_date) {
+                    $customer_amount = $amount*$nickel->unrealised_profit_a;
+                    $company_earn =$customer_amount*$tier_charge;
+                    $staff_earn = $company_earn/2;
+                  }else{
+                    $company_earn =0;
+                    $customer_amount = 0;
+                    $staff_earn = 0;
+                  }
+
                 return json_encode(array(
                     'customer_amount'=>number_format($customer_amount, 2, '.' ,''),
                     'company_earn'=>number_format($company_earn,2,'.',''),
                     'staff_earn'=>number_format($staff_earn,2,'.',''),
+                    'tier_charge'=>$tier_charge*100,
                 ));
               }else{
                 $company_earn =0;
