@@ -30,9 +30,12 @@ class CronController extends Controller
       $date = $now->format('Y-m-d');
       //echo $date;
       $multiplier = 0;
+      $tier_charge = 0;
     //  $date = '2018-03-31';
 
-      $data = Purchase::find()->where(['true_expiry_date'=>$date, 'purchase_type'=>'Nickel', 'charge_type'=>'Others'])->orderBy(['id'=>SORT_ASC])->all();
+    //  $data = Purchase::find()->where(['true_expiry_date'=>$date, 'purchase_type'=>'Nickel', 'charge_type'=>'Others'])->orderBy(['id'=>SORT_ASC])->all();
+      $data = Purchase::find()->where(['true_expiry_date'=>$date, 'purchase_type'=>'Nickel', 'nickel_state'=>'Immature'])->orderBy(['id'=>SORT_ASC])->all();
+
       $re = MetalNickelDeals::find()->where(['contract_period_end'=>$date])->one();
       if (!empty($re)) {
         $multiplier = $re->unrealised_profit_a;
@@ -41,10 +44,21 @@ class CronController extends Controller
 
       if (!empty($data) ) {
         foreach ($data as $k => $v) {
-          $v->customer_earn = $v->price * $multiplier;
-          $v->company_earn = $v->customer_earn*$v->company_charge;
-          $v->staff_earn = $v->company_earn/2;
-          $v->save(false);
+          if ($v->charge_type == 'Others') {
+            $v->customer_earn = $v->price * $multiplier;
+            $v->company_earn = $v->customer_earn*$v->company_charge;
+            $v->staff_earn = $v->company_earn/2;
+            $v->save(false);
+          }else{
+              $x = new Purchase();
+              $nickel = MetalNickelDeals::find()->where(['product_id'=>$v->product])->one();
+              $tier_charge = $x->tierFunc($nickel->unrealised_profit_a);
+              $v->customer_earn = $v->price * $tier_charge;
+              $v->company_earn = $v->customer_earn*$v->company_charge;
+              $v->staff_earn = $v->company_earn/2;
+              $v->save(false);
+          }
+
           //echo $v->customer_earn.'-'.$v->company_earn;
           //echo 'save trigered on'.$v->id;
         }
